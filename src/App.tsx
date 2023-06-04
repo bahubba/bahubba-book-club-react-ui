@@ -1,24 +1,28 @@
+import { createTheme } from '@mui/material';
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+// Initialize the MUI Theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#55af86',
+      main: '#198755',
+      dark: '#00522d',
+      contrastText: '#fff'
+    },
+    secondary: {
+      light: '#fec57b',
+      main: '#ce7e24',
+      dark: '#774300',
+      contrastText: '#000'
+    }
+  }
+});
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Welcome to my app</h1>
     </div>
   );
 }
