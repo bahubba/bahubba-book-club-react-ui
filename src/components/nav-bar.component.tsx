@@ -26,7 +26,7 @@ const styles = {
 
 const NavBar = () => {
   return (
-    <AppBar position="sticky">
+    <AppBar position="fixed">
       <Toolbar variant="dense">
         <img
           src="/favicon/favicon.ico"

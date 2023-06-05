@@ -7,6 +7,8 @@ import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
 
 import './index.css';
+import LoginRoute from './routes/login.route';
+import RegisterRoute from './routes/register.route';
 
 // Router
 
@@ -40,11 +42,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'login',
-        element: <div>Login</div>
+        element: <LoginRoute />
       },
       {
         path: 'register',
-        element: <div>Register</div>
+        element: <RegisterRoute />
       }
     ]
   }
