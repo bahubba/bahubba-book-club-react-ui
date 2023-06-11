@@ -5,12 +5,11 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
-
-import './index.css';
 import LoginRoute from './routes/login.route';
 import RegisterRoute from './routes/register.route';
+import HomeRoute from './routes/home.route';
 
-// Router
+import './index.css';
 
 // Initialize the MUI Theme
 const theme = createTheme({
@@ -47,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: 'register',
         element: <RegisterRoute />
+      },
+      {
+        path: 'home',
+        element: <HomeRoute />
       }
     ]
   }

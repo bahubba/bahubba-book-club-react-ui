@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
 import { register } from '../api/auth';
@@ -23,6 +23,10 @@ const styles = {
 };
 
 const RegisterRoute = () => {
+  // React router nav
+  // TODO - Replace with route actions and redirect?
+  const navigate = useNavigate();
+
   // State vars
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -53,14 +57,18 @@ const RegisterRoute = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setConfirmPassword(event.target.value);
 
-  const handleSubmit = () => {
-    register({
+  // Submit handler
+  // TODO - Replace with router action?
+  // TODO - Save login auth token
+  const handleSubmit = async () => {
+    await register({
       username,
       email,
       givenName,
       surname,
       password
     });
+    navigate('/home');
   };
 
   // Validate passwords match on input

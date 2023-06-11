@@ -5,7 +5,8 @@ interface Props {
 const props: Props = {
   /* API Endpoints */
   API_PATHS: {
-    ROOT_URL: process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000',
+    ROOT_URL: process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api/v1',
+    AUTH: '/auth',
     REGISTER: '/register',
     LOGIN: '/login'
   }
