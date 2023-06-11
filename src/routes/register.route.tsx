@@ -3,6 +3,8 @@ import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import { register } from '../api/auth';
+
 // MUI emotion styles
 const styles = {
   contentContainer: {
@@ -52,7 +54,13 @@ const RegisterRoute = () => {
   ) => setConfirmPassword(event.target.value);
 
   const handleSubmit = () => {
-    console.log('submitted');
+    register({
+      username,
+      email,
+      givenName,
+      surname,
+      password
+    });
   };
 
   // Validate passwords match on input
