@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { persistor, store } from './redux/store';
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
 
@@ -58,7 +61,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <Provider store={store} >
+        <PersistGate loading={null} persistor={persistor}>
+          <RouterProvider router={router} />
+        </PersistGate>
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>
 );
