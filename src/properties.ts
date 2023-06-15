@@ -8,7 +8,8 @@ const props: Props = {
     ROOT_URL: process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api/v1',
     AUTH: '/auth',
     REGISTER: '/register',
-    LOGIN: '/login'
+    LOGIN: '/login',
+    REFRESH: '/refresh'
   }
 };
 

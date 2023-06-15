@@ -3,7 +3,7 @@ import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
-import { register } from '../api/auth';
+import { register } from '../api/auth.OLD';
 
 // MUI emotion styles
 const styles = {

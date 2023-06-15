@@ -1,28 +1,34 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "redux";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage/session";
+import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage/session';
 
-import authReducer from './slices/auth.slice'
+import authReducer from './slices/auth/auth.slice';
+import authAPISlice from './slices/auth/auth.api.slice';
+import _ from 'lodash';
 
 // Combine reducers
 const rootReducer = combineReducers({
-    auth: authReducer
+  auth: authReducer,
+  [authAPISlice.reducerPath]: authAPISlice.reducer
 });
 
 // Redux persistence config
 const persistConfig = {
-    key: 'root',
-    storage,
-    whitelist: ['auth']
-}
+  key: 'root',
+  storage,
+  whitelist: ['auth']
+};
 
 // Set up the persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Redux store config
 export const store = configureStore({
-    reducer: persistedReducer
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(authAPISlice.middleware),
+  devTools: _.isEqual('dev', process.env.REACT_APP_ENV)
 });
 
 // Export the persistor
