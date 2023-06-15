@@ -1,4 +1,4 @@
 export interface AuthPayload {
-  user: any; // FIXME
+  username: string | null;
   token: string | null;
 }

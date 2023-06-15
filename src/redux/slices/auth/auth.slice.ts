@@ -4,13 +4,13 @@ import type { RootState } from '../../store';
 
 // Slice state interface
 interface AuthState {
-  user: any; // FIXME
+  username: string | null;
   token: string | null;
 }
 
 // Initial slice state
 const initialState: AuthState = {
-  user: '',
+  username: '',
   token: null
 };
 
@@ -23,7 +23,7 @@ export const authSlice = createSlice({
       state = action.payload;
     },
     logout: state => {
-      state = { user: null, token: null };
+      state = { username: null, token: null };
     }
   }
 });
@@ -31,7 +31,7 @@ export const authSlice = createSlice({
 export const { setCredentials, logout } = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
-export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectCurrentUsername = (state: RootState) => state.auth.username;
 export const selectCurrentAuthToken = (state: RootState) => state.auth.token;
 
 export default authSlice.reducer;

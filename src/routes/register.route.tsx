@@ -3,8 +3,6 @@ import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
-import { register } from '../api/auth.OLD';
-
 // MUI emotion styles
 const styles = {
   contentContainer: {
@@ -61,13 +59,7 @@ const RegisterRoute = () => {
   // TODO - Replace with router action?
   // TODO - Save login auth token
   const handleSubmit = async () => {
-    await register({
-      username,
-      email,
-      givenName,
-      surname,
-      password
-    });
+    // TODO - Register API call
     navigate('/home');
   };
 

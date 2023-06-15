@@ -47,12 +47,12 @@ const baseQueryWithRefresh = async (
 
     // If we got a valid token in the response, store the new token and retry query
     if (refreshResult?.data) {
-      const user = (api.getState() as RootState).auth.user;
+      const username = (api.getState() as RootState).auth.username;
       api.dispatch(
         // Store the new token
         setCredentials({
           token: _.get(refreshResult, 'data.token', null),
-          user
+          username
         })
       );
 
