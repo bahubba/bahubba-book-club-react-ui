@@ -10,6 +10,6 @@ export interface Registration {
 }
 
 export interface Credentials {
-  username: string;
+  usernameOrEmail: string;
   password: string;
 }

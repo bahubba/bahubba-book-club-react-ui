@@ -7,7 +7,8 @@ const authAPISlice = api.injectEndpoints({
   endpoints: builder => ({
     login: builder.mutation({
       query: (credentials: Credentials) => ({
-        url: `${props.API_PATHS.ROOT_URL}${props.API_PATHS.AUTH}`,
+        url: `${props.API_PATHS.ROOT_URL}${props.API_PATHS.AUTH}${props.API_PATHS.AUTHENTICATE}`,
+        headers: [["Content-Type", "application/json"]],
         method: 'POST',
         body: { ...credentials }
       })

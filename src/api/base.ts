@@ -38,7 +38,6 @@ const baseQueryWithRefresh = async (
     console.log('forbidden; sending refresh token...');
 
     // Send refresh token to get new access token
-    // FIXME - Fill in refresh endpoint in API
     const refreshResult = await baseQuery(
       `${props.API_PATHS.AUTH}${props.API_PATHS.REFRESH}`,
       api,

@@ -50,13 +50,13 @@ const LoginRoute = () => {
   const errRef = useRef<HTMLInputElement>(null);
 
   // State vars
-  const [username, setUsername] = useState('');
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errMessage, setErrMessage] = useState('');
 
   // Input change handlers
   const handleUsernameInput = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setUsername(event.target.value);
+    setUsernameOrEmail(event.target.value);
 
   const handlePasswordInput = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(event.target.value);
@@ -65,9 +65,9 @@ const LoginRoute = () => {
   const handleSubmit = async () => {
     try {
       // Send the request to the API, and on success, set credentials, clear the form, and redirect
-      const userData = await login({ username, password }).unwrap();
-      dispatch(setCredentials({ ...userData, username }));
-      setUsername('');
+      const userData = await login({ usernameOrEmail, password }).unwrap();
+      dispatch(setCredentials({ ...userData, username: usernameOrEmail }));
+      setUsernameOrEmail('');
       setPassword('');
       navigate('/home');
     } catch (err) {
@@ -92,7 +92,7 @@ const LoginRoute = () => {
   // Hide error message when input changes
   useEffect(() => {
     setErrMessage('');
-  }, [username, password]);
+  }, [usernameOrEmail, password]);
 
   return isLoading ? (
     <CircularProgress />
@@ -128,7 +128,7 @@ const LoginRoute = () => {
               id="username"
               variant="filled"
               label="Username"
-              value={username}
+              value={usernameOrEmail}
               onChange={handleUsernameInput}
               sx={styles.fullWidthInput}
             />

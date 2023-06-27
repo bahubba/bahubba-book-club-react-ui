@@ -13,6 +13,7 @@ import RegisterRoute from './routes/register.route';
 import HomeRoute from './routes/home.route';
 
 import './index.css';
+import RequireAuthRoute from "./routes/require-auth.route";
 
 // Initialize the MUI Theme
 const theme = createTheme({
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'home',
-        element: <HomeRoute />
+        element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
       }
     ]
   }
