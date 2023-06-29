@@ -84,6 +84,11 @@ const LoginRoute = () => {
     }
   };
 
+  // DELETEME
+  const dummy = async () => {
+    await fetch("https://localhost:8443/api/v1/readers/dummy");
+  }
+
   // On component load, focus on the username field
   useEffect(() => {
     userRef.current?.focus();
@@ -152,6 +157,14 @@ const LoginRoute = () => {
               onClick={handleSubmit}
             >
               Login
+            </Button>
+            {/* DELETEME */}
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={dummy}
+            >
+              Dummy
             </Button>
           </Grid>
           <Grid item>

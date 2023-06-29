@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AuthPayload } from '../../intefaces';
+import { AuthPayload } from '../../interfaces';
 import type { RootState } from '../../store';
 
 // Slice state interface
@@ -20,6 +20,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<AuthPayload>) => {
+      console.log('payload: ', action.payload); // DELETEME
       state = action.payload;
     },
     logout: state => {
