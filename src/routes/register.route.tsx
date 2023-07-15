@@ -3,6 +3,8 @@ import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
+import {useRegisterMutation } from '../redux/slices/auth/auth.api.slice';
+
 // MUI emotion styles
 const styles = {
   contentContainer: {
@@ -24,6 +26,9 @@ const RegisterRoute = () => {
   // React router nav
   // TODO - Replace with route actions and redirect?
   const navigate = useNavigate();
+
+  // Register API call from redux-toolkit
+  const [register, { isLoading }] = useRegisterMutation();
 
   // State vars
   const [username, setUsername] = useState('');
@@ -59,7 +64,23 @@ const RegisterRoute = () => {
   // TODO - Replace with router action?
   // TODO - Save login auth token
   const handleSubmit = async () => {
-    // TODO - Register API call
+    // Send the register request to the API
+    const userData = await register({
+      username,
+      email,
+      givenName,
+      surname,
+      password
+    });
+
+    // Clear the form
+    setUsername('');
+    setEmail('');
+    setGivenName('');
+    setSurname('');
+    setPassword('');
+    setConfirmPassword('');
+
     navigate('/home');
   };
 

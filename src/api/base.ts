@@ -13,14 +13,7 @@ import { RootState } from '../redux/store';
 // Base API query
 const baseQuery = fetchBaseQuery({
   baseUrl: props.API_PATHS.ROOT_URL,
-  credentials: 'include',
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token;
-    if (token) {
-      headers.set('authorization', `Bearer ${token}`);
-    }
-    return headers;
-  }
+  credentials: 'include'
 });
 
 // Base API query wrapper with refresh auth logic
@@ -35,7 +28,7 @@ const baseQueryWithRefresh = async (
   //        ... Possibly customize it
   // NOTE - Tutorial used originalStatus, not status, but TS doesn't like it
   if (result?.error?.status === 403) {
-    console.log('forbidden; sending refresh token...');
+    console.log('forbidden; attempting to refresh credentials...');
 
     // Send refresh token to get new access token
     const refreshResult = await baseQuery(
@@ -50,7 +43,6 @@ const baseQueryWithRefresh = async (
       api.dispatch(
         // Store the new token
         setCredentials({
-          token: _.get(refreshResult, 'data.token', null),
           username
         })
       );

@@ -39,7 +39,7 @@ const NavBar = () => {
             variant="h6"
             sx={styles.titleDivElement}
           >
-            BAHubba Book Club Manager
+            {process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager'}
           </Typography>
           <NavBarLink
             to="register"

@@ -1,8 +1,7 @@
 import {ReactElement} from "react";
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
-
-import { selectCurrentAuthToken} from "../redux/slices/auth/auth.slice";
+import {selectCurrentUsername} from "../redux/slices/auth/auth.slice";
 
 interface Props {
     protectedRoute: ReactElement
@@ -11,10 +10,10 @@ interface Props {
 const RequireAuthRoute = ({ protectedRoute }: Props) => {
     const location = useLocation();
 
-    const token = useSelector(selectCurrentAuthToken);
+    const currentUser = useSelector(selectCurrentUsername);
 
     return (
-        token ? protectedRoute : <Navigate to="/login" state={{ from: location }} replace />
+        currentUser ? protectedRoute : <Navigate to="/login" state={{ from: location }} replace />
     )
 }
 

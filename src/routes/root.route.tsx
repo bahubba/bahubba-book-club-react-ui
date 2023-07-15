@@ -11,6 +11,9 @@ const ContentDiv = styled('div')(({ theme }) => ({
 }));
 
 const RootRoute = () => {
+  // Set the app title
+  document.title = process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager';
+
   return (
     <>
       <NavBar />

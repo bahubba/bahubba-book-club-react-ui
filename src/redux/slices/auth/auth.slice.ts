@@ -5,13 +5,11 @@ import type { RootState } from '../../store';
 // Slice state interface
 interface AuthState {
   username: string | null;
-  token: string | null;
 }
 
 // Initial slice state
 const initialState: AuthState = {
-  username: '',
-  token: null
+  username: ''
 };
 
 // Slice definition
@@ -24,7 +22,7 @@ export const authSlice = createSlice({
       state = action.payload;
     },
     logout: state => {
-      state = { username: null, token: null };
+      state = { username: null };
     }
   }
 });
@@ -33,6 +31,5 @@ export const { setCredentials, logout } = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 export const selectCurrentUsername = (state: RootState) => state.auth.username;
-export const selectCurrentAuthToken = (state: RootState) => state.auth.token;
 
 export default authSlice.reducer;
