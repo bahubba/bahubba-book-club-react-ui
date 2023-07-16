@@ -4,7 +4,6 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
-import _ from 'lodash';
 
 import { logout, setCredentials } from '../redux/slices/auth/auth.slice';
 import props from '../properties';

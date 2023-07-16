@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react';
-import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import {Button, CircularProgress, Divider, Grid, TextField, Typography} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 
 import {useRegisterMutation } from '../redux/slices/auth/auth.api.slice';
+import {setCredentials} from "../redux/slices/auth/auth.slice";
 
 // MUI emotion styles
 const styles = {
   contentContainer: {
     pt: 1
+  },
+  errMessageContainer: {
+    paddingTop: '0 !important', // Needs important to override grid spacing
+    color: 'red'
   },
   formContainer: {
     mt: 1
@@ -27,8 +33,14 @@ const RegisterRoute = () => {
   // TODO - Replace with route actions and redirect?
   const navigate = useNavigate();
 
+  // Redux dispatcher
+  const dispatch = useDispatch();
+
   // Register API call from redux-toolkit
   const [register, { isLoading }] = useRegisterMutation();
+
+  // Refs
+  const userRef = useRef<HTMLInputElement>(null);
 
   // State vars
   const [username, setUsername] = useState('');
@@ -39,6 +51,7 @@ const RegisterRoute = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [errMessage, setErrMessage] = useState('');
 
   // Input change handlers
   const handleUsernameInput = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -61,28 +74,43 @@ const RegisterRoute = () => {
   ) => setConfirmPassword(event.target.value);
 
   // Submit handler
-  // TODO - Replace with router action?
-  // TODO - Save login auth token
   const handleSubmit = async () => {
-    // Send the register request to the API
-    const userData = await register({
-      username,
-      email,
-      givenName,
-      surname,
-      password
-    });
+    try {
+      // Send the register request to the API
+      const userData = await register({
+        username,
+        email,
+        givenName,
+        surname,
+        password
+      });
 
-    // Clear the form
-    setUsername('');
-    setEmail('');
-    setGivenName('');
-    setSurname('');
-    setPassword('');
-    setConfirmPassword('');
+      dispatch(setCredentials({ ...userData, username }));
 
-    navigate('/home');
+      // Clear the form
+      setUsername('');
+      setEmail('');
+      setGivenName('');
+      setSurname('');
+      setPassword('');
+      setConfirmPassword('');
+
+      navigate('/home');
+    } catch (err) {
+      if (!_.has(err, 'status')) {
+        setErrMessage('No Server Response');
+      } else if (_.isEqual(409, _.get(err, 'status'))) {
+        setErrMessage('Username or email already in use');
+      } else {
+        setErrMessage('Unknown error');
+      }
+    }
   };
+
+  // On component load, focus on the username input
+  useEffect(() => {
+    userRef.current?.focus();
+  }, []);
 
   // Validate passwords match on input
   useEffect(() => {
@@ -95,8 +123,10 @@ const RegisterRoute = () => {
     else setPasswordsMatch(true);
   }, [password, confirmPassword]);
 
-  // On required input changes, see if the form is submittable
+  // On required input changes, remove any error messages and see if the form is submittable
   useEffect(() => {
+    setErrMessage('');
+
     if (
       !_.isEmpty(username) &&
       !_.isEmpty(email) &&
@@ -108,7 +138,9 @@ const RegisterRoute = () => {
     else setCanSubmit(false);
   }, [username, email, password, confirmPassword, passwordsMatch]);
 
-  return (
+  return isLoading ? (
+    <CircularProgress />
+  ) : (
     <Grid
       container
       justifyContent="center"
@@ -125,6 +157,14 @@ const RegisterRoute = () => {
           spacing={1}
           sx={styles.formContainer}
         >
+          {!_.isEmpty(errMessage) && (
+            <Grid
+              item
+              sx={styles.errMessageContainer}
+            >
+              <Typography variant="body2">{errMessage}</Typography>
+            </Grid>
+          )}
           <Grid item>
             <TextField
               id="username"

@@ -1,7 +1,7 @@
 import {ReactElement} from "react";
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
-import {selectCurrentUsername} from "../redux/slices/auth/auth.slice";
+import { selectIsLoggedIn } from "../redux/slices/auth/auth.slice";
 
 interface Props {
     protectedRoute: ReactElement
@@ -10,10 +10,10 @@ interface Props {
 const RequireAuthRoute = ({ protectedRoute }: Props) => {
     const location = useLocation();
 
-    const currentUser = useSelector(selectCurrentUsername);
+    const isLoggedIn = useSelector(selectIsLoggedIn);
 
     return (
-        currentUser ? protectedRoute : <Navigate to="/login" state={{ from: location }} replace />
+        isLoggedIn ? protectedRoute : <Navigate to="/login" state={{ from: location }} replace />
     )
 }
 

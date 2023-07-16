@@ -47,7 +47,6 @@ const LoginRoute = () => {
 
   // Refs
   const userRef = useRef<HTMLInputElement>(null);
-  const errRef = useRef<HTMLInputElement>(null);
 
   // State vars
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -74,13 +73,12 @@ const LoginRoute = () => {
       if (!_.has(err, 'status')) {
         setErrMessage('No Server Response');
       } else if (_.isEqual(400, _.get(err, 'status'))) {
-        setErrMessage('Missing Username or Password');
+        setErrMessage('Missing username or password');
       } else if (_.isEqual(401, _.get(err, 'status'))) {
         setErrMessage('Unauthorized');
       } else {
-        setErrMessage('Login Failed');
+        setErrMessage('Login failed');
       }
-      errRef.current?.focus();
     }
   };
 
