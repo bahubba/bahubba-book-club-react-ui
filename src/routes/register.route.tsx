@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import {Button, CircularProgress, Divider, Grid, TextField, Typography} from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 
-import {useRegisterMutation } from '../redux/slices/auth/auth.api.slice';
-import {setCredentials} from "../redux/slices/auth/auth.slice";
+import { useRegisterMutation } from '../redux/slices/auth/auth.api.slice';
+import { setCredentials } from '../redux/slices/auth/auth.slice';
 
 // MUI emotion styles
 const styles = {
@@ -77,7 +84,7 @@ const RegisterRoute = () => {
   const handleSubmit = async () => {
     try {
       // Send the register request to the API
-      const userData = await register({
+      await register({
         username,
         email,
         givenName,
@@ -85,7 +92,7 @@ const RegisterRoute = () => {
         password
       });
 
-      dispatch(setCredentials({ ...userData, username }));
+      dispatch(setCredentials({ username }));
 
       // Clear the form
       setUsername('');

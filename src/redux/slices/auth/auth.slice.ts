@@ -20,10 +20,12 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<AuthPayload>) => {
-      state = {...action.payload, isLoggedIn: true};
+      state.username = action.payload.username;
+      state.isLoggedIn = true;
     },
     logout: state => {
-      state = { username: null, isLoggedIn: false };
+      state.username = null;
+      state.isLoggedIn = false;
     }
   }
 });

@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+import { logout, selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
 
 // MUI Styled Components
 const AppBarTitleDiv = styled('div')(({ theme }) => ({
@@ -18,6 +21,10 @@ const styles = {
   titleDivElement: {
     px: 1
   },
+  titleTypographyLink: {
+    cursor: 'pointer',
+    color: 'white'
+  },
   titleDivLink: {
     color: 'white',
     textDecoration: 'none !important'
@@ -25,6 +32,19 @@ const styles = {
 };
 
 const NavBar = () => {
+  // Navigation from react-router-dom
+  const navigate = useNavigate();
+
+  // Redux dispatcher and auth state
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  // Handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
+
   return (
     <AppBar position="fixed">
       <Toolbar variant="dense">
@@ -41,18 +61,31 @@ const NavBar = () => {
           >
             {process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager'}
           </Typography>
-          <NavBarLink
-            to="register"
-            sx={[styles.titleDivElement, styles.titleDivLink]}
-          >
-            Register
-          </NavBarLink>
-          <NavBarLink
-            to="login"
-            sx={[styles.titleDivElement, styles.titleDivLink]}
-          >
-            Login
-          </NavBarLink>
+          {isLoggedIn ? (
+            <>
+              <Typography
+                sx={[styles.titleDivElement, styles.titleTypographyLink]}
+                onClick={handleLogout}
+              >
+                Logout
+              </Typography>
+            </>
+          ) : (
+            <>
+              <NavBarLink
+                to="register"
+                sx={[styles.titleDivElement, styles.titleDivLink]}
+              >
+                Register
+              </NavBarLink>
+              <NavBarLink
+                to="login"
+                sx={[styles.titleDivElement, styles.titleDivLink]}
+              >
+                Login
+              </NavBarLink>
+            </>
+          )}
         </AppBarTitleDiv>
       </Toolbar>
     </AppBar>
