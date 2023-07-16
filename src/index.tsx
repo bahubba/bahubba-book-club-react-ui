@@ -8,12 +8,12 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { persistor, store } from './redux/store';
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
-
-import './index.css';
 import LoginRoute from './routes/login.route';
 import RegisterRoute from './routes/register.route';
+import HomeRoute from './routes/home.route';
 
-// Router
+import './index.css';
+import RequireAuthRoute from "./routes/require-auth.route";
 
 // Initialize the MUI Theme
 const theme = createTheme({
@@ -50,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: 'register',
         element: <RegisterRoute />
+      },
+      {
+        path: 'home',
+        element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
       }
     ]
   }

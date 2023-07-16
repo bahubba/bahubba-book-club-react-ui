@@ -1,11 +1,27 @@
-import { useState } from 'react';
-import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import _ from 'lodash';
+
+import { setCredentials } from '../redux/slices/auth/auth.slice';
+import { useLoginMutation } from '../redux/slices/auth/auth.api.slice';
 
 // MUI emotion styles
 const styles = {
   contentContainer: {
     pt: 1
+  },
+  errMessageContainer: {
+    paddingTop: '0 !important', // Needs important to override grid spacing
+    color: 'red'
   },
   formContainer: {
     mt: 1
@@ -20,22 +36,65 @@ const styles = {
 };
 
 const LoginRoute = () => {
+  // Navigation from react-router-dom
+  const navigate = useNavigate();
+
+  // Redux dispatcher
+  const dispatch = useDispatch();
+
+  // Login API call from redux-toolkit
+  const [login, { isLoading }] = useLoginMutation();
+
+  // Refs
+  const userRef = useRef<HTMLInputElement>(null);
+
   // State vars
-  const [username, setUsername] = useState('');
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errMessage, setErrMessage] = useState('');
 
   // Input change handlers
   const handleUsernameInput = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setUsername(event.target.value);
+    setUsernameOrEmail(event.target.value);
 
   const handlePasswordInput = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(event.target.value);
 
-  const handleSubmit = () => {
-    console.log('submitted');
+  // Handle submitting the login form
+  const handleSubmit = async () => {
+    try {
+      // Send the request to the API, and on success, set credentials, clear the form, and redirect
+      const userData = await login({ usernameOrEmail, password }).unwrap();
+      dispatch(setCredentials({ ...userData, username: usernameOrEmail }));
+      setUsernameOrEmail('');
+      setPassword('');
+      navigate('/home');
+    } catch (err) {
+      if (!_.has(err, 'status')) {
+        setErrMessage('No Server Response');
+      } else if (_.isEqual(400, _.get(err, 'status'))) {
+        setErrMessage('Missing username or password');
+      } else if (_.isEqual(401, _.get(err, 'status'))) {
+        setErrMessage('Unauthorized');
+      } else {
+        setErrMessage('Login failed');
+      }
+    }
   };
 
-  return (
+  // On component load, focus on the username field
+  useEffect(() => {
+    userRef.current?.focus();
+  }, []);
+
+  // Hide error message when input changes
+  useEffect(() => {
+    setErrMessage('');
+  }, [usernameOrEmail, password]);
+
+  return isLoading ? (
+    <CircularProgress />
+  ) : (
     <Grid
       container
       justifyContent="center"
@@ -52,13 +111,22 @@ const LoginRoute = () => {
           spacing={1}
           sx={styles.formContainer}
         >
+          {!_.isEmpty(errMessage) && (
+            <Grid
+              item
+              sx={styles.errMessageContainer}
+            >
+              <Typography variant="body2">{errMessage}</Typography>
+            </Grid>
+          )}
           <Grid item>
             <TextField
+              inputRef={userRef}
               required
               id="username"
               variant="filled"
               label="Username"
-              value={username}
+              value={usernameOrEmail}
               onChange={handleUsernameInput}
               sx={styles.fullWidthInput}
             />

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/nav-bar.component';
 import { styled } from '@mui/material/styles';
@@ -11,6 +11,20 @@ const ContentDiv = styled('div')(({ theme }) => ({
 }));
 
 const RootRoute = () => {
+  // Set the app title
+  document.title = process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager';
+
+  // React router location and navigation
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // If the current route is the root route, redirect to the home route
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate('/home');
+    }
+  }, [location.pathname, navigate]);
+
   return (
     <>
       <NavBar />
