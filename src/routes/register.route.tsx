@@ -17,7 +17,9 @@ import { setCredentials } from '../redux/slices/auth/auth.slice';
 // MUI emotion styles
 const styles = {
   contentContainer: {
-    pt: 1
+    py: 1,
+    height: '100%',
+    overflow: 'auto'
   },
   errMessageContainer: {
     paddingTop: '0 !important', // Needs important to override grid spacing

@@ -7,7 +7,10 @@ import { styled } from '@mui/material/styles';
 const ContentDiv = styled('div')(({ theme }) => ({
   height: `calc(100% - ${theme.spacing(6)})`,
   marginTop: theme.spacing(6),
-  overflowY: 'auto'
+  padding: theme.spacing(1),
+  overflowY: 'hidden',
+  display: 'flex',
+  flexDirection: 'column'
 }));
 
 const RootRoute = () => {
