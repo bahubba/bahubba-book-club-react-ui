@@ -11,9 +11,9 @@ import ErrorRoute from './routes/error.route';
 import LoginRoute from './routes/login.route';
 import RegisterRoute from './routes/register.route';
 import HomeRoute from './routes/home.route';
+import RequireAuthRoute from './routes/require-auth.route';
 
 import './index.css';
-import RequireAuthRoute from "./routes/require-auth.route";
 
 // Initialize the MUI Theme
 const theme = createTheme({
@@ -54,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: 'home',
         element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
+      },
+      {
+        path: 'notifications',
+        element: <RequireAuthRoute protectedRoute={<div>Notifications</div>} />
       }
     ]
   }
@@ -65,8 +69,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <Provider store={store} >
-        <PersistGate loading={null} persistor={persistor}>
+      <Provider store={store}>
+        <PersistGate
+          loading={null}
+          persistor={persistor}
+        >
           <RouterProvider router={router} />
         </PersistGate>
       </Provider>
