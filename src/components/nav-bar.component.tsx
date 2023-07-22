@@ -4,13 +4,14 @@ import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { logout, selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
+import NotificationsButton from './notifications-button.component';
 
 // MUI Styled Components
-const AppBarTitleDiv = styled('div')(({ theme }) => ({
+const AppBarTitleDiv = styled('div')({
   flexGrow: 1,
   display: 'flex',
   alignItems: 'center'
-}));
+});
 
 const NavBarLink = styled(Link)({
   textDecoration: 'none'
@@ -87,6 +88,7 @@ const NavBar = () => {
             </>
           )}
         </AppBarTitleDiv>
+        <NotificationsButton />
       </Toolbar>
     </AppBar>
   );
