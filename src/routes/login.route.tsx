@@ -17,7 +17,9 @@ import { useLoginMutation } from '../redux/slices/auth/auth.api.slice';
 // MUI emotion styles
 const styles = {
   contentContainer: {
-    pt: 1
+    pt: 1,
+    height: '100%',
+    overflow: 'auto'
   },
   errMessageContainer: {
     paddingTop: '0 !important', // Needs important to override grid spacing
