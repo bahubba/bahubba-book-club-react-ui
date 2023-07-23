@@ -88,7 +88,7 @@ const NavBar = () => {
             </>
           )}
         </AppBarTitleDiv>
-        <NotificationsButton />
+        {isLoggedIn && <NotificationsButton />}
       </Toolbar>
     </AppBar>
   );
