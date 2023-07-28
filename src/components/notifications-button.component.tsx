@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Avatar, Badge, Theme } from '@mui/material';
 import { NotificationsNone } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+
+import { selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
 
 import props from '../properties';
 
@@ -16,26 +19,35 @@ const styles = {
 };
 
 const NotificationsButton = () => {
+  // Auth state from Redux
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
   // State vars
   const [numNotifications, setNumNotifications] = useState(0); // Number of notifications
 
   // On load, establish a connection for Server-Sent Events to get notification updates
   useEffect(() => {
-    const eventSource = new EventSource(
-      `${props.API_PATHS.ROOT_URL}${props.API_PATHS.NOTIFICATION}/poc`,
-      { withCredentials: true }
-    );
+    if (isLoggedIn) {
+      const eventSource = new EventSource(
+        `${props.REACTIVE_API_PATHS.ROOT_URL}${props.REACTIVE_API_PATHS.NOTIFICATION}/count-new`,
+        { withCredentials: true }
+      );
 
-    // TODO - Add event listeners for open and error events
+      // TODO - Add event listeners for open and error events
 
-    eventSource.onmessage = event => {
-      setNumNotifications(Number(JSON.parse(event.data)));
-    };
+      eventSource.onmessage = event => {
+        setNumNotifications(Number(JSON.parse(event.data)));
+      };
 
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+      eventSource.onerror = () => {
+        eventSource.close();
+      };
+
+      return () => {
+        eventSource.close();
+      };
+    }
+  }, [isLoggedIn]);
 
   return (
     <Link to="/notifications">
