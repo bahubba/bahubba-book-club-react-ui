@@ -23,14 +23,14 @@ export const authSlice = createSlice({
       state.username = action.payload.username;
       state.isLoggedIn = true;
     },
-    logout: state => {
+    clearCredentials: state => {
       state.username = null;
       state.isLoggedIn = false;
     }
   }
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, clearCredentials } = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 export const selectCurrentUsername = (state: RootState) => state.auth.username;

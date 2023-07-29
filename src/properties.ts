@@ -12,7 +12,9 @@ const props: Props = {
     REGISTER: '/register',
     LOGIN: '/login',
     REFRESH: '/refresh',
-    LOGOUT: '/logout'
+    LOGOUT: '/logout',
+    BOOK_CLUBS: '/v1/book-clubs',
+    CREATE: '/create'
   },
   REACTIVE_API_PATHS: {
     ROOT_URL:

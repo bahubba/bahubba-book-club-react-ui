@@ -19,3 +19,11 @@ export enum Publicity {
   OBSERVABLE = 'OBSERVABLE',
   PRIVATE = 'PRIVATE'
 }
+
+export interface BookClub {
+  id?: number;
+  name: string;
+  imageURL?: string;
+  description: string;
+  publicity: Publicity;
+}

@@ -13,8 +13,8 @@ const styles = {
   avatar: {
     height: (theme: Theme) => theme.spacing(4),
     width: (theme: Theme) => theme.spacing(4),
-    bgcolor: 'secondary.light',
-    color: 'primary.main'
+    bgcolor: 'secondary.main',
+    color: 'primary.dark'
   }
 };
 

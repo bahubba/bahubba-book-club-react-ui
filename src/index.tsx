@@ -44,6 +44,7 @@ const router = createBrowserRouter([
     element: <RootRoute />,
     errorElement: <ErrorRoute />,
     children: [
+      /* AUTH ROUTES */
       {
         path: 'login',
         element: <LoginRoute />
@@ -52,17 +53,34 @@ const router = createBrowserRouter([
         path: 'register',
         element: <RegisterRoute />
       },
+
+      /* MISC ROUTES */
       {
         path: 'home',
         element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
       },
       {
-        path: 'create-book-club',
-        element: <RequireAuthRoute protectedRoute={<CreateBookClubRoute />} />
-      },
-      {
         path: 'notifications',
         element: <RequireAuthRoute protectedRoute={<div>Notifications</div>} />
+      },
+
+      /* BOOK CLUB ROUTES */
+      {
+        path: 'book-club',
+        children: [
+          {
+            path: 'create',
+            element: (
+              <RequireAuthRoute protectedRoute={<CreateBookClubRoute />} />
+            )
+          },
+          {
+            path: ':bookClubName',
+            element: (
+              <RequireAuthRoute protectedRoute={<div>Book Club Home</div>} />
+            )
+          }
+        ]
       }
     ]
   }
