@@ -4,9 +4,9 @@ import { Avatar, Badge, Theme } from '@mui/material';
 import { NotificationsNone } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-import { selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
+import { selectIsLoggedIn } from '../../redux/slices/auth/auth.slice';
 
-import props from '../properties';
+import props from '../../properties';
 
 // MUI emotion styles
 const styles = {

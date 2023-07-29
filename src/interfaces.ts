@@ -13,3 +13,9 @@ export interface Credentials {
   usernameOrEmail: string;
   password: string;
 }
+
+export enum Publicity {
+  PUBLIC = 'PUBLIC',
+  OBSERVABLE = 'OBSERVABLE',
+  PRIVATE = 'PRIVATE'
+}

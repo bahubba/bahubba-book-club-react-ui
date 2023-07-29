@@ -8,10 +8,11 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { persistor, store } from './redux/store';
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
-import LoginRoute from './routes/login.route';
-import RegisterRoute from './routes/register.route';
+import LoginRoute from './routes/auth/login.route';
+import RegisterRoute from './routes/auth/register.route';
 import HomeRoute from './routes/home.route';
-import RequireAuthRoute from './routes/require-auth.route';
+import CreateBookClubRoute from './routes/book-club/create-book-club.route';
+import RequireAuthRoute from './routes/auth/require-auth.route';
 
 import './index.css';
 
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: 'home',
         element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
+      },
+      {
+        path: 'create-book-club',
+        element: <RequireAuthRoute protectedRoute={<CreateBookClubRoute />} />
       },
       {
         path: 'notifications',

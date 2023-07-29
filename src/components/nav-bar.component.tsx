@@ -1,10 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { logout, selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
-import NotificationsButton from './notifications-button.component';
+import NotificationsButton from './buttons/notifications.button';
 
 // MUI Styled Components
 const AppBarTitleDiv = styled('div')({
