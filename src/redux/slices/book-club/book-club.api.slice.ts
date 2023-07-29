@@ -2,6 +2,7 @@ import api from '../../api/base';
 import { BookClub } from '../../../interfaces';
 import props from '../../../properties';
 
+// Redux API Slice for Book Club endpoints
 const bookClubAPISlice = api.injectEndpoints({
   endpoints: builder => ({
     createBookClub: builder.mutation<BookClub, BookClub>({

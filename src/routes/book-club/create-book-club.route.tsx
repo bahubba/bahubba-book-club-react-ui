@@ -16,6 +16,9 @@ const styles = {
   }
 };
 
+/**
+ * Page/route for creating a new book club
+ */
 const CreateBookClubRoute = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();
@@ -66,6 +69,7 @@ const CreateBookClubRoute = () => {
       setDescription('');
 
       // Redirect to the new book club's home page
+      navigate(`/book-club/${newBookClub.name}`);
     } catch (err) {
       // TODO - Toast/snackbar message for error
       console.log(err);

@@ -36,6 +36,9 @@ const styles = {
   }
 };
 
+/**
+ * Navigation bar component
+ */
 const NavBar = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();

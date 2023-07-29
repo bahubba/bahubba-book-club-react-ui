@@ -9,8 +9,9 @@ import {
 import { Publicity } from '../../interfaces';
 import _ from 'lodash';
 
+// Component props
 interface PublicityInputProps {
-  publicity: string;
+  publicity: Publicity;
   handlePublicityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -24,6 +25,11 @@ const styles = {
   }
 };
 
+/**
+ * Radio button group for selecting the publicity of a book club
+ * @prop {Publicity} publicity - The selected publicity of the book club
+ * @prop {ChangeEvent<HTMLInputElement>} handlePublicityChange - Callback for when the publicity is changed
+ */
 const PublicityInput = ({
   publicity,
   handlePublicityChange

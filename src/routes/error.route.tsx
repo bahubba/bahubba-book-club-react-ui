@@ -11,6 +11,9 @@ const CenteredDiv = styled('div')({
   transform: 'translate(-50%, -50%)'
 });
 
+/**
+ * Error route/page to display when something unexpected happens or the user navigates to a route that doesn't exist
+ */
 const ErrorRoute = () => {
   const routeError = useRouteError();
 

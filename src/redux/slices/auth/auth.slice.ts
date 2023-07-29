@@ -30,8 +30,10 @@ export const authSlice = createSlice({
   }
 });
 
+// Actions
 export const { setCredentials, clearCredentials } = authSlice.actions;
 
+// Selectors
 export const selectAuth = (state: RootState) => state.auth;
 export const selectCurrentUsername = (state: RootState) => state.auth.username;
 export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
