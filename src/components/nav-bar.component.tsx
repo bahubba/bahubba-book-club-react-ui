@@ -1,10 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { logout, selectIsLoggedIn } from '../redux/slices/auth/auth.slice';
-import NotificationsButton from './notifications-button.component';
+import { useLogoutMutation } from '../redux/slices/auth/auth.api.slice';
+import {
+  clearCredentials,
+  selectIsLoggedIn
+} from '../redux/slices/auth/auth.slice';
+import NotificationsButton from './buttons/notifications.button';
 
 // MUI Styled Components
 const AppBarTitleDiv = styled('div')({
@@ -36,13 +40,17 @@ const NavBar = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Logout API call from redux-toolkit
+  const [logout] = useLogoutMutation();
+
   // Redux dispatcher and auth state
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   // Handle logout
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(clearCredentials());
+    logout({});
     navigate('/login');
   };
 

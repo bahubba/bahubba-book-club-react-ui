@@ -8,10 +8,11 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { persistor, store } from './redux/store';
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
-import LoginRoute from './routes/login.route';
-import RegisterRoute from './routes/register.route';
+import LoginRoute from './routes/auth/login.route';
+import RegisterRoute from './routes/auth/register.route';
 import HomeRoute from './routes/home.route';
-import RequireAuthRoute from './routes/require-auth.route';
+import CreateBookClubRoute from './routes/book-club/create-book-club.route';
+import RequireAuthRoute from './routes/auth/require-auth.route';
 
 import './index.css';
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
     element: <RootRoute />,
     errorElement: <ErrorRoute />,
     children: [
+      /* AUTH ROUTES */
       {
         path: 'login',
         element: <LoginRoute />
@@ -51,6 +53,8 @@ const router = createBrowserRouter([
         path: 'register',
         element: <RegisterRoute />
       },
+
+      /* MISC ROUTES */
       {
         path: 'home',
         element: <RequireAuthRoute protectedRoute={<HomeRoute />} />
@@ -58,6 +62,25 @@ const router = createBrowserRouter([
       {
         path: 'notifications',
         element: <RequireAuthRoute protectedRoute={<div>Notifications</div>} />
+      },
+
+      /* BOOK CLUB ROUTES */
+      {
+        path: 'book-club',
+        children: [
+          {
+            path: 'create',
+            element: (
+              <RequireAuthRoute protectedRoute={<CreateBookClubRoute />} />
+            )
+          },
+          {
+            path: ':bookClubName',
+            element: (
+              <RequireAuthRoute protectedRoute={<div>Book Club Home</div>} />
+            )
+          }
+        ]
       }
     ]
   }

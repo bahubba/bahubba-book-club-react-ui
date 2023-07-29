@@ -11,8 +11,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 
-import { setCredentials } from '../redux/slices/auth/auth.slice';
-import { useLoginMutation } from '../redux/slices/auth/auth.api.slice';
+import { setCredentials } from '../../redux/slices/auth/auth.slice';
+import { useLoginMutation } from '../../redux/slices/auth/auth.api.slice';
 
 // MUI emotion styles
 const styles = {

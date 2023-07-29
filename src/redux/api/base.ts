@@ -5,9 +5,9 @@ import {
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 
-import { logout, setCredentials } from '../redux/slices/auth/auth.slice';
-import props from '../properties';
-import { RootState } from '../redux/store';
+import { clearCredentials, setCredentials } from '../slices/auth/auth.slice';
+import props from '../../properties';
+import { RootState } from '../store';
 
 // Base API query
 const baseQuery = fetchBaseQuery({
@@ -16,7 +16,7 @@ const baseQuery = fetchBaseQuery({
 });
 
 // Base API query wrapper with refresh auth logic
-const baseQueryWithRefresh = async (
+export const baseQueryWithRefresh = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
   extraOptions: {}
@@ -49,7 +49,7 @@ const baseQueryWithRefresh = async (
       // Retry the original query with new credentials
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(logout());
+      api.dispatch(clearCredentials());
     }
   }
 
