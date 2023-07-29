@@ -37,6 +37,9 @@ const styles = {
   }
 };
 
+/**
+ * Registration route/page
+ */
 const RegisterRoute = () => {
   // React router nav
   // TODO - Replace with route actions and redirect?

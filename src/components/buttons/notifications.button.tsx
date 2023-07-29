@@ -18,6 +18,9 @@ const styles = {
   }
 };
 
+/**
+ * Button for linking to the notifications page and displaying the number of new notifications
+ */
 const NotificationsButton = () => {
   // Auth state from Redux
   const isLoggedIn = useSelector(selectIsLoggedIn);

@@ -31,6 +31,9 @@ const styles = {
   }
 };
 
+/**
+ * Home route/page displaying the user's clubs, books, and other trending information
+ */
 const HomeRoute = () => {
   return (
     <>

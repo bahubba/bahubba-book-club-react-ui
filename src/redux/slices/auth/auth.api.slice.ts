@@ -3,6 +3,7 @@ import props from '../../../properties';
 
 import { Credentials, Registration } from '../../../interfaces';
 
+// Redux API Slice for Auth endpoints
 const authAPISlice = api.injectEndpoints({
   endpoints: builder => ({
     login: builder.mutation({

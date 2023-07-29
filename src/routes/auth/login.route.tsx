@@ -37,6 +37,9 @@ const styles = {
   }
 };
 
+/**
+ * Login route/page
+ */
 const LoginRoute = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();

@@ -13,6 +13,9 @@ const ContentDiv = styled('div')(({ theme }) => ({
   flexDirection: 'column'
 }));
 
+/**
+ * Parent route for all other routes, navigates to the home route by default
+ */
 const RootRoute = () => {
   // Set the app title
   document.title = process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager';
