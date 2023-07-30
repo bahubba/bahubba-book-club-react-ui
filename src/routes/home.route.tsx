@@ -1,5 +1,9 @@
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import _ from 'lodash';
+
+import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-club.api.slice';
+import BookClubCard from '../components/cards/book-club.card';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -11,10 +15,11 @@ const SectionContainerDiv = styled('div')(({ theme }) => ({
   boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'
 }));
 
-const SectionContentDiv = styled('div')({
+const SectionContentDiv = styled('div')(({ theme }) => ({
   flexGrow: 1,
+  padding: theme.spacing(0.5),
   overflowY: 'auto'
-});
+}));
 
 // MUI emotion styles
 const styles = {
@@ -35,6 +40,9 @@ const styles = {
  * Home route/page displaying the user's clubs, books, and other trending information
  */
 const HomeRoute = () => {
+  // Redux API query for the user's book clubs
+  const { data: bookClubs, isLoading } = useGetBookClubsForReaderQuery();
+
   return (
     <>
       <Typography
@@ -61,42 +69,24 @@ const HomeRoute = () => {
               My Clubs
             </Typography>
             <SectionContentDiv>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
-              <Typography variant="h6">Dummy Spacer Text</Typography>
+              {!isLoading && bookClubs && (
+                <Grid
+                  container
+                  spacing={1}
+                >
+                  {_.map(bookClubs, bookClub => (
+                    <Grid
+                      item
+                      sm={12}
+                      lg={6}
+                      xl={4}
+                      key={bookClub.id}
+                    >
+                      <BookClubCard bookClub={bookClub} />
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
