@@ -11,10 +11,15 @@ const bookClubAPISlice = api.injectEndpoints({
         method: 'POST',
         body: bookClub
       })
+    }),
+    getBookClubsForReader: builder.query<BookClub[], void>({
+      query: () =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
     })
   })
 });
 
-export const { useCreateBookClubMutation } = bookClubAPISlice;
+export const { useCreateBookClubMutation, useGetBookClubsForReaderQuery } =
+  bookClubAPISlice;
 
 export default bookClubAPISlice;
