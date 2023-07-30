@@ -1,13 +1,10 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useLogoutMutation } from '../redux/slices/auth/auth.api.slice';
-import {
-  clearCredentials,
-  selectIsLoggedIn
-} from '../redux/slices/auth/auth.slice';
+import { clearCredentials, selectAuth } from '../redux/slices/auth/auth.slice';
 import NotificationsButton from './buttons/notifications.button';
 
 // MUI Styled Components
@@ -33,6 +30,10 @@ const styles = {
   titleDivLink: {
     color: 'white',
     textDecoration: 'none !important'
+  },
+  welcomeText: {
+    pr: 1,
+    fontStyle: 'italic'
   }
 };
 
@@ -40,6 +41,9 @@ const styles = {
  * Navigation bar component
  */
 const NavBar = () => {
+  // Current location from react-router-dom
+  const location = useLocation();
+
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
@@ -48,7 +52,7 @@ const NavBar = () => {
 
   // Redux dispatcher and auth state
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const auth = useSelector(selectAuth);
 
   // Handle logout
   const handleLogout = () => {
@@ -68,12 +72,12 @@ const NavBar = () => {
         />
         <AppBarTitleDiv>
           <Typography
-            variant="h6"
+            variant="h5"
             sx={styles.titleDivElement}
           >
             {process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager'}
           </Typography>
-          {isLoggedIn ? (
+          {auth.isLoggedIn ? (
             <>
               <Typography
                 sx={[styles.titleDivElement, styles.titleTypographyLink]}
@@ -84,22 +88,35 @@ const NavBar = () => {
             </>
           ) : (
             <>
-              <NavBarLink
-                to="register"
-                sx={[styles.titleDivElement, styles.titleDivLink]}
-              >
-                Register
-              </NavBarLink>
-              <NavBarLink
-                to="login"
-                sx={[styles.titleDivElement, styles.titleDivLink]}
-              >
-                Login
-              </NavBarLink>
+              {location.pathname !== '/register' && (
+                <NavBarLink
+                  to="register"
+                  sx={[styles.titleDivElement, styles.titleDivLink]}
+                >
+                  Register
+                </NavBarLink>
+              )}
+              {location.pathname !== '/login' && (
+                <NavBarLink
+                  to="login"
+                  sx={[styles.titleDivElement, styles.titleDivLink]}
+                >
+                  Login
+                </NavBarLink>
+              )}
             </>
           )}
         </AppBarTitleDiv>
-        {isLoggedIn && <NotificationsButton />}
+        {auth.isLoggedIn && (
+          <>
+            {/* TODO - Replace username with given name */}
+            <Typography
+              variant="h6"
+              sx={styles.welcomeText}
+            >{`Welcome, ${auth.username}`}</Typography>
+            <NotificationsButton />
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );
