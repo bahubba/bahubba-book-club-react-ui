@@ -15,6 +15,8 @@ import CreateBookClubRoute from './routes/book-club/create-book-club.route';
 import RequireAuthRoute from './routes/auth/require-auth.route';
 
 import './index.css';
+import BookClubCard from './components/cards/book-club.card';
+import { Publicity } from './interfaces';
 
 // Initialize the MUI Theme
 const theme = createTheme({
@@ -77,7 +79,19 @@ const router = createBrowserRouter([
           {
             path: ':bookClubName',
             element: (
-              <RequireAuthRoute protectedRoute={<div>Book Club Home</div>} />
+              // DELETEME: This is just a sample BookClubCard
+              <RequireAuthRoute
+                protectedRoute={
+                  <BookClubCard
+                    bookClub={{
+                      name: 'Test Book Club',
+                      description: 'This is a test book club',
+                      publicity: Publicity.PUBLIC,
+                      imageURL: 'https://wordsrated.com/wp-content/uploads/2022/02/Number-of-Books-Published-Per-Year.jpg'
+                    }}
+                  />
+                }
+              />
             )
           }
         ]
