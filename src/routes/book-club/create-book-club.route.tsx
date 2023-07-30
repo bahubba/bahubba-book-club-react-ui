@@ -1,18 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
+import { toast } from 'react-toastify';
 
 import { useCreateBookClubMutation } from '../../redux/slices/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
 import { Publicity } from '../../interfaces';
+import _ from 'lodash';
 
 // MUI emotion styles
 const styles = {
   rootGrid: {
-    justifyContent: 'center'
+    py: 1,
+    height: '100%',
+    overflow: 'auto'
   },
   fullWidthInput: {
     width: '100%'
+  },
+  errMessageContainer: {
+    paddingTop: '0 !important', // Needs important to override grid spacing
+    color: 'red'
   }
 };
 
@@ -29,6 +37,7 @@ const CreateBookClubRoute = () => {
   const [description, setDescription] = useState('');
   const [publicity, setPublicity] = useState<Publicity>(Publicity.PRIVATE);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [nameErrMessage, setNameErrMessage] = useState('');
 
   // Input change handlers
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -55,18 +64,20 @@ const CreateBookClubRoute = () => {
     // Submit the new book club to the API
     try {
       const newBookClub = await createBookClub({
-        name,
+        name: _.trim(name),
         imageURL: image,
-        description,
+        description: _.trim(description),
         publicity
       }).unwrap();
-
-      // TODO - Toast/snackbar message for success
 
       // Clear the form
       setName('');
       setImage('');
       setDescription('');
+
+      toast.success(`New book club ${newBookClub.name} created!`, {
+        position: 'bottom-right'
+      });
 
       // Redirect to the new book club's home page
       navigate(`/book-club/${newBookClub.name}`);
@@ -78,34 +89,51 @@ const CreateBookClubRoute = () => {
 
   // On required input change, check if the form can be submitted
   useEffect(() => {
-    if (name && description) {
+    if (
+      !_.isEmpty(_.trim(name)) &&
+      !_.isEmpty(_.trim(description)) &&
+      !_.isEqual('create', _.trim(_.toLower(name)))
+    ) {
       setCanSubmit(true);
     } else {
       setCanSubmit(false);
     }
   }, [name, description]);
 
+  // Set the name error message if the name is 'create'
+  useEffect(() => {
+    if (_.isEqual('create', _.trim(_.toLower(name)))) {
+      setNameErrMessage(`Name cannot be "${_.trim(name)}"`);
+    } else {
+      setNameErrMessage('');
+    }
+  }, [name]);
+
   return (
     <Grid
       container
+      justifyContent="center"
       sx={styles.rootGrid}
     >
       <Grid
         item
         container
+        direction="column"
         xs={6}
         spacing={2}
       >
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           <Typography variant="h4">Create Book Club</Typography>
         </Grid>
-        <Grid
-          item
-          xs={12}
-        >
+        {!_.isEmpty(nameErrMessage) && (
+          <Grid
+            item
+            sx={styles.errMessageContainer}
+          >
+            <Typography variant="body2">{nameErrMessage}</Typography>
+          </Grid>
+        )}
+        <Grid item>
           <TextField
             id="name"
             variant="outlined"
@@ -117,10 +145,7 @@ const CreateBookClubRoute = () => {
             sx={styles.fullWidthInput}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           {/* TODO - Add image upload functionality */}
           <TextField
             id="image"
@@ -131,10 +156,7 @@ const CreateBookClubRoute = () => {
             sx={styles.fullWidthInput}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           <TextField
             id="description"
             variant="outlined"
@@ -145,19 +167,13 @@ const CreateBookClubRoute = () => {
             sx={styles.fullWidthInput}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           <PublicityInput
             publicity={publicity}
             handlePublicityChange={handlePublicityChange}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-        >
+        <Grid item>
           <Button
             variant="contained"
             color="secondary"

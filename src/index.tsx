@@ -87,7 +87,8 @@ const router = createBrowserRouter([
                       name: 'Test Book Club',
                       description: 'This is a test book club',
                       publicity: Publicity.PUBLIC,
-                      imageURL: 'https://wordsrated.com/wp-content/uploads/2022/02/Number-of-Books-Published-Per-Year.jpg'
+                      imageURL:
+                        'https://wordsrated.com/wp-content/uploads/2022/02/Number-of-Books-Published-Per-Year.jpg'
                     }}
                   />
                 }
