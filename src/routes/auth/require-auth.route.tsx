@@ -17,7 +17,7 @@ const RequireAuthRoute = ({ protectedRoute }: Props) => {
 
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  return isLoggedIn ? (
+  return isLoggedIn || process.env.REACT_APP_ENV === 'dev' ? (
     protectedRoute
   ) : (
     <Navigate
