@@ -38,7 +38,11 @@ interface BookClubCardProps {
  */
 const BookClubCard = ({ bookClub }: BookClubCardProps) => {
   return (
-    <Tooltip title={bookClub.description}>
+    <Tooltip
+      title={bookClub.description}
+      arrow
+      placement="top"
+    >
       <Card sx={styles.card}>
         <CardMedia
           image={
