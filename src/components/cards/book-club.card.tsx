@@ -34,13 +34,17 @@ interface BookClubCardProps {
 /**
  * Card component for displaying a book club with a name, description, and image
  * @param {BookClub} bookClub Book club metadata
+ * TODO - Update default image URL after S3 bucket is setup
  */
 const BookClubCard = ({ bookClub }: BookClubCardProps) => {
   return (
     <Tooltip title={bookClub.description}>
       <Card sx={styles.card}>
         <CardMedia
-          image={bookClub.imageURL}
+          image={
+            bookClub.imageURL ||
+            'https://wordsrated.com/wp-content/uploads/2022/02/Number-of-Books-Published-Per-Year.jpg'
+          }
           sx={styles.cardImage}
         />
         <GutterlessCardContent>

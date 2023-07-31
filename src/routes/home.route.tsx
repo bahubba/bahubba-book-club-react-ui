@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-club.api.slice';
 import BookClubCard from '../components/cards/book-club.card';
+import CreateBookClubButton from '../components/buttons/create-book-club.button';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -20,6 +21,17 @@ const SectionContentDiv = styled('div')(({ theme }) => ({
   padding: theme.spacing(0.5),
   overflowY: 'auto'
 }));
+
+const SectionHeaderDiv = styled('div')({
+  display: 'flex',
+  alignItems: 'center'
+});
+
+const SectionHeaderButtonDiv = styled('div')({
+  flexGrow: 1,
+  display: 'flex',
+  justifyContent: 'flex-end'
+});
 
 // MUI emotion styles
 const styles = {
@@ -62,12 +74,17 @@ const HomeRoute = () => {
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <Typography
-              component="div"
-              variant="h5"
-            >
-              My Clubs
-            </Typography>
+            <SectionHeaderDiv>
+              <Typography
+                component="div"
+                variant="h5"
+              >
+                My Clubs
+              </Typography>
+              <SectionHeaderButtonDiv>
+                <CreateBookClubButton />
+              </SectionHeaderButtonDiv>
+            </SectionHeaderDiv>
             <SectionContentDiv>
               {!isLoading && bookClubs && (
                 <Grid
