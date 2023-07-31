@@ -14,6 +14,11 @@ const AppBarTitleDiv = styled('div')({
   alignItems: 'center'
 });
 
+const TitleLink = styled(Link)({
+  textDecoration: 'none',
+  color: 'secondary.main'
+});
+
 const NavBarLink = styled(Link)({
   textDecoration: 'none'
 });
@@ -21,7 +26,8 @@ const NavBarLink = styled(Link)({
 // MUI emotion styles
 const styles = {
   titleDivElement: {
-    px: 1
+    px: 1,
+    color: 'secondary.light'
   },
   titleTypographyLink: {
     cursor: 'pointer',
@@ -64,19 +70,23 @@ const NavBar = () => {
   return (
     <AppBar position="fixed">
       <Toolbar variant="dense">
-        <img
-          src="/favicon/favicon.ico"
-          alt=""
-          height="30"
-          width="30"
-        />
+        <Link to="/home">
+          <img
+            src="/favicon/favicon.ico"
+            alt=""
+            height="30"
+            width="30"
+          />
+        </Link>
         <AppBarTitleDiv>
-          <Typography
-            variant="h5"
-            sx={styles.titleDivElement}
-          >
-            {process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager'}
-          </Typography>
+          <TitleLink to="/home">
+            <Typography
+              variant="h5"
+              sx={styles.titleDivElement}
+            >
+              {process.env.REACT_APP_TITLE || 'BAHubba Book Club Manager'}
+            </Typography>
+          </TitleLink>
           {auth.isLoggedIn ? (
             <>
               <Typography
