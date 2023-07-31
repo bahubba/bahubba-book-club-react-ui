@@ -36,6 +36,15 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'RobotoSlab'
+  },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: '1.25rem'
+        }
+      }
+    }
   }
 });
 
