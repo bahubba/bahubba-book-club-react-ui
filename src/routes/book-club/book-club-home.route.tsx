@@ -1,10 +1,6 @@
+import { useParams } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import _ from 'lodash';
-
-import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-club.api.slice';
-import BookClubCard from '../components/cards/book-club.card';
-import CreateBookClubButton from '../components/buttons/create-book-club.button';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -27,12 +23,6 @@ const SectionHeaderDiv = styled('div')({
   alignItems: 'center'
 });
 
-const SectionHeaderButtonDiv = styled('div')({
-  flexGrow: 1,
-  display: 'flex',
-  justifyContent: 'flex-end'
-});
-
 // MUI emotion styles
 const styles = {
   rootGrid: {
@@ -50,11 +40,11 @@ const styles = {
 };
 
 /**
- * Home route/page displaying the user's clubs, books, and other trending information
+ * Home route/page for a given book club, displaying the club's readers, books, and discussions
  */
-const HomeRoute = () => {
-  // Redux API query for the user's book clubs
-  const { data: bookClubs, isLoading } = useGetBookClubsForReaderQuery();
+const BookClubHomeRoute = () => {
+  // Book club name from the route params
+  const { bookClubName } = useParams();
 
   return (
     <>
@@ -62,7 +52,7 @@ const HomeRoute = () => {
         component="div"
         variant="h4"
       >
-        Home
+        {bookClubName}
       </Typography>
       <Grid
         container
@@ -80,65 +70,53 @@ const HomeRoute = () => {
                 component="div"
                 variant="h5"
               >
-                My Clubs
+                Readers
               </Typography>
-              <SectionHeaderButtonDiv>
-                <CreateBookClubButton />
-              </SectionHeaderButtonDiv>
             </SectionHeaderDiv>
             <SectionContentDiv>
-              {!isLoading && bookClubs && (
-                <Grid
-                  container
-                  spacing={1}
-                >
-                  {_.map(bookClubs, bookClub => (
-                    <Grid
-                      item
-                      sm={12}
-                      lg={6}
-                      xl={4}
-                      key={bookClub.id}
-                    >
-                      <BookClubCard bookClub={bookClub} />
-                    </Grid>
-                  ))}
-                </Grid>
-              )}
+              <Typography variant="h6">
+                Books the club readers go here
+              </Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
         <Grid
-          item
           xs={4}
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <Typography
-              component="div"
-              variant="h5"
-            >
-              My Books
-            </Typography>
+            <SectionHeaderDiv>
+              <Typography
+                component="div"
+                variant="h5"
+              >
+                Books
+              </Typography>
+            </SectionHeaderDiv>
             <SectionContentDiv>
-              <Typography variant="h6">Books you've read go here</Typography>
+              <Typography variant="h6">
+                Books the club has read go here
+              </Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
         <Grid
-          item
           xs={4}
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <Typography
-              component="div"
-              variant="h5"
-            >
-              Trending
-            </Typography>
+            <SectionHeaderDiv>
+              <Typography
+                component="div"
+                variant="h5"
+              >
+                Discussions
+              </Typography>
+            </SectionHeaderDiv>
             <SectionContentDiv>
-              <Typography variant="h6">Trending info goes here</Typography>
+              <Typography variant="h6">
+                Book club discussions go here
+              </Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
@@ -147,4 +125,4 @@ const HomeRoute = () => {
   );
 };
 
-export default HomeRoute;
+export default BookClubHomeRoute;
