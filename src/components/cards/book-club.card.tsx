@@ -35,7 +35,7 @@ interface BookClubCardProps {
 
 /**
  * Card component for displaying a book club with a name, description, and image
- * @param {BookClub} bookClub Book club metadata
+ * @prop {BookClub} bookClub Book club metadata
  * TODO - Update default image URL after S3 bucket is setup
  */
 const BookClubCard = ({ bookClub }: BookClubCardProps) => {

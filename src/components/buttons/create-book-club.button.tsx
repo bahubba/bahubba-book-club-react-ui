@@ -9,7 +9,7 @@ const styles = {
     color: 'primary.dark',
     backgroundColor: 'secondary.main',
     '&:hover': {
-      backgroundColor: 'secondary.main'
+      backgroundColor: 'secondary.dark'
     }
   }
 };
@@ -17,7 +17,10 @@ const styles = {
 const CreateBookClubButton = () => {
   return (
     <Link to="/book-club/create">
-      <Tooltip title="Create book club">
+      <Tooltip
+        title="Create book club"
+        placement="top"
+      >
         <IconButton
           sx={styles.button}
           size="small"
