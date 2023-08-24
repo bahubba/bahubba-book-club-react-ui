@@ -3,6 +3,8 @@ import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 
 import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-club.api.slice';
+
+import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';
 import CreateBookClubButton from '../components/buttons/create-book-club.button';
 
@@ -21,17 +23,6 @@ const SectionContentDiv = styled('div')(({ theme }) => ({
   padding: theme.spacing(0.5),
   overflowY: 'auto'
 }));
-
-const SectionHeaderDiv = styled('div')({
-  display: 'flex',
-  alignItems: 'center'
-});
-
-const SectionHeaderButtonDiv = styled('div')({
-  flexGrow: 1,
-  display: 'flex',
-  justifyContent: 'flex-end'
-});
 
 // MUI emotion styles
 const styles = {
@@ -75,17 +66,9 @@ const HomeRoute = () => {
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <SectionHeaderDiv>
-              <Typography
-                component="div"
-                variant="h5"
-              >
-                My Clubs
-              </Typography>
-              <SectionHeaderButtonDiv>
-                <CreateBookClubButton />
-              </SectionHeaderButtonDiv>
-            </SectionHeaderDiv>
+            <SectionHeader title="My Clubs">
+              <CreateBookClubButton />
+            </SectionHeader>
             <SectionContentDiv>
               {!isLoading && bookClubs && (
                 <Grid
@@ -114,12 +97,7 @@ const HomeRoute = () => {
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <Typography
-              component="div"
-              variant="h5"
-            >
-              My Books
-            </Typography>
+            <SectionHeader title="My Books" />
             <SectionContentDiv>
               <Typography variant="h6">Books you've read go here</Typography>
             </SectionContentDiv>
@@ -131,12 +109,7 @@ const HomeRoute = () => {
           sx={styles.sectionGrid}
         >
           <SectionContainerDiv>
-            <Typography
-              component="div"
-              variant="h5"
-            >
-              Trending
-            </Typography>
+            <SectionHeader title="Trending" />
             <SectionContentDiv>
               <Typography variant="h6">Trending info goes here</Typography>
             </SectionContentDiv>

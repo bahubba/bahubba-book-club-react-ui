@@ -28,8 +28,8 @@ const theme = createTheme({
     },
     secondary: {
       light: '#fec57b',
-      main: '#ce7e24',
-      dark: '#774300',
+      main: '#e6a250', //'#ce7e24',
+      dark: '#ce7e24', //'#774300',
       contrastText: '#000'
     }
   },
@@ -40,7 +40,7 @@ const theme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          fontSize: '1.25rem'
+          fontSize: '1rem'
         }
       }
     }
