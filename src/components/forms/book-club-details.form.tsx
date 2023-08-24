@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import _ from 'lodash';
 
 import { useCreateBookClubMutation } from '../../redux/slices/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
-import { Publicity } from '../../interfaces';
-import _ from 'lodash';
+import { BookClub, Publicity } from '../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -24,20 +24,35 @@ const styles = {
   }
 };
 
+// Component props
+interface BookClubDetailsFormProps {
+  bookClub?: BookClub;
+}
+
 /**
- * Page/route for creating a new book club
+ * Form for creating a new book club or updating an existing one
  */
-const CreateBookClubRoute = () => {
+const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
+  /* HOOKS */
+
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Create book club API hook from redux-toolkit
+  // TODO - Use isLoading to show a spinner
+  const [createBookClub, { isLoading }] = useCreateBookClubMutation();
+
   // State vars
-  const [name, setName] = useState('');
-  const [image, setImage] = useState(''); // TODO: Change to File type
-  const [description, setDescription] = useState('');
-  const [publicity, setPublicity] = useState<Publicity>(Publicity.PRIVATE);
+  const [name, setName] = useState(bookClub?.name || '');
+  const [image, setImage] = useState(bookClub?.imageURL || ''); // TODO: Change to File type
+  const [description, setDescription] = useState(bookClub?.description || '');
+  const [publicity, setPublicity] = useState<Publicity>(
+    bookClub?.publicity || Publicity.PRIVATE
+  );
   const [canSubmit, setCanSubmit] = useState(false);
   const [nameErrMessage, setNameErrMessage] = useState('');
+
+  /* HANDLERS */
 
   // Input change handlers
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -53,12 +68,8 @@ const CreateBookClubRoute = () => {
   const handlePublicityChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPublicity(event.target.value as Publicity);
 
-  // Create book club API call from redux-toolkit
-  // TODO - Use isLoading to show a spinner
-  const [createBookClub, { isLoading }] = useCreateBookClubMutation();
-
-  // Submit handler
-  const handleSubmit = async () => {
+  // Create book club handler
+  const handleCreateBookClub = async () => {
     // TODO - Persist the image to S3 and get the URL back
 
     // Submit the new book club to the API
@@ -87,6 +98,9 @@ const CreateBookClubRoute = () => {
     }
   };
 
+  // Update book club handler
+  const handleUpdateBookClub = async () => {};
+
   // On required input change, check if the form can be submitted
   useEffect(() => {
     if (
@@ -94,11 +108,20 @@ const CreateBookClubRoute = () => {
       !_.isEmpty(_.trim(description)) &&
       !_.isEqual('create', _.trim(_.toLower(name)))
     ) {
-      setCanSubmit(true);
+      if (bookClub) {
+        setCanSubmit(
+          !_.isEqual(_.trim(name), bookClub.name) ||
+            !_.isEqual(_.trim(description), bookClub.description) ||
+            !_.isEqual(_.trim(image), bookClub.imageURL) ||
+            !_.isEqual(publicity, bookClub.publicity)
+        );
+      } else {
+        setCanSubmit(true);
+      }
     } else {
       setCanSubmit(false);
     }
-  }, [name, description]);
+  }, [bookClub, name, description, image, publicity]);
 
   // Set the name error message if the name is 'create'
   useEffect(() => {
@@ -123,7 +146,9 @@ const CreateBookClubRoute = () => {
         spacing={2}
       >
         <Grid item>
-          <Typography variant="h4">Create Book Club</Typography>
+          <Typography variant="h4">
+            {`${bookClub ? 'Update' : 'Create'} Book Club`}
+          </Typography>
         </Grid>
         {!_.isEmpty(nameErrMessage) && (
           <Grid
@@ -177,10 +202,10 @@ const CreateBookClubRoute = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={handleSubmit}
+            onClick={bookClub ? handleUpdateBookClub : handleCreateBookClub}
             disabled={!canSubmit || isLoading}
           >
-            Create Book Club
+            {`${bookClub ? 'Update' : 'Create'} Book Club`}
           </Button>
         </Grid>
       </Grid>
@@ -188,4 +213,4 @@ const CreateBookClubRoute = () => {
   );
 };
 
-export default CreateBookClubRoute;
+export default BookClubDetailsForm;
