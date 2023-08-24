@@ -87,6 +87,10 @@ const router = createBrowserRouter([
           {
             path: ':bookClubName',
             element: <RequireAuthRoute protectedRoute={<BookClubHomeRoute />} />
+          },
+          {
+            path: ':bookClubName/admin',
+            element: <RequireAuthRoute protectedRoute={<div>Admin</div>} />
           }
         ]
       }
