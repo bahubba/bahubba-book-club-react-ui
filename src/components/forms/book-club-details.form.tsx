@@ -6,7 +6,8 @@ import _ from 'lodash';
 
 import {
   useCreateBookClubMutation,
-  useLazyGetBookClubByNameQuery
+  useLazyGetBookClubByNameQuery,
+  useUpdateBookClubMutation
 } from '../../redux/slices/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
 import { BookClub, Publicity } from '../../interfaces';
@@ -59,6 +60,11 @@ const BookClubDetailsForm = ({
   const [createBookClub, { isLoading: createBookClubLoading }] =
     useCreateBookClubMutation();
 
+  // Update book club API hook from redux-toolkit
+  // TODO - Use isLoading to show a spinner
+  const [updateBookClub, { isLoading: updateBookClubLoading }] =
+    useUpdateBookClubMutation();
+
   // State vars
   const [name, setName] = useState('');
   const [image, setImage] = useState(''); // TODO: Change to File type
@@ -101,6 +107,7 @@ const BookClubDetailsForm = ({
       setImage('');
       setDescription('');
 
+      // Notify the user that the book club creation was successful
       toast.success(`New book club ${newBookClub.name} created!`, {
         position: 'bottom-right'
       });
@@ -114,7 +121,31 @@ const BookClubDetailsForm = ({
   };
 
   // Update book club handler
-  const handleUpdateBookClub = async () => {};
+  const handleUpdateBookClub = async () => {
+    // TODO - Persist the image to S3 and get the URL back
+
+    // Submit the updated book club to the API
+    try {
+      const updatedBookClub = await updateBookClub({
+        id: bookClub?.id,
+        name: _.trim(name),
+        imageURL: image,
+        description: _.trim(description),
+        publicity
+      } as BookClub).unwrap();
+
+      // Notify the user that the book club update was successful
+      toast.success(`Book club ${updatedBookClub.name} updated!`, {
+        position: 'bottom-right'
+      });
+
+      // Redirect to the updated book club's admin page
+      navigate(`/book-club/${updatedBookClub.name}/admin/details`);
+    } catch (err) {
+      // TODO - Toast/snackbar message for error
+      console.log(err);
+    }
+  };
 
   /* LISTENERS */
 
