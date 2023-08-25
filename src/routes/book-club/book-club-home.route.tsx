@@ -78,13 +78,12 @@ const BookClubHomeRoute = () => {
               </Typography>
             </SectionHeaderDiv>
             <SectionContentDiv>
-              <Typography variant="h6">
-                Books the club readers go here
-              </Typography>
+              <Typography variant="h6">The club's readers go here</Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
         <Grid
+          item
           xs={4}
           sx={styles.sectionGrid}
         >
@@ -105,6 +104,7 @@ const BookClubHomeRoute = () => {
           </SectionContainerDiv>
         </Grid>
         <Grid
+          item
           xs={4}
           sx={styles.sectionGrid}
         >

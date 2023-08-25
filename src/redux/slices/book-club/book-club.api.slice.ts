@@ -7,24 +7,29 @@ const bookClubAPISlice = api.injectEndpoints({
   endpoints: builder => ({
     createBookClub: builder.mutation<BookClub, BookClub>({
       query: bookClub => ({
-        url: `${ props.API_PATHS.BOOK_CLUBS }${ props.API_PATHS.CREATE }`,
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.CREATE}`,
         method: 'POST',
         body: bookClub
       })
     }),
     getBookClubByName: builder.query<BookClub, string>({
       query: bookClub => ({
-        url: `${ props.API_PATHS.BOOK_CLUBS }${ props.API_PATHS.BOOK_CLUB_BY_NAME }/${ bookClub }`,
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUB_BY_NAME}/${bookClub}`
       })
     }),
     getBookClubsForReader: builder.query<BookClub[], void>({
       query: () =>
-        `${ props.API_PATHS.BOOK_CLUBS }${ props.API_PATHS.BOOK_CLUBS_FOR_READER }`
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
     })
   })
 });
 
-export const { useCreateBookClubMutation, useGetBookClubByNameQuery, useGetBookClubsForReaderQuery } =
-  bookClubAPISlice;
+export const {
+  useCreateBookClubMutation,
+  useGetBookClubByNameQuery,
+  useLazyGetBookClubByNameQuery,
+  useGetBookClubsForReaderQuery,
+  useLazyGetBookClubsForReaderQuery
+} = bookClubAPISlice;
 
 export default bookClubAPISlice;

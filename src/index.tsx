@@ -102,7 +102,14 @@ const router = createBrowserRouter([
               {
                 path: 'details',
                 element: (
-                  <RequireAuthRoute protectedRoute={<BookClubDetailsForm />} />
+                  <RequireAuthRoute
+                    protectedRoute={
+                      <BookClubDetailsForm
+                        updateExisting
+                        gridXS={10}
+                      />
+                    }
+                  />
                 )
               },
               {
