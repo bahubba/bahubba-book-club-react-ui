@@ -14,7 +14,6 @@ import HomeRoute from './routes/home.route';
 import RequireAuthRoute from './routes/auth/require-auth.route';
 import BookClubHomeRoute from './routes/book-club/book-club-home.route';
 import BookClubAdminRoute from './routes/book-club/admin/book-club-admin.route';
-import BookClubAdminDetailsRoute from './routes/book-club/admin/book-club-admin-details.route';
 import BookClubAdminMembersRoute from './routes/book-club/admin/book-club-admin-members.route';
 import BookClubAdminMembershipRequestsRoute from './routes/book-club/admin/bool-club-admin-membership-requests.route';
 import BookClubAdminPreferencesRoute from './routes/book-club/admin/book-club-admin-preferences.route';
