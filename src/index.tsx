@@ -1,19 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material';
+import { persistor, store } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import { persistor, store } from './redux/store';
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
 import LoginRoute from './routes/auth/login.route';
 import RegisterRoute from './routes/auth/register.route';
 import HomeRoute from './routes/home.route';
-import CreateBookClubRoute from './routes/book-club/create-book-club.route';
 import RequireAuthRoute from './routes/auth/require-auth.route';
 import BookClubHomeRoute from './routes/book-club/book-club-home.route';
+import BookClubAdminRoute from './routes/book-club/admin/book-club-admin.route';
+import BookClubAdminMembersRoute from './routes/book-club/admin/book-club-admin-members.route';
+import BookClubAdminMembershipRequestsRoute from './routes/book-club/admin/bool-club-admin-membership-requests.route';
+import BookClubAdminPreferencesRoute from './routes/book-club/admin/book-club-admin-preferences.route';
+import BookClubDetailsForm from './components/forms/book-club-details.form';
 
 import './index.css';
 
@@ -81,12 +85,57 @@ const router = createBrowserRouter([
           {
             path: 'create',
             element: (
-              <RequireAuthRoute protectedRoute={<CreateBookClubRoute />} />
+              <RequireAuthRoute protectedRoute={<BookClubDetailsForm />} />
             )
           },
           {
             path: ':bookClubName',
             element: <RequireAuthRoute protectedRoute={<BookClubHomeRoute />} />
+          },
+          {
+            path: ':bookClubName/admin',
+            element: (
+              <RequireAuthRoute protectedRoute={<BookClubAdminRoute />} />
+            ),
+            children: [
+              {
+                path: 'details',
+                element: (
+                  <RequireAuthRoute
+                    protectedRoute={
+                      <BookClubDetailsForm
+                        updateExisting
+                        gridXS={10}
+                      />
+                    }
+                  />
+                )
+              },
+              {
+                path: 'members',
+                element: (
+                  <RequireAuthRoute
+                    protectedRoute={<BookClubAdminMembersRoute />}
+                  />
+                )
+              },
+              {
+                path: 'membership-requests',
+                element: (
+                  <RequireAuthRoute
+                    protectedRoute={<BookClubAdminMembershipRequestsRoute />}
+                  />
+                )
+              },
+              {
+                path: 'preferences',
+                element: (
+                  <RequireAuthRoute
+                    protectedRoute={<BookClubAdminPreferencesRoute />}
+                  />
+                )
+              }
+            ]
           }
         ]
       }

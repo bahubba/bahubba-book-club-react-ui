@@ -65,7 +65,7 @@ const BookClubCard = ({ bookClub }: BookClubCardProps) => {
         <GutterlessCardContent>
           <Typography
             gutterBottom
-            variant="h5"
+            variant="h6"
             component="div"
           >
             {bookClub.name}

@@ -15,7 +15,9 @@ const props: Props = {
     LOGOUT: '/logout',
     BOOK_CLUBS: '/v1/book-clubs',
     CREATE: '/create',
-    BOOK_CLUBS_FOR_READER: '/all-for-reader'
+    UPDATE: '/update',
+    BOOK_CLUBS_FOR_READER: '/all-for-reader',
+    BOOK_CLUB_BY_NAME: '/by-name'
   },
   REACTIVE_API_PATHS: {
     ROOT_URL:

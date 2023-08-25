@@ -2,6 +2,9 @@ import { useParams } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import SectionHeader from '../../components/layout/section-header.component';
+import BookClubAdminButton from '../../components/buttons/book-club-admin.button';
+
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
   height: '100%',
@@ -48,12 +51,13 @@ const BookClubHomeRoute = () => {
 
   return (
     <>
-      <Typography
-        component="div"
-        variant="h4"
+      <SectionHeader
+        title={bookClubName || 'Book Club'}
+        typographyVariant="h4"
+        justifyChildren="flex-start"
       >
-        {bookClubName}
-      </Typography>
+        <BookClubAdminButton bookClubName={bookClubName || 'Book Club'} />
+      </SectionHeader>
       <Grid
         container
         spacing={1}
@@ -74,13 +78,12 @@ const BookClubHomeRoute = () => {
               </Typography>
             </SectionHeaderDiv>
             <SectionContentDiv>
-              <Typography variant="h6">
-                Books the club readers go here
-              </Typography>
+              <Typography variant="h6">The club's readers go here</Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>
         <Grid
+          item
           xs={4}
           sx={styles.sectionGrid}
         >
@@ -101,6 +104,7 @@ const BookClubHomeRoute = () => {
           </SectionContainerDiv>
         </Grid>
         <Grid
+          item
           xs={4}
           sx={styles.sectionGrid}
         >
