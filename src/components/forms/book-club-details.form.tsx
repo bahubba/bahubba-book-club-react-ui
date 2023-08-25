@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import { useCreateBookClubMutation } from '../../redux/slices/book-club/book-club.api.slice';
+import { useCreateBookClubMutation, useGetBookClubByNameQuery } from '../../redux/slices/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
 import { BookClub, Publicity } from '../../interfaces';
 
@@ -26,21 +26,27 @@ const styles = {
 
 // Component props
 interface BookClubDetailsFormProps {
-  bookClub?: BookClub;
+  updateExisting?: boolean;
 }
 
 /**
  * Form for creating a new book club or updating an existing one
  */
-const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
+const BookClubDetailsForm = ({ updateExisting = false }: BookClubDetailsFormProps) => {
   /* HOOKS */
+
+  // Book club name from the route params
+  const { bookClubName } = useParams();
 
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Redux API query for an existing book club
+  const { data: bookClub } = useGetBookClubByNameQuery(bookClubName || '');
+
   // Create book club API hook from redux-toolkit
   // TODO - Use isLoading to show a spinner
-  const [createBookClub, { isLoading }] = useCreateBookClubMutation();
+  const [createBookClub, { isLoading: createBookClubLoading }] = useCreateBookClubMutation();
 
   // State vars
   const [name, setName] = useState(bookClub?.name || '');
@@ -79,19 +85,19 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
         imageURL: image,
         description: _.trim(description),
         publicity
-      }).unwrap();
+      } as BookClub).unwrap();
 
       // Clear the form
       setName('');
       setImage('');
       setDescription('');
 
-      toast.success(`New book club ${newBookClub.name} created!`, {
+      toast.success(`New book club ${ newBookClub.name } created!`, {
         position: 'bottom-right'
       });
 
       // Redirect to the new book club's home page
-      navigate(`/book-club/${newBookClub.name}`);
+      navigate(`/book-club/${ newBookClub.name }`);
     } catch (err) {
       // TODO - Toast/snackbar message for error
       console.log(err);
@@ -99,7 +105,7 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
   };
 
   // Update book club handler
-  const handleUpdateBookClub = async () => {};
+  const handleUpdateBookClub = async () => { };
 
   // On required input change, check if the form can be submitted
   useEffect(() => {
@@ -111,9 +117,9 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
       if (bookClub) {
         setCanSubmit(
           !_.isEqual(_.trim(name), bookClub.name) ||
-            !_.isEqual(_.trim(description), bookClub.description) ||
-            !_.isEqual(_.trim(image), bookClub.imageURL) ||
-            !_.isEqual(publicity, bookClub.publicity)
+          !_.isEqual(_.trim(description), bookClub.description) ||
+          !_.isEqual(_.trim(image), bookClub.imageURL) ||
+          !_.isEqual(publicity, bookClub.publicity)
         );
       } else {
         setCanSubmit(true);
@@ -126,7 +132,7 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
   // Set the name error message if the name is 'create'
   useEffect(() => {
     if (_.isEqual('create', _.trim(_.toLower(name)))) {
-      setNameErrMessage(`Name cannot be "${_.trim(name)}"`);
+      setNameErrMessage(`Name cannot be "${ _.trim(name) }"`);
     } else {
       setNameErrMessage('');
     }
@@ -147,7 +153,7 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
       >
         <Grid item>
           <Typography variant="h4">
-            {`${bookClub ? 'Update' : 'Create'} Book Club`}
+            {`${ updateExisting ? 'Update' : 'Create' } Book Club`}
           </Typography>
         </Grid>
         {!_.isEmpty(nameErrMessage) && (
@@ -202,10 +208,10 @@ const BookClubDetailsForm = ({ bookClub }: BookClubDetailsFormProps) => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={bookClub ? handleUpdateBookClub : handleCreateBookClub}
-            disabled={!canSubmit || isLoading}
+            onClick={updateExisting ? handleUpdateBookClub : handleCreateBookClub}
+            disabled={!canSubmit || createBookClubLoading}
           >
-            {`${bookClub ? 'Update' : 'Create'} Book Club`}
+            {`${ updateExisting ? 'Update' : 'Create' } Book Club`}
           </Button>
         </Grid>
       </Grid>
