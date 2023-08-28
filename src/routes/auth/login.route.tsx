@@ -65,6 +65,11 @@ const LoginRoute = () => {
   const handlePasswordInput = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(event.target.value);
 
+  // Handle submitting the form on enter keypress
+  const handleKeydownSubmit = (event: React.KeyboardEvent) => {
+    if (_.isEqual('Enter', event.key)) handleSubmit();
+  };
+
   // Handle submitting the login form
   const handleSubmit = async () => {
     try {
@@ -133,6 +138,7 @@ const LoginRoute = () => {
               label="Username"
               value={usernameOrEmail}
               onChange={handleUsernameInput}
+              onKeyDown={handleKeydownSubmit}
               sx={styles.fullWidthInput}
             />
           </Grid>
@@ -145,6 +151,7 @@ const LoginRoute = () => {
               label="Password"
               value={password}
               onChange={handlePasswordInput}
+              onKeyDown={handleKeydownSubmit}
               sx={styles.fullWidthInput}
             />
           </Grid>

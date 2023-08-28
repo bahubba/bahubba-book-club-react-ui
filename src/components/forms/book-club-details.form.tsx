@@ -89,6 +89,13 @@ const BookClubDetailsForm = ({
   const handlePublicityChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setPublicity(event.target.value as Publicity);
 
+  // Handle submitting the form on enter keypress
+  const handleKeydownSubmit = (event: React.KeyboardEvent) => {
+    if (canSubmit && _.isEqual('Enter', event.key)) {
+      updateExisting ? handleUpdateBookClub() : handleCreateBookClub();
+    }
+  };
+
   // Create book club handler
   const handleCreateBookClub = async () => {
     // TODO - Persist the image to S3 and get the URL back
@@ -231,6 +238,7 @@ const BookClubDetailsForm = ({
             helperText="Must be unique"
             value={name}
             onChange={handleNameChange}
+            onKeyDown={handleKeydownSubmit}
             required
             sx={styles.fullWidthInput}
           />
@@ -243,6 +251,7 @@ const BookClubDetailsForm = ({
             label="Image"
             value={image}
             onChange={handleImageChange}
+            onKeyDown={handleKeydownSubmit}
             sx={styles.fullWidthInput}
           />
         </Grid>
@@ -253,6 +262,7 @@ const BookClubDetailsForm = ({
             label="Description"
             value={description}
             onChange={handleDescriptionChange}
+            onKeyDown={handleKeydownSubmit}
             required
             sx={styles.fullWidthInput}
           />
@@ -270,7 +280,9 @@ const BookClubDetailsForm = ({
             onClick={
               updateExisting ? handleUpdateBookClub : handleCreateBookClub
             }
-            disabled={!canSubmit || createBookClubLoading}
+            disabled={
+              !canSubmit || createBookClubLoading || updateBookClubLoading
+            }
           >
             {`${updateExisting ? 'Update' : 'Create'} Book Club`}
           </Button>

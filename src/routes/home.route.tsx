@@ -7,6 +7,7 @@ import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-cl
 import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';
 import CreateBookClubButton from '../components/buttons/create-book-club.button';
+import BookClubSearchButton from '../components/buttons/book-club-search.button';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -67,6 +68,7 @@ const HomeRoute = () => {
         >
           <SectionContainerDiv>
             <SectionHeader title="My Clubs">
+              <BookClubSearchButton />
               <CreateBookClubButton />
             </SectionHeader>
             <SectionContentDiv>

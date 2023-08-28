@@ -1,0 +1,125 @@
+import { useState } from 'react';
+import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
+import _ from 'lodash';
+
+import { useLazySearchQuery } from '../../redux/slices/book-club/book-club.api.slice';
+import BookClubCard from '../../components/cards/book-club.card';
+
+// MUI emotion styles
+const styles = {
+  rootGrid: {
+    py: 1,
+    maxHeight: '100%',
+    overflow: 'auto'
+  },
+  fullWidthInput: {
+    width: '100%'
+  },
+  errMessageContainer: {
+    paddingTop: '0 !important', // Needs important to override grid spacing
+    color: 'red'
+  }
+};
+
+const BookClubSearchRoute = () => {
+  // Redux API query for searching for book clubs
+  const [trigger, { data: bookClubs }] = useLazySearchQuery();
+
+  // Component state
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Handle updating the search term
+  const handleSearchTermInput = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(event.target.value);
+
+  // Handle submitting the form on enter keypress
+  const handleKeydownSubmit = (event: React.KeyboardEvent) => {
+    if (_.isEqual('Enter', event.key) && !_.isEmpty(searchTerm)) handleSubmit();
+  };
+
+  // Handle submitting the search form
+  const handleSubmit = async () => {
+    if (!_.isEmpty(searchTerm)) {
+      trigger(searchTerm);
+    }
+  };
+
+  return (
+    <>
+      <Typography
+        component="div"
+        variant="h4"
+      >
+        Book Club Search
+      </Typography>
+      <Grid
+        container
+        justifyContent="center"
+        sx={styles.rootGrid}
+      >
+        <Grid
+          item
+          container
+          spacing={1}
+          sm={10}
+          lg={8}
+          xl={6}
+          justifyContent="center"
+          alignItems="flex-start"
+        >
+          <Grid
+            item
+            xs={11}
+            alignItems="center"
+          >
+            <TextField
+              id="search-term"
+              variant="outlined"
+              size="small"
+              label="Search"
+              value={searchTerm}
+              onChange={handleSearchTermInput}
+              required
+              sx={styles.fullWidthInput}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={1}
+            alignItems="center"
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleSubmit}
+              disabled={_.isEmpty(searchTerm)}
+            >
+              Search
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+          >
+            <Divider />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+          >
+            {bookClubs &&
+              !_.isEmpty(bookClubs) &&
+              _.map(bookClubs, bookClub => (
+                <BookClubCard
+                  key={bookClub.id}
+                  bookClub={bookClub}
+                />
+              ))}
+          </Grid>
+        </Grid>
+      </Grid>
+    </>
+  );
+};
+
+export default BookClubSearchRoute;
