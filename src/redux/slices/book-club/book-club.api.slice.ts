@@ -32,7 +32,7 @@ const bookClubAPISlice = api.injectEndpoints({
       query: searchTerm => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
         method: 'POST',
-        body: searchTerm
+        body: { searchTerm, page: 0, size: 10 }
       })
     })
   })
