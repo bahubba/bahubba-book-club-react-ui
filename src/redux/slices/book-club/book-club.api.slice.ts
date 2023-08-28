@@ -27,6 +27,13 @@ const bookClubAPISlice = api.injectEndpoints({
     getBookClubsForReader: builder.query<BookClub[], void>({
       query: () =>
         `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
+    }),
+    search: builder.query<BookClub[], string>({
+      query: searchTerm => ({
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
+        method: 'POST',
+        body: { searchTerm, page: 0, size: 10 }
+      })
     })
   })
 });
@@ -37,7 +44,9 @@ export const {
   useGetBookClubByNameQuery,
   useLazyGetBookClubByNameQuery,
   useGetBookClubsForReaderQuery,
-  useLazyGetBookClubsForReaderQuery
+  useLazyGetBookClubsForReaderQuery,
+  useSearchQuery,
+  useLazySearchQuery
 } = bookClubAPISlice;
 
 export default bookClubAPISlice;

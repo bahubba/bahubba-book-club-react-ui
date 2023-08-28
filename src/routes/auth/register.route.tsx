@@ -85,6 +85,11 @@ const RegisterRoute = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setConfirmPassword(event.target.value);
 
+  // Handle submitting the form on enter keypress
+  const handleKeydownSubmit = (event: React.KeyboardEvent) => {
+    if (canSubmit && _.isEqual('Enter', event.key)) handleSubmit();
+  };
+
   // Submit handler
   const handleSubmit = async () => {
     try {
@@ -186,6 +191,7 @@ const RegisterRoute = () => {
               helperText="Must be unique"
               value={username}
               onChange={handleUsernameInput}
+              onKeyDown={handleKeydownSubmit}
               required
               sx={styles.fullWidthInput}
             />
@@ -199,6 +205,7 @@ const RegisterRoute = () => {
               helperText="Must be unique"
               value={email}
               onChange={handleEmailInput}
+              onKeyDown={handleKeydownSubmit}
               required
               sx={styles.fullWidthInput}
             />
@@ -211,6 +218,7 @@ const RegisterRoute = () => {
               label="First Name"
               value={givenName}
               onChange={handleGivenNameInput}
+              onKeyDown={handleKeydownSubmit}
               sx={styles.fullWidthInput}
             />
           </Grid>
@@ -222,6 +230,7 @@ const RegisterRoute = () => {
               label="Last Name"
               value={surname}
               onChange={handleSurnameInput}
+              onKeyDown={handleKeydownSubmit}
               sx={styles.fullWidthInput}
             />
           </Grid>
@@ -234,6 +243,7 @@ const RegisterRoute = () => {
               label="Password"
               value={password}
               onChange={handlePasswordInput}
+              onKeyDown={handleKeydownSubmit}
               required
               sx={styles.fullWidthInput}
             />
@@ -247,6 +257,7 @@ const RegisterRoute = () => {
               label="Confirm Password"
               value={confirmPassword}
               onChange={handleConfirmPasswordInput}
+              onKeyDown={handleKeydownSubmit}
               required
               error={!passwordsMatch}
               helperText={!passwordsMatch && 'Passwords must match'}

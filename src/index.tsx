@@ -13,6 +13,7 @@ import RegisterRoute from './routes/auth/register.route';
 import HomeRoute from './routes/home.route';
 import RequireAuthRoute from './routes/auth/require-auth.route';
 import BookClubHomeRoute from './routes/book-club/book-club-home.route';
+import BookClubSearchRoute from './routes/book-club/book-club-search.route';
 import BookClubAdminRoute from './routes/book-club/admin/book-club-admin.route';
 import BookClubAdminMembersRoute from './routes/book-club/admin/book-club-admin-members.route';
 import BookClubAdminMembershipRequestsRoute from './routes/book-club/admin/bool-club-admin-membership-requests.route';
@@ -86,6 +87,12 @@ const router = createBrowserRouter([
             path: 'create',
             element: (
               <RequireAuthRoute protectedRoute={<BookClubDetailsForm />} />
+            )
+          },
+          {
+            path: 'search',
+            element: (
+              <RequireAuthRoute protectedRoute={<BookClubSearchRoute />} />
             )
           },
           {
