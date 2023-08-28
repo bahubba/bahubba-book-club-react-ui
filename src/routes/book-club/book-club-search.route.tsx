@@ -79,6 +79,7 @@ const BookClubSearchRoute = () => {
               label="Search"
               value={searchTerm}
               onChange={handleSearchTermInput}
+              onKeyDown={handleKeydownSubmit}
               required
               sx={styles.fullWidthInput}
             />
@@ -105,15 +106,23 @@ const BookClubSearchRoute = () => {
           </Grid>
           <Grid
             item
+            container
+            spacing={2}
+            justifyContent="center"
             xs={12}
           >
             {bookClubs &&
               !_.isEmpty(bookClubs) &&
               _.map(bookClubs, bookClub => (
-                <BookClubCard
+                <Grid
+                  item
+                  sm={6}
+                  lg={4}
+                  xl={3}
                   key={bookClub.id}
-                  bookClub={bookClub}
-                />
+                >
+                  <BookClubCard bookClub={bookClub} />
+                </Grid>
               ))}
           </Grid>
         </Grid>
