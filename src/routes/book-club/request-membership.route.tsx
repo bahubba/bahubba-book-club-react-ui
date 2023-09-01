@@ -29,6 +29,9 @@ const styles = {
   }
 };
 
+/**
+ * Route for membership request form for a given book club
+ */
 const RequestMembershipRoute = () => {
   // Book club name from the route params
   const { bookClubName } = useParams();
