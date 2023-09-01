@@ -21,7 +21,8 @@ const props: Props = {
     SEARCH: '/search',
     MEMBERSHIP: '/membership',
     MEMBERSHIP_REQUESTS: '/v1/membership-requests',
-    REQUEST_MEMBERSHIP: '/request-membership'
+    REQUEST_MEMBERSHIP: '/request-membership',
+    HAS_PENDING_REQUEST: '/has-pending-request'
   },
   REACTIVE_API_PATHS: {
     ROOT_URL:

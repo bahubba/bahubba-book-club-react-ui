@@ -65,10 +65,8 @@ const BookClubHomeRoute = () => {
   ] = useLazyGetMembershipQuery();
 
   // Redux API query for whether or not the user has a pending membership request
-  const [
-    hasPendingRequestQuery,
-    { data: hasPendingRequest, isLoading: hasPendingRequestLoading }
-  ] = useLazyHasPendingRequestQuery();
+  const [hasPendingRequestQuery, { data: hasPendingRequest }] =
+    useLazyHasPendingRequestQuery();
 
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {
@@ -108,12 +106,12 @@ const BookClubHomeRoute = () => {
           {_.isEqual('ADMIN', membership?.clubRole) && (
             <BookClubAdminButton bookClubName={bookClubName || 'Book Club'} />
           )}
-          {(!membership?.clubRole ||
-            (_.isEqual('NONE', membership.clubRole) && !hasPendingRequest)) && (
-            <RequestMembershipButton
-              bookClubName={bookClubName || 'Book Club'}
-            />
-          )}
+          {!membership?.clubRole ||
+            (_.isEqual('NONE', membership.clubRole) && !hasPendingRequest && (
+              <RequestMembershipButton
+                bookClubName={bookClubName || 'Book Club'}
+              />
+            ))}
         </>
       </SectionHeader>
       <Grid

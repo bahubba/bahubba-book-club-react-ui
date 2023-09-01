@@ -14,7 +14,7 @@ const membershipRequestAPISlice = api.injectEndpoints({
     }),
     hasPendingRequest: builder.query<boolean, string>({
       query: bookClubName =>
-        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}${bookClubName}`
+        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}/${bookClubName}`
     })
   })
 });

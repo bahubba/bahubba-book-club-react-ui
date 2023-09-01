@@ -1,12 +1,24 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import { toast } from 'react-toastify';
 
 import { useRequestMembershipMutation } from '../../redux/slices/book-club/membership-request.api.slice';
 
 // MUI emotion styles
 const styles = {
+  loadingSpinner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
   rootGrid: {
     py: 2,
     maxHeight: '100%',
@@ -44,12 +56,16 @@ const RequestMembershipRoute = () => {
   const handleSubmit = async () => {
     if (bookClubName) {
       await requestMembership({ bookClubName, message });
-      toast.success(`Membership request sent to ${bookClubName}`);
+      toast.success(`Membership request sent to ${bookClubName}`, {
+        position: 'bottom-right'
+      });
       navigate(`/book-club/${bookClubName}`);
     }
   };
 
-  return (
+  return isLoading ? (
+    <CircularProgress sx={styles.loadingSpinner} />
+  ) : (
     <>
       <Typography
         component="div"
@@ -96,6 +112,7 @@ const RequestMembershipRoute = () => {
               variant="contained"
               color="secondary"
               onClick={handleSubmit}
+              disabled={isLoading}
             >
               Request Membership
             </Button>
