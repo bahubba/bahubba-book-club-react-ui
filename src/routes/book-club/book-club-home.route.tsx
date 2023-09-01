@@ -49,7 +49,6 @@ const styles = {
 
 /**
  * Home route/page for a given book club, displaying the club's readers, books, and discussions
- * TODO - Conditionally show admin button and request membership button
  */
 const BookClubHomeRoute = () => {
   // Navigation from react-router-dom

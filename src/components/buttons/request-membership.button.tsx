@@ -19,6 +19,10 @@ interface MembershipRequestButtonProps {
   bookClubName: string;
 }
 
+/**
+ * Button for navigation to the request membership page for a book club
+ * @prop {string} bookClubName - The name of the book club
+ */
 const RequestMembershipButton = ({
   bookClubName
 }: MembershipRequestButtonProps) => {
