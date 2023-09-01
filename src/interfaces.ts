@@ -1,7 +1,7 @@
 export enum Publicity {
-  PUBLIC = "PUBLIC",
-  OBSERVABLE = "OBSERVABLE",
-  PRIVATE = "PRIVATE"
+  PUBLIC = 'PUBLIC',
+  OBSERVABLE = 'OBSERVABLE',
+  PRIVATE = 'PRIVATE'
 }
 
 export interface Registration {
@@ -30,23 +30,37 @@ export interface Reader {
   suffix?: string;
   title?: string;
   joined?: Date;
-  departed?: Date|null;
+  departed?: Date | null;
   systemRole?: string;
 }
 
 export interface BookClubMember extends Reader {
   joinedClub: Date;
-  departedClub: Date|null;
+  departedClub: Date | null;
   clubRole: string;
 }
 
 export interface BookClub {
-  id?: string; 
+  id?: string;
   name: string;
   imageURL: string;
   description: string;
   publicity: Publicity;
   created?: Date;
-  disbanded?: Date|null;
+  disbanded?: Date | null;
   members?: BookClubMember[];
+}
+
+export interface MembershipRequest {
+  bookClubName: string;
+  message?: string;
+}
+
+export interface BookClubMembership {
+  bookClub: BookClub;
+  reader: Reader;
+  clubRole: 'NONE' | 'ADMIN' | 'READER' | 'PARTICIPANT' | 'OBSERVER';
+  isCreator: boolean;
+  joined: Date;
+  departed: Date | null;
 }

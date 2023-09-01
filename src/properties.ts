@@ -18,7 +18,10 @@ const props: Props = {
     UPDATE: '/update',
     BOOK_CLUBS_FOR_READER: '/all-for-reader',
     BOOK_CLUB_BY_NAME: '/by-name',
-    SEARCH: '/search'
+    SEARCH: '/search',
+    MEMBERSHIP: '/membership',
+    MEMBERSHIP_REQUESTS: '/v1/membership-requests',
+    REQUEST_MEMBERSHIP: '/request-membership'
   },
   REACTIVE_API_PATHS: {
     ROOT_URL:
