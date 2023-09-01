@@ -16,6 +16,12 @@ import { setCredentials } from '../../redux/slices/auth/auth.slice';
 
 // MUI emotion styles
 const styles = {
+  loadingSpinner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
   contentContainer: {
     py: 1,
     height: '100%',
@@ -156,7 +162,7 @@ const RegisterRoute = () => {
   }, [username, email, password, confirmPassword, passwordsMatch]);
 
   return isLoading ? (
-    <CircularProgress />
+    <CircularProgress sx={styles.loadingSpinner} />
   ) : (
     <Grid
       container

@@ -16,6 +16,12 @@ import { useLoginMutation } from '../../redux/slices/auth/auth.api.slice';
 
 // MUI emotion styles
 const styles = {
+  loadingSpinner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
   contentContainer: {
     pt: 1,
     height: '100%',
@@ -103,7 +109,7 @@ const LoginRoute = () => {
   }, [usernameOrEmail, password]);
 
   return isLoading ? (
-    <CircularProgress />
+    <CircularProgress sx={styles.loadingSpinner} />
   ) : (
     <Grid
       container

@@ -1,5 +1,5 @@
 import api from '../../api/base';
-import { BookClub } from '../../../interfaces';
+import { BookClub, BookClubMembership } from '../../../interfaces';
 import props from '../../../properties';
 
 // Redux API Slice for Book Club endpoints
@@ -28,6 +28,10 @@ const bookClubAPISlice = api.injectEndpoints({
       query: () =>
         `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
     }),
+    getMembership: builder.query<BookClubMembership, string>({
+      query: bookClubName =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.MEMBERSHIP}/${bookClubName}`
+    }),
     search: builder.query<BookClub[], string>({
       query: searchTerm => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
@@ -45,6 +49,8 @@ export const {
   useLazyGetBookClubByNameQuery,
   useGetBookClubsForReaderQuery,
   useLazyGetBookClubsForReaderQuery,
+  useGetMembershipQuery,
+  useLazyGetMembershipQuery,
   useSearchQuery,
   useLazySearchQuery
 } = bookClubAPISlice;
