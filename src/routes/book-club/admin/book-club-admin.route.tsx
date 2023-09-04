@@ -42,6 +42,7 @@ type AdminOption =
 
 /**
  * Admin route/page for a given book club, allowing admins to manage details and members
+ * TODO - Redirect back to the book club home page if the user is not an admin
  */
 const BookClubAdminRoute = () => {
   // Book club name from the route params

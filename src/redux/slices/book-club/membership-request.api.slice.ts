@@ -15,6 +15,10 @@ const membershipRequestAPISlice = api.injectEndpoints({
     hasPendingRequest: builder.query<boolean, string>({
       query: bookClubName =>
         `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}/${bookClubName}`
+    }),
+    getRequestsForBookClub: builder.query<MembershipRequest[], string>({
+      query: bookClubName =>
+        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${bookClubName}`
     })
   })
 });
@@ -22,7 +26,9 @@ const membershipRequestAPISlice = api.injectEndpoints({
 export const {
   useRequestMembershipMutation,
   useHasPendingRequestQuery,
-  useLazyHasPendingRequestQuery
+  useLazyHasPendingRequestQuery,
+  useGetRequestsForBookClubQuery,
+  useLazyGetRequestsForBookClubQuery
 } = membershipRequestAPISlice;
 
 export default membershipRequestAPISlice;
