@@ -4,24 +4,26 @@ import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
 import { useLazyGetRequestsForBookClubQuery } from '../../../redux/slices/book-club/membership-request.api.slice';
-import { grey } from '@mui/material/colors';
+import MembershipRequestReviewForm from '../../../components/forms/membership-request-review.form';
 
 // MUI emotion styles
 const styles = {
   rootGrid: {
     py: 1,
-    height: '100%',
+    maxHeight: '100%',
     overflow: 'auto'
-  },
-  contentGrid: {
-    ':nth-child(even)': {
-      backgroundColor: grey[100]
-    }
   },
   loadingSpinnerRow: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  paddedCell: {
+    p: 1
+  },
+  centeredHeader: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   fullWidthInput: {
     width: '100%'
@@ -54,71 +56,59 @@ const BookClubAdminMembershipRequestsRoute = () => {
       justifyContent="center"
       sx={styles.rootGrid}
     >
-      <Grid
-        item
-        container
-        direction="column"
-        xs={6}
-        sx={styles.contentGrid}
-      >
-        {membershipRequestsLoading ? (
+      {membershipRequestsLoading ? (
+        <Grid
+          item
+          sx={styles.loadingSpinnerRow}
+        >
+          <CircularProgress />
+        </Grid>
+      ) : (
+        <>
           <Grid
             item
-            sx={styles.loadingSpinnerRow}
+            xs={3}
+            sx={styles.paddedCell}
           >
-            <CircularProgress />
+            <Typography variant="h6">Reader</Typography>
           </Grid>
-        ) : (
-          <>
-            <Grid
-              item
-              container
-            >
-              <Grid
-                item
-                xs={3}
-              >
-                <Typography variant="h6">Reader</Typography>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-              >
-                <Typography variant="h6">Message</Typography>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-              >
-                <Typography variant="h6">Approve</Typography>
-              </Grid>
-              <Grid
-                item
-                xs={1}
-              >
-                <Typography variant="h6">Deny</Typography>
-              </Grid>
-              <Grid
-                item
-                xs={2}
-              >
-                <Typography variant="h6">Requested</Typography>
-              </Grid>
-            </Grid>
-            {_.map(membershipRequests || [], membershipRequest => (
-              <Grid
-                item
-                container
-              >
-                <Grid
-                  item
-                  xs={2}
-                ></Grid>
-              </Grid>
-            ))}
-          </>
-        )}
-      </Grid>
+          <Grid
+            item
+            xs={3}
+            sx={styles.paddedCell}
+          >
+            <Typography variant="h6">Message</Typography>
+          </Grid>
+          <Grid
+            item
+            xs={3}
+            sx={styles.paddedCell}
+          >
+            <Typography variant="h6">Approve</Typography>
+          </Grid>
+          <Grid
+            item
+            xs={1}
+            sx={{ ...styles.centeredHeader, ...styles.paddedCell }}
+          >
+            <Typography variant="h6">Deny</Typography>
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            sx={styles.paddedCell}
+          >
+            <Typography variant="h6">Requested</Typography>
+          </Grid>
+          {_.map(membershipRequests || [], (membershipRequest, idx) => (
+            <MembershipRequestReviewForm
+              key={membershipRequest.id}
+              membershipRequest={membershipRequest}
+              oddCell={idx % 2 === 0}
+            />
+          ))}
+        </>
+      )}
     </Grid>
   );
 };

@@ -33,6 +33,7 @@ type xsRange = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 interface BookClubDetailsFormProps {
   updateExisting?: boolean;
   gridXS?: xsRange;
+  showTitle?: boolean;
 }
 
 /**
@@ -42,7 +43,8 @@ interface BookClubDetailsFormProps {
  */
 const BookClubDetailsForm = ({
   updateExisting = false,
-  gridXS = 6
+  gridXS = 6,
+  showTitle = false
 }: BookClubDetailsFormProps) => {
   /* HOOKS */
 
@@ -217,18 +219,22 @@ const BookClubDetailsForm = ({
         xs={gridXS}
         spacing={2}
       >
-        <Grid item>
-          <Typography variant="h4">
-            {`${updateExisting ? 'Update' : 'Create'} Book Club`}
-          </Typography>
-        </Grid>
-        {!_.isEmpty(nameErrMessage) && (
-          <Grid
-            item
-            sx={styles.errMessageContainer}
-          >
-            <Typography variant="body2">{nameErrMessage}</Typography>
-          </Grid>
+        {showTitle && (
+          <>
+            <Grid item>
+              <Typography variant="h4">
+                {`${updateExisting ? 'Update' : 'Create'} Book Club`}
+              </Typography>
+            </Grid>
+            {!_.isEmpty(nameErrMessage) && (
+              <Grid
+                item
+                sx={styles.errMessageContainer}
+              >
+                <Typography variant="body2">{nameErrMessage}</Typography>
+              </Grid>
+            )}
+          </>
         )}
         <Grid item>
           <TextField

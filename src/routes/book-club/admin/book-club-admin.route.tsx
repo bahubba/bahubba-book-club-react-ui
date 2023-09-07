@@ -13,7 +13,16 @@ const BookClubNameSpan = styled('span')(({ theme }) => ({
 // MUI emotion styles
 const styles = {
   contentGrid: {
-    mt: 1
+    flexGrow: 1,
+    pt: 1,
+    overflow: 'hidden'
+  },
+  outletGrid: {
+    height: '100%',
+    px: 0.5,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'auto'
   },
   optionsList: {
     borderRight: '1px solid lightgray'
@@ -151,7 +160,8 @@ const BookClubAdminRoute = () => {
         </Grid>
         <Grid
           item
-          xs={8}
+          xs={10}
+          sx={styles.outletGrid}
         >
           <Outlet />
         </Grid>
