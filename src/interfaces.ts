@@ -68,7 +68,7 @@ export interface MembershipRequest {
   reader: Reader;
   bookClub: BookClub;
   message?: string;
-  status: 'OPEN' | 'ACCEPTED' | 'REJECTED';
+  status: 'OPEN' | 'APPROVED' | 'REJECTED';
   role: BookClubRole;
   viewed: boolean;
   reviewer?: Reader;

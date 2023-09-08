@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -9,12 +10,11 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { green, grey, red } from '@mui/material/colors';
 
 import { useReviewMembershipRequestMutation } from '../../redux/slices/book-club/membership-request.api.slice';
 import { BookClubRole, MembershipRequest } from '../../interfaces';
 import { PersonAdd, PersonOff } from '@mui/icons-material';
-import BookClubCard from '../cards/book-club.card';
 
 // MUI emotion styles
 const styles = {
@@ -25,6 +25,14 @@ const styles = {
   },
   oddRowCell: {
     backgroundColor: grey[200]
+  },
+  acceptedCell: {
+    backgroundColor: green[200],
+    borderTop: `1px solid ${grey[200]}`
+  },
+  rejectedCell: {
+    backgroundColor: red[200],
+    borderTop: `1px solid ${grey[200]}`
   }
 };
 
@@ -65,6 +73,7 @@ const MembershipRequestReviewForm = ({
   const [role, setRole] = useState<BookClubRole>('READER');
   const [coalescedRequest, setCoalescedRequest] =
     useState<MembershipRequest>(membershipRequest);
+  console.log('coalescedRequest', coalescedRequest); // DELETEME
 
   // Handle role input change
   const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) => {
@@ -93,12 +102,24 @@ const MembershipRequestReviewForm = ({
     }
   }, [reviewedMembershipRequest]);
 
-  return (
+  return reviewMembershipRequestLoading ? (
+    <Grid
+      item
+      xs={12}
+      sx={styles.centeredCell}
+    >
+      <CircularProgress />
+    </Grid>
+  ) : (
     <>
       <Grid
         item
         xs={3}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(coalescedRequest.status === 'APPROVED' && styles.acceptedCell),
+          ...(coalescedRequest.status === 'REJECTED' && styles.rejectedCell)
+        }}
       >
         <Typography variant="body1">
           {coalescedRequest.reader.username}
@@ -107,7 +128,11 @@ const MembershipRequestReviewForm = ({
       <Grid
         item
         xs={3}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(coalescedRequest.status === 'APPROVED' && styles.acceptedCell),
+          ...(coalescedRequest.status === 'REJECTED' && styles.rejectedCell)
+        }}
       >
         <Typography variant="body1">{coalescedRequest.message}</Typography>
       </Grid>
@@ -115,7 +140,11 @@ const MembershipRequestReviewForm = ({
         item
         container
         xs={3}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(coalescedRequest.status === 'APPROVED' && styles.acceptedCell),
+          ...(coalescedRequest.status === 'REJECTED' && styles.rejectedCell)
+        }}
       >
         <Grid
           item
@@ -142,7 +171,7 @@ const MembershipRequestReviewForm = ({
           item
           xs={4}
           justifyContent="center"
-          sx={styleClasses}
+          sx={styles.centeredCell}
         >
           <Button
             variant="contained"
@@ -157,7 +186,11 @@ const MembershipRequestReviewForm = ({
         item
         xs={1}
         justifyContent="center"
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(coalescedRequest.status === 'APPROVED' && styles.acceptedCell),
+          ...(coalescedRequest.status === 'REJECTED' && styles.rejectedCell)
+        }}
       >
         <Button
           variant="contained"
@@ -171,7 +204,11 @@ const MembershipRequestReviewForm = ({
       <Grid
         item
         xs={2}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(coalescedRequest.status === 'APPROVED' && styles.acceptedCell),
+          ...(coalescedRequest.status === 'REJECTED' && styles.rejectedCell)
+        }}
       >
         <Typography variant="body1">{coalescedRequest.requested}</Typography>
       </Grid>
