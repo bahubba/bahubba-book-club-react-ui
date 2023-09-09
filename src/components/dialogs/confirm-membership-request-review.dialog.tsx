@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
-  DialogTitle
+  DialogTitle,
+  Divider,
+  TextField
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
@@ -22,6 +25,11 @@ const RedHighlightedSpan = styled(HighlightedSpan)(({ theme }) => ({
   fontWeight: 'bold'
 }));
 
+const MessageDiv = styled('div')(({ theme }) => ({
+  paddingTop: theme.spacing(1),
+  width: '100%'
+}));
+
 // Component props
 interface ConfirmMembershipRequestReviewDialogProps extends DialogProps {
   action: 'APPROVE' | 'REJECT';
@@ -29,7 +37,7 @@ interface ConfirmMembershipRequestReviewDialogProps extends DialogProps {
   role: BookClubRole;
   bookClubName: string;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: (message: string) => void;
 }
 
 /**
@@ -39,7 +47,7 @@ interface ConfirmMembershipRequestReviewDialogProps extends DialogProps {
  * @prop {BookClubRole} role - The role the user will get if the request is approved
  * @prop {string} bookClubName - The name of the book club
  * @prop {() => void} onCancel - Callback for when the cancel button is clicked
- * @prop {() => void} onConfirm - Callback for when the confirm button is clicked
+ * @prop {(string) => void} onConfirm - Callback for when the confirm button is clicked
  * @prop {...DialogProps} dialogProps - Passthrough props for the MUI Dialog
  */
 const ConfirmMembershipRequestReviewDialog = ({
@@ -51,7 +59,18 @@ const ConfirmMembershipRequestReviewDialog = ({
   onConfirm,
   ...dialogProps
 }: ConfirmMembershipRequestReviewDialogProps) => {
-  console.log('onConfirm:', onConfirm); // DELETEME
+  // Component state
+  const [reviewMessage, setReviewMessage] = useState('');
+
+  // Handle message change
+  const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setReviewMessage(event.target.value);
+
+  // Handle confirm button click
+  const handleConfirm = () => {
+    onConfirm(reviewMessage);
+  };
+
   return (
     <Dialog {...dialogProps}>
       <DialogTitle>
@@ -79,6 +98,19 @@ const ConfirmMembershipRequestReviewDialog = ({
             with the role <HighlightedSpan>{role}</HighlightedSpan>
           </span>
         )}
+        <Divider />
+        <MessageDiv>
+          <TextField
+            id="review-message"
+            fullWidth
+            variant="outlined"
+            multiline
+            label="Message"
+            placeholder="Enter a message to the user (optional)"
+            value={reviewMessage}
+            onChange={handleMessageChange}
+          />
+        </MessageDiv>
       </DialogContent>
       <DialogActions>
         <Button
@@ -91,7 +123,7 @@ const ConfirmMembershipRequestReviewDialog = ({
         <Button
           variant="contained"
           color="success"
-          onClick={onConfirm}
+          onClick={handleConfirm}
         >
           Confirm
         </Button>

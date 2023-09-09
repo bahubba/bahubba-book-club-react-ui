@@ -49,7 +49,6 @@ interface MembershipRequestReviewFormProps {
  * @prop {boolean} oddCell - Whether or not this row is an odd row in the table; used for styling
  * TODO - Conditionally render role options based on book club publicity
  * TODO - Date formatting
- * TODO - Popover for deny reason
  */
 const MembershipRequestReviewForm = ({
   membershipRequest,
@@ -100,21 +99,23 @@ const MembershipRequestReviewForm = ({
   };
 
   // Handle approving the membership request
-  const handleApprove = () => {
+  const handleApprove = (reviewMessage: string) => {
     closeConfirmDialog();
     reviewMembershipRequest({
       membershipRequest,
       action: 'APPROVE',
-      role
+      role,
+      reviewMessage
     });
   };
 
   // Handle rejecting the membership request
-  const handleReject = () => {
+  const handleReject = (reviewMessage: string) => {
     closeConfirmDialog();
     reviewMembershipRequest({
       membershipRequest,
-      action: 'REJECT'
+      action: 'REJECT',
+      reviewMessage
     });
   };
 
