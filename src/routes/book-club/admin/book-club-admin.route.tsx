@@ -117,7 +117,9 @@ const BookClubAdminRoute = () => {
     handleCloseDisbandDialog();
     if (!!bookClubName) {
       await disbandBookClub(bookClubName);
-      toast.success(`Successfully disbanded ${bookClubName}`);
+      toast.success(`Successfully disbanded ${bookClubName}`, {
+        position: 'bottom-right'
+      });
       navigate('/home');
     }
   };
