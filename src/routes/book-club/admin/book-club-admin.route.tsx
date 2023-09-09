@@ -1,14 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography
+} from '@mui/material';
+import { toast } from 'react-toastify';
 import _ from 'lodash';
+
+import { useDisbandBookClubByNameMutation } from '../../../redux/slices/book-club/book-club.api.slice';
+import ConfirmDisbandBookClubDialog from '../../../components/dialogs/confirm-disband-book-club.dialog';
 
 // MUI styled components
 const BookClubNameSpan = styled('span')(({ theme }) => ({
   color: theme.palette.secondary.main,
   fontWeight: 'bold'
 }));
+
+const CenteredLoadingDiv = styled('div')({
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+});
 
 // MUI emotion styles
 const styles = {
@@ -39,6 +59,16 @@ const styles = {
       cursor: 'auto',
       backgroundColor: 'secondary.main'
     }
+  },
+  centeredListItem: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  disbandButton: {
+    mt: 0.5,
+    mx: 2,
+    width: '100%'
   }
 };
 
@@ -60,13 +90,36 @@ const BookClubAdminRoute = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Redux API query for disbanding a book club
+  const [disbandBookClub, { isLoading: disbandBookClubLoading }] =
+    useDisbandBookClubByNameMutation();
+
   // State vars
   const [selectedAdminOption, setSelectedAdminOption] =
     useState<AdminOption>('details');
+  const [disbandDialogOpen, setDisbandDialogOpen] = useState(false);
+
+  // Handle closing the disband dialog
+  const handleCloseDisbandDialog = () => setDisbandDialogOpen(false);
 
   // Handle admin option selection
   const handleAdminOptionClick = (event: React.MouseEvent<HTMLElement>) => {
     setSelectedAdminOption(event.currentTarget.id as AdminOption);
+  };
+
+  // Handle clicking the disband button
+  const handleDisbandButtonClick = () => {
+    setDisbandDialogOpen(true);
+  };
+
+  // Handle confirming the disbandment of the book club
+  const handleConfirmDisbandBookClub = async () => {
+    handleCloseDisbandDialog();
+    if (!!bookClubName) {
+      await disbandBookClub(bookClubName);
+      toast.success(`Successfully disbanded ${bookClubName}`);
+      navigate('/home');
+    }
   };
 
   // Navigate the sub-route to the selected admin option
@@ -145,6 +198,7 @@ const BookClubAdminRoute = () => {
             </ListItem>
             <ListItem
               id="preferences"
+              divider
               sx={{
                 ...styles.selectableListItem,
                 ...(selectedAdminOption === 'preferences' &&
@@ -156,6 +210,16 @@ const BookClubAdminRoute = () => {
                 primary={<Typography variant="h6">Preferences</Typography>}
               />
             </ListItem>
+            <ListItem sx={styles.centeredListItem}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleDisbandButtonClick}
+                sx={styles.disbandButton}
+              >
+                Disband
+              </Button>
+            </ListItem>
           </List>
         </Grid>
         <Grid
@@ -163,9 +227,23 @@ const BookClubAdminRoute = () => {
           xs={10}
           sx={styles.outletGrid}
         >
-          <Outlet />
+          {disbandBookClubLoading ? (
+            <CenteredLoadingDiv>
+              <CircularProgress />
+            </CenteredLoadingDiv>
+          ) : (
+            <Outlet />
+          )}
         </Grid>
       </Grid>
+      {!!bookClubName && (
+        <ConfirmDisbandBookClubDialog
+          bookClubName={bookClubName}
+          open={disbandDialogOpen}
+          onCancel={handleCloseDisbandDialog}
+          onConfirm={handleConfirmDisbandBookClub}
+        />
+      )}
     </>
   );
 };

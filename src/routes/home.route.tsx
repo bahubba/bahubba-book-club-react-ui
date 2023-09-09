@@ -46,7 +46,10 @@ const styles = {
  */
 const HomeRoute = () => {
   // Redux API query for the user's book clubs
-  const { data: bookClubs, isLoading } = useGetBookClubsForReaderQuery();
+  const { data: bookClubs, isLoading } = useGetBookClubsForReaderQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true }
+  );
 
   return (
     <>

@@ -38,6 +38,18 @@ const bookClubAPISlice = api.injectEndpoints({
         method: 'POST',
         body: { searchTerm, page: 0, size: 10 }
       })
+    }),
+    disbandBookClub: builder.mutation<void, string>({
+      query: bookClubID => ({
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.DISBAND}/${bookClubID}`,
+        method: 'DELETE'
+      })
+    }),
+    disbandBookClubByName: builder.mutation<void, string>({
+      query: bookClubName => ({
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.DISBAND_BY_NAME}/${bookClubName}`,
+        method: 'DELETE'
+      })
     })
   })
 });
@@ -52,7 +64,9 @@ export const {
   useGetMembershipQuery,
   useLazyGetMembershipQuery,
   useSearchQuery,
-  useLazySearchQuery
+  useLazySearchQuery,
+  useDisbandBookClubMutation,
+  useDisbandBookClubByNameMutation
 } = bookClubAPISlice;
 
 export default bookClubAPISlice;
