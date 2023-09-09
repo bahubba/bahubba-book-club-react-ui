@@ -22,7 +22,9 @@ const props: Props = {
     MEMBERSHIP: '/membership',
     MEMBERSHIP_REQUESTS: '/v1/membership-requests',
     REQUEST_MEMBERSHIP: '/request-membership',
-    HAS_PENDING_REQUEST: '/has-pending-request'
+    HAS_PENDING_REQUEST: '/has-pending-request',
+    REQUESTS_FOR_BOOK_CLUB: '/all-for-club',
+    REVIEW_MEMBERSHIP_REQUEST: '/review'
   },
   REACTIVE_API_PATHS: {
     ROOT_URL:

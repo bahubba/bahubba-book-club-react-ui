@@ -4,6 +4,13 @@ export enum Publicity {
   PRIVATE = 'PRIVATE'
 }
 
+export type BookClubRole =
+  | 'NONE'
+  | 'ADMIN'
+  | 'READER'
+  | 'PARTICIPANT'
+  | 'OBSERVER';
+
 export interface Registration {
   username: string;
   email: string;
@@ -51,16 +58,37 @@ export interface BookClub {
   members?: BookClubMember[];
 }
 
-export interface MembershipRequest {
+export interface MembershipRequestPayload {
   bookClubName: string;
   message?: string;
+}
+
+export interface MembershipRequest {
+  id?: string;
+  reader: Reader;
+  bookClub: BookClub;
+  message?: string;
+  status: 'OPEN' | 'APPROVED' | 'REJECTED';
+  role: BookClubRole;
+  viewed: boolean;
+  reviewer?: Reader;
+  reviewMessage?: string;
+  requested: string;
+  reviewed?: string;
 }
 
 export interface BookClubMembership {
   bookClub: BookClub;
   reader: Reader;
-  clubRole: 'NONE' | 'ADMIN' | 'READER' | 'PARTICIPANT' | 'OBSERVER';
+  clubRole: BookClubRole;
   isCreator: boolean;
   joined: Date;
   departed: Date | null;
+}
+
+export interface MembershipRequestAction {
+  membershipRequest: MembershipRequest;
+  action: 'APPROVE' | 'REJECT';
+  role?: BookClubRole;
+  reviewMessage?: string;
 }
