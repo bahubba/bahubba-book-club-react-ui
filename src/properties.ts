@@ -20,6 +20,8 @@ const props: Props = {
     BOOK_CLUB_BY_NAME: '/by-name',
     SEARCH: '/search',
     MEMBERSHIP: '/membership',
+    DISBAND: '/disband',
+    DISBAND_BY_NAME: '/disband-by-name',
     MEMBERSHIP_REQUESTS: '/v1/membership-requests',
     REQUEST_MEMBERSHIP: '/request-membership',
     HAS_PENDING_REQUEST: '/has-pending-request',
