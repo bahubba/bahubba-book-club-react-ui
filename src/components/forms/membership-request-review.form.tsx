@@ -15,6 +15,7 @@ import { green, grey, red } from '@mui/material/colors';
 import { useReviewMembershipRequestMutation } from '../../redux/slices/book-club/membership-request.api.slice';
 import { BookClubRole, MembershipRequest } from '../../interfaces';
 import { PersonAdd, PersonOff } from '@mui/icons-material';
+import ConfirmMembershipRequestReviewDialog from '../dialogs/confirm-membership-request-review.dialog';
 
 // MUI emotion styles
 const styles = {
@@ -73,27 +74,49 @@ const MembershipRequestReviewForm = ({
   const [role, setRole] = useState<BookClubRole>('READER');
   const [coalescedRequest, setCoalescedRequest] =
     useState<MembershipRequest>(membershipRequest);
-  console.log('coalescedRequest', coalescedRequest); // DELETEME
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'APPROVE' | 'REJECT'>(
+    'REJECT'
+  );
+
+  // Close the confirm dialog
+  const closeConfirmDialog = () => setConfirmDialogOpen(false);
 
   // Handle role input change
   const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) => {
     setRole(event.target.value as BookClubRole);
   };
 
+  // Open a dialog to confirm approving the membership request
+  const handleConfirmApproval = () => {
+    setConfirmAction('APPROVE');
+    setConfirmDialogOpen(true);
+  };
+
+  // Open a dialog to confirm rejecting the membership request
+  const handleConfirmRejection = () => {
+    setConfirmAction('REJECT');
+    setConfirmDialogOpen(true);
+  };
+
   // Handle approving the membership request
-  const handleApprove = () =>
+  const handleApprove = () => {
+    closeConfirmDialog();
     reviewMembershipRequest({
       membershipRequest,
       action: 'APPROVE',
       role
     });
+  };
 
   // Handle rejecting the membership request
-  const handleReject = () =>
+  const handleReject = () => {
+    closeConfirmDialog();
     reviewMembershipRequest({
       membershipRequest,
       action: 'REJECT'
     });
+  };
 
   // Coalesce the passed in membership request with the reviewed membership request
   useEffect(() => {
@@ -175,7 +198,7 @@ const MembershipRequestReviewForm = ({
         >
           <Button
             variant="contained"
-            onClick={handleApprove}
+            onClick={handleConfirmApproval}
             disabled={!!coalescedRequest.reviewed}
           >
             <PersonAdd />
@@ -195,7 +218,7 @@ const MembershipRequestReviewForm = ({
         <Button
           variant="contained"
           color="error"
-          onClick={handleReject}
+          onClick={handleConfirmRejection}
           disabled={!!coalescedRequest.reviewed}
         >
           <PersonOff color="secondary" />
@@ -212,6 +235,15 @@ const MembershipRequestReviewForm = ({
       >
         <Typography variant="body1">{coalescedRequest.requested}</Typography>
       </Grid>
+      <ConfirmMembershipRequestReviewDialog
+        open={confirmDialogOpen}
+        action={confirmAction}
+        username={membershipRequest.reader.username}
+        role={role}
+        bookClubName={membershipRequest.bookClub.name}
+        onCancel={closeConfirmDialog}
+        onConfirm={confirmAction === 'APPROVE' ? handleApprove : handleReject}
+      />
     </>
   );
 };
