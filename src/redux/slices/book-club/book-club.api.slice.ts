@@ -39,6 +39,10 @@ const bookClubAPISlice = api.injectEndpoints({
         body: { searchTerm, page: 0, size: 10 }
       })
     }),
+    getMembers: builder.query<BookClubMembership[], string>({
+      query: bookClubName =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.MEMBERS}/${bookClubName}`
+    }),
     disbandBookClub: builder.mutation<void, string>({
       query: bookClubID => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.DISBAND}/${bookClubID}`,
@@ -65,6 +69,8 @@ export const {
   useLazyGetMembershipQuery,
   useSearchQuery,
   useLazySearchQuery,
+  useGetMembersQuery,
+  useLazyGetMembersQuery,
   useDisbandBookClubMutation,
   useDisbandBookClubByNameMutation
 } = bookClubAPISlice;
