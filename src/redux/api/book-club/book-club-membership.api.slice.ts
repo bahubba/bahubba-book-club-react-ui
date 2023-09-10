@@ -19,7 +19,7 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
         body: membershipUpdate
       })
     }),
-    removeMember: builder.mutation<void, BookClubMembership>({
+    removeMember: builder.mutation<BookClubMembership, BookClubMembership>({
       query: membership => ({
         url: `${props.API_PATHS.MEMBERSHIPS}/${membership.bookClub.name}/${membership.reader.id}`,
         method: 'DELETE'

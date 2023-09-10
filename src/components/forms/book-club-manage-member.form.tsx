@@ -98,8 +98,6 @@ const BookClubManageMemberForm = ({
 
   // Handle submitting the role change
   const handleSubmitRoleChange = async () => {
-    setConfirmRemoveDialogOpen(false);
-
     if (!!membership.reader.id) {
       await updateMemberRole({
         bookClubName: membership.bookClub.name,
@@ -116,6 +114,7 @@ const BookClubManageMemberForm = ({
 
   // Handle clicking on the remove reader button
   const handleRemoveReader = async () => {
+    setConfirmRemoveDialogOpen(false);
     if (!!membership.reader.id) {
       await removeMember(coalescedMembership);
 
