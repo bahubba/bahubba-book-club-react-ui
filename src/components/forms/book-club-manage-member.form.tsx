@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 import { selectCurrentUsername } from '../../redux/slices/auth/auth.slice';
-import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club.api.slice';
+import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { useRemoveMemberMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { BookClubMembership, BookClubRole } from '../../interfaces';
 import ConfirmRemoveMemberDialog from '../dialogs/confirm-remove-member.dialog';

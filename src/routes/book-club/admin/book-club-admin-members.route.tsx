@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
-import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club.api.slice';
+import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import BookClubManageMemberForm from '../../../components/forms/book-club-manage-member.form';
 
 // MUI emotion styles
