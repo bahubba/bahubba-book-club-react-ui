@@ -82,9 +82,8 @@ const MembershipRequestReviewForm = ({
   const closeConfirmDialog = () => setConfirmDialogOpen(false);
 
   // Handle role input change
-  const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) => {
+  const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) =>
     setRole(event.target.value as BookClubRole);
-  };
 
   // Open a dialog to confirm approving the membership request
   const handleConfirmApproval = () => {

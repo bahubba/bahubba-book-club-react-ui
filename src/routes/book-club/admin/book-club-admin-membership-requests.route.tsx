@@ -24,9 +24,6 @@ const styles = {
   centeredHeader: {
     display: 'flex',
     justifyContent: 'center'
-  },
-  fullWidthInput: {
-    width: '100%'
   }
 };
 

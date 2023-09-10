@@ -82,8 +82,8 @@ export interface BookClubMembership {
   reader: Reader;
   clubRole: BookClubRole;
   isCreator: boolean;
-  joined: Date;
-  departed: Date | null;
+  joined: string;
+  departed: string | null;
 }
 
 export interface MembershipRequestAction {

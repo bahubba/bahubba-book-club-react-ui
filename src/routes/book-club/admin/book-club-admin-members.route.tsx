@@ -4,6 +4,7 @@ import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
 import { useLazyGetMembersQuery } from '../../../redux/slices/book-club/book-club.api.slice';
+import BookClubManageMemberForm from '../../../components/forms/book-club-manage-member.form';
 
 // MUI emotion styles
 const styles = {
@@ -19,6 +20,10 @@ const styles = {
   },
   paddedCell: {
     p: 1
+  },
+  centeredHeader: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 };
 
@@ -54,7 +59,7 @@ const BookClubAdminMembersRoute = () => {
         <>
           <Grid
             item
-            xs={6}
+            xs={4}
             sx={styles.paddedCell}
           >
             <Typography variant="h6">Member</Typography>
@@ -69,26 +74,30 @@ const BookClubAdminMembersRoute = () => {
           <Grid
             item
             xs={1}
-            sx={styles.paddedCell}
+            sx={{ ...styles.paddedCell, ...styles.centeredHeader }}
           >
             <Typography variant="h6">Remove</Typography>
           </Grid>
           <Grid
             item
             xs={1}
-            sx={styles.paddedCell}
+            sx={{ ...styles.paddedCell, ...styles.centeredHeader }}
           >
             <Typography variant="h6">Make Owner</Typography>
           </Grid>
+          <Grid
+            item
+            xs={2}
+            sx={styles.paddedCell}
+          >
+            <Typography variant="h6">Joined</Typography>
+          </Grid>
           {_.map(members || [], (member, idx) => (
-            <Grid
-              key={idx}
-              item
-              xs={12}
-              sx={styles.paddedCell}
-            >
-              <Typography variant="body1">{member.reader.username}</Typography>
-            </Grid>
+            <BookClubManageMemberForm
+              key={member.reader.id}
+              membership={member}
+              oddCell={idx % 2 === 0}
+            />
           ))}
         </>
       )}
