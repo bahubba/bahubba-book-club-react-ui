@@ -21,6 +21,7 @@ const props: Props = {
     MEMBERSHIP: '/membership',
     SEARCH: '/search',
     MEMBERS: '/members',
+    UPDATE_MEMBER_ROLE: '/membership',
     DISBAND: '/disband',
     DISBAND_BY_NAME: '/disband-by-name',
     MEMBERSHIP_REQUESTS: '/v1/membership-requests',

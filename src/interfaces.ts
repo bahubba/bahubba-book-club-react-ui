@@ -92,3 +92,9 @@ export interface MembershipRequestAction {
   role?: BookClubRole;
   reviewMessage?: string;
 }
+
+export interface MembershipUpdate {
+  bookClubName: string;
+  readerID: string;
+  role: BookClubRole;
+}

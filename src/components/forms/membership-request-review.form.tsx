@@ -71,8 +71,7 @@ const MembershipRequestReviewForm = ({
 
   // Component state
   const [role, setRole] = useState<BookClubRole>('READER');
-  const [coalescedRequest, setCoalescedRequest] =
-    useState<MembershipRequest>(membershipRequest);
+  const [coalescedRequest, setCoalescedRequest] = useState(membershipRequest);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'APPROVE' | 'REJECT'>(
     'REJECT'

@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
+  Button,
+  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -7,9 +10,13 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
-import { green, grey, red } from '@mui/material/colors';
+import { ManageAccounts } from '@mui/icons-material';
+import { grey } from '@mui/material/colors';
+import { toast } from 'react-toastify';
 import _ from 'lodash';
 
+import { selectCurrentUsername } from '../../redux/slices/auth/auth.slice';
+import { useUpdateMemberRoleMutation } from '../../redux/slices/book-club/book-club.api.slice';
 import { BookClubMembership, BookClubRole } from '../../interfaces';
 
 // MUI emotion styles
@@ -17,6 +24,12 @@ const styles = {
   centeredCell: {
     p: 1,
     display: 'flex',
+    alignItems: 'center'
+  },
+  flexEndCell: {
+    p: 1,
+    display: 'flex',
+    justifyContent: 'flex-end',
     alignItems: 'center'
   },
   oddRowCell: {
@@ -40,31 +53,75 @@ const BookClubManageMemberForm = ({
   membership,
   oddCell
 }: BookClubManageMemberFormProps) => {
+  // Static set of styles for each cell
+  const styleClasses = {
+    ...styles.centeredCell,
+    ...(oddCell && styles.oddRowCell)
+  };
+
+  // Currnet reader's username
+  const currentUsername = useSelector(selectCurrentUsername);
+
+  // Redux API mutation for updating a member's role
+  const [
+    updateMemberRole,
+    { data: updatedMembership, isLoading: updateMemberRoleLoading }
+  ] = useUpdateMemberRoleMutation();
+  const [coalescedMembership, setCoalescedMembership] = useState(membership);
+
   // Component state
   const [role, setRole] = useState(membership.clubRole);
-  console.log('membership:::', membership); // DELETEME
 
   // Handle role input change
   const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) =>
     setRole(event.target.value as BookClubRole);
 
-  return (
+  // Handle submitting the role change
+  const handleSubmitRoleChange = async () => {
+    if (!!membership.reader.id) {
+      await updateMemberRole({
+        bookClubName: membership.bookClub.name,
+        readerID: membership.reader.id,
+        role
+      });
+
+      toast.success(
+        `Successfully updated ${membership.reader.username}'s role to ${role}`,
+        { position: 'bottom-right' }
+      );
+    }
+  };
+
+  // When the membership changes, update the membership displayed
+  useEffect(() => {
+    if (!!updatedMembership) setCoalescedMembership(updatedMembership);
+  }, [updatedMembership]);
+
+  return updateMemberRoleLoading ? (
+    <Grid
+      item
+      xs={12}
+      sx={styleClasses}
+    >
+      <CircularProgress />
+    </Grid>
+  ) : (
     <>
       <Grid
         item
         alignContent="center"
         xs={4}
-        sx={styles.centeredCell}
+        sx={styleClasses}
       >
-        <span>{membership.reader.username}</span>
-        {((!!membership.reader.givenName &&
-          !_.isEmpty(membership.reader.givenName)) ||
-          (!!membership.reader.surname &&
-            !_.isEmpty(membership.reader.surname))) && (
+        <span>{coalescedMembership.reader.username}</span>
+        {((!!coalescedMembership.reader.givenName &&
+          !_.isEmpty(coalescedMembership.reader.givenName)) ||
+          (!!coalescedMembership.reader.surname &&
+            !_.isEmpty(coalescedMembership.reader.surname))) && (
           <span>
             &nbsp;
             {_.trim(
-              `(${membership.reader.givenName} ${membership.reader.surname})`
+              `(${coalescedMembership.reader.givenName} ${coalescedMembership.reader.surname})`
             )}
           </span>
         )}
@@ -73,10 +130,13 @@ const BookClubManageMemberForm = ({
         item
         container
         xs={4}
+        sx={styleClasses}
       >
         <Grid
           item
           xs={8}
+          lg={9}
+          xl={10}
         >
           <FormControl fullWidth>
             <InputLabel id="role-label">Role</InputLabel>
@@ -86,6 +146,10 @@ const BookClubManageMemberForm = ({
               label="Role"
               value={role}
               onChange={handleRoleChange}
+              disabled={_.isEqual(
+                currentUsername,
+                coalescedMembership.reader.username
+              )}
             >
               <MenuItem value="ADMIN">Admin</MenuItem>
               <MenuItem value="READER">Reader</MenuItem>
@@ -97,13 +161,27 @@ const BookClubManageMemberForm = ({
         <Grid
           item
           xs={4}
-        ></Grid>
+          lg={3}
+          xl={2}
+          sx={styles.flexEndCell}
+        >
+          <Button
+            variant="contained"
+            onClick={handleSubmitRoleChange}
+            disabled={
+              _.isEqual(currentUsername, coalescedMembership.reader.username) ||
+              _.isEqual(role, coalescedMembership.clubRole)
+            }
+          >
+            <ManageAccounts />
+          </Button>
+        </Grid>
       </Grid>
       <Grid
         item
         justifyContent="center"
         xs={1}
-        sx={styles.centeredCell}
+        sx={styleClasses}
       >
         X
       </Grid>
@@ -111,7 +189,7 @@ const BookClubManageMemberForm = ({
         item
         justifyContent="center"
         xs={1}
-        sx={styles.centeredCell}
+        sx={styleClasses}
       >
         DOIT
       </Grid>
@@ -119,9 +197,9 @@ const BookClubManageMemberForm = ({
         item
         alignItems="center"
         xs={2}
-        sx={styles.centeredCell}
+        sx={styleClasses}
       >
-        {membership.joined}
+        {coalescedMembership.joined}
       </Grid>
     </>
   );

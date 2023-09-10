@@ -1,5 +1,9 @@
 import api from '../../api/base';
-import { BookClub, BookClubMembership } from '../../../interfaces';
+import {
+  BookClub,
+  BookClubMembership,
+  MembershipUpdate
+} from '../../../interfaces';
 import props from '../../../properties';
 
 // Redux API Slice for Book Club endpoints
@@ -43,6 +47,13 @@ const bookClubAPISlice = api.injectEndpoints({
       query: bookClubName =>
         `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.MEMBERS}/${bookClubName}`
     }),
+    updateMemberRole: builder.mutation<BookClubMembership, MembershipUpdate>({
+      query: membershipUpdate => ({
+        url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.UPDATE_MEMBER_ROLE}`,
+        method: 'PATCH',
+        body: membershipUpdate
+      })
+    }),
     disbandBookClub: builder.mutation<void, string>({
       query: bookClubID => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.DISBAND}/${bookClubID}`,
@@ -71,6 +82,7 @@ export const {
   useLazySearchQuery,
   useGetMembersQuery,
   useLazyGetMembersQuery,
+  useUpdateMemberRoleMutation,
   useDisbandBookClubMutation,
   useDisbandBookClubByNameMutation
 } = bookClubAPISlice;
