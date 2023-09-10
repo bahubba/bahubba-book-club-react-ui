@@ -8,7 +8,7 @@ import {
   useCreateBookClubMutation,
   useLazyGetBookClubByNameQuery,
   useUpdateBookClubMutation
-} from '../../redux/slices/book-club/book-club.api.slice';
+} from '../../redux/api/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
 import { BookClub, Publicity } from '../../interfaces';
 

@@ -24,6 +24,7 @@ const props: Props = {
     UPDATE_MEMBER_ROLE: '/membership',
     DISBAND: '/disband',
     DISBAND_BY_NAME: '/disband-by-name',
+    REMOVE_MEMBER: '/remove-member',
     MEMBERSHIP_REQUESTS: '/v1/membership-requests',
     REQUEST_MEMBERSHIP: '/request-membership',
     HAS_PENDING_REQUEST: '/has-pending-request',

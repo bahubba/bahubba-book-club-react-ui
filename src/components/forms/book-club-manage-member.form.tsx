@@ -10,14 +10,16 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
-import { ManageAccounts } from '@mui/icons-material';
-import { grey } from '@mui/material/colors';
+import { ManageAccounts, PersonOff } from '@mui/icons-material';
+import { grey, red } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 import { selectCurrentUsername } from '../../redux/slices/auth/auth.slice';
-import { useUpdateMemberRoleMutation } from '../../redux/slices/book-club/book-club.api.slice';
+import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club.api.slice';
+import { useRemoveMemberMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { BookClubMembership, BookClubRole } from '../../interfaces';
+import ConfirmRemoveMemberDialog from '../dialogs/confirm-remove-member.dialog';
 
 // MUI emotion styles
 const styles = {
@@ -34,6 +36,9 @@ const styles = {
   },
   oddRowCell: {
     backgroundColor: grey[200]
+  },
+  removedMemberCell: {
+    backgroundColor: red[200]
   }
 };
 
@@ -67,17 +72,34 @@ const BookClubManageMemberForm = ({
     updateMemberRole,
     { data: updatedMembership, isLoading: updateMemberRoleLoading }
   ] = useUpdateMemberRoleMutation();
-  const [coalescedMembership, setCoalescedMembership] = useState(membership);
+
+  // Redux API mutation for removing a member
+  const [
+    removeMember,
+    { data: removedMember, isLoading: removeMemberLoading }
+  ] = useRemoveMemberMutation();
 
   // Component state
   const [role, setRole] = useState(membership.clubRole);
+  const [coalescedMembership, setCoalescedMembership] = useState(membership);
+  const [confirmRemoveDialogOpen, setConfirmRemoveDialogOpen] = useState(false);
 
   // Handle role input change
   const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) =>
     setRole(event.target.value as BookClubRole);
 
+  // Handle clicking on the remove reader button
+  const handleRemoveReaderClick = () => {
+    setConfirmRemoveDialogOpen(true);
+  };
+
+  // Handle canceling removing the reader
+  const handleCancelRemoveReader = () => setConfirmRemoveDialogOpen(false);
+
   // Handle submitting the role change
   const handleSubmitRoleChange = async () => {
+    setConfirmRemoveDialogOpen(false);
+
     if (!!membership.reader.id) {
       await updateMemberRole({
         bookClubName: membership.bookClub.name,
@@ -92,12 +114,29 @@ const BookClubManageMemberForm = ({
     }
   };
 
+  // Handle clicking on the remove reader button
+  const handleRemoveReader = async () => {
+    if (!!membership.reader.id) {
+      await removeMember(coalescedMembership);
+
+      toast.success(
+        `Successfully removed ${membership.reader.username} from ${membership.bookClub.name}`,
+        { position: 'bottom-right' }
+      );
+    }
+  };
+
   // When the membership changes, update the membership displayed
   useEffect(() => {
     if (!!updatedMembership) setCoalescedMembership(updatedMembership);
   }, [updatedMembership]);
 
-  return updateMemberRoleLoading ? (
+  // When the membership is removed, updated the membership displayed
+  useEffect(() => {
+    if (!!removedMember) setCoalescedMembership(removedMember);
+  }, [removedMember]);
+
+  return updateMemberRoleLoading || removeMemberLoading ? (
     <Grid
       item
       xs={12}
@@ -111,7 +150,10 @@ const BookClubManageMemberForm = ({
         item
         alignContent="center"
         xs={4}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(!!coalescedMembership.departed && styles.removedMemberCell)
+        }}
       >
         <span>{coalescedMembership.reader.username}</span>
         {((!!coalescedMembership.reader.givenName &&
@@ -130,7 +172,10 @@ const BookClubManageMemberForm = ({
         item
         container
         xs={4}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(!!coalescedMembership.departed && styles.removedMemberCell)
+        }}
       >
         <Grid
           item
@@ -146,10 +191,10 @@ const BookClubManageMemberForm = ({
               label="Role"
               value={role}
               onChange={handleRoleChange}
-              disabled={_.isEqual(
-                currentUsername,
-                coalescedMembership.reader.username
-              )}
+              disabled={
+                !!coalescedMembership.departed ||
+                _.isEqual(currentUsername, coalescedMembership.reader.username)
+              }
             >
               <MenuItem value="ADMIN">Admin</MenuItem>
               <MenuItem value="READER">Reader</MenuItem>
@@ -167,13 +212,26 @@ const BookClubManageMemberForm = ({
         >
           <Button
             variant="contained"
+            color="success"
             onClick={handleSubmitRoleChange}
             disabled={
+              !!coalescedMembership.departed ||
               _.isEqual(currentUsername, coalescedMembership.reader.username) ||
               _.isEqual(role, coalescedMembership.clubRole)
             }
           >
-            <ManageAccounts />
+            <ManageAccounts
+              color={
+                !!coalescedMembership.departed ||
+                _.isEqual(
+                  currentUsername,
+                  coalescedMembership.reader.username
+                ) ||
+                _.isEqual(role, coalescedMembership.clubRole)
+                  ? 'disabled'
+                  : 'secondary'
+              }
+            />
           </Button>
         </Grid>
       </Grid>
@@ -181,15 +239,38 @@ const BookClubManageMemberForm = ({
         item
         justifyContent="center"
         xs={1}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(!!coalescedMembership.departed && styles.removedMemberCell)
+        }}
       >
-        X
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleRemoveReaderClick}
+          disabled={
+            !!coalescedMembership.departed ||
+            _.isEqual(currentUsername, coalescedMembership.reader.username)
+          }
+        >
+          <PersonOff
+            color={
+              !!coalescedMembership.departed ||
+              _.isEqual(currentUsername, coalescedMembership.reader.username)
+                ? 'disabled'
+                : 'secondary'
+            }
+          />
+        </Button>
       </Grid>
       <Grid
         item
         justifyContent="center"
         xs={1}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(!!coalescedMembership.departed && styles.removedMemberCell)
+        }}
       >
         DOIT
       </Grid>
@@ -197,10 +278,21 @@ const BookClubManageMemberForm = ({
         item
         alignItems="center"
         xs={2}
-        sx={styleClasses}
+        sx={{
+          ...styleClasses,
+          ...(!!coalescedMembership.departed && styles.removedMemberCell)
+        }}
       >
         {coalescedMembership.joined}
       </Grid>
+      <ConfirmRemoveMemberDialog
+        open={confirmRemoveDialogOpen}
+        readerName={coalescedMembership.reader.username}
+        role={coalescedMembership.clubRole}
+        bookClubName={coalescedMembership.bookClub.name}
+        onCancel={handleCancelRemoveReader}
+        onConfirm={handleRemoveReader}
+      />
     </>
   );
 };

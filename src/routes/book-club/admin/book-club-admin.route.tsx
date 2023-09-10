@@ -13,7 +13,7 @@ import {
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import { useDisbandBookClubByNameMutation } from '../../../redux/slices/book-club/book-club.api.slice';
+import { useDisbandBookClubByNameMutation } from '../../../redux/api/book-club/book-club.api.slice';
 import ConfirmDisbandBookClubDialog from '../../../components/dialogs/confirm-disband-book-club.dialog';
 
 // MUI styled components

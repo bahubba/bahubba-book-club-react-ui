@@ -1,4 +1,4 @@
-import api from '../../api/base';
+import api from '../base';
 import {
   BookClub,
   BookClubMembership,
