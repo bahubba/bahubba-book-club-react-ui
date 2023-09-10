@@ -7,8 +7,8 @@ import _ from 'lodash';
 import SectionHeader from '../../components/layout/section-header.component';
 import BookClubAdminButton from '../../components/buttons/book-club-admin.button';
 import RequestMembershipButton from '../../components/buttons/request-membership.button';
-import { useLazyGetMembershipQuery } from '../../redux/slices/book-club/book-club.api.slice';
-import { useLazyHasPendingRequestQuery } from '../../redux/slices/book-club/membership-request.api.slice';
+import { useLazyGetMembershipQuery } from '../../redux/api/book-club/book-club.api.slice';
+import { useLazyHasPendingRequestQuery } from '../../redux/api/book-club/membership-request.api.slice';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({

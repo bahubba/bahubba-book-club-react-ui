@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import _ from 'lodash';
 
-import { useLazySearchQuery } from '../../redux/slices/book-club/book-club.api.slice';
+import { useLazySearchQuery } from '../../redux/api/book-club/book-club.api.slice';
 import BookClubCard from '../../components/cards/book-club.card';
 
 // MUI emotion styles

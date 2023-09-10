@@ -12,9 +12,9 @@ import {
 } from '@mui/material';
 import { green, grey, red } from '@mui/material/colors';
 
-import { useReviewMembershipRequestMutation } from '../../redux/slices/book-club/membership-request.api.slice';
+import { useReviewMembershipRequestMutation } from '../../redux/api/book-club/membership-request.api.slice';
 import { BookClubRole, MembershipRequest } from '../../interfaces';
-import { PersonAdd, PersonOff } from '@mui/icons-material';
+import { PersonAdd, PersonAddDisabled } from '@mui/icons-material';
 import ConfirmMembershipRequestReviewDialog from '../dialogs/confirm-membership-request-review.dialog';
 
 // MUI emotion styles
@@ -200,7 +200,9 @@ const MembershipRequestReviewForm = ({
             onClick={handleConfirmApproval}
             disabled={!!coalescedRequest.reviewed}
           >
-            <PersonAdd />
+            <PersonAdd
+              color={!!coalescedRequest.reviewed ? 'disabled' : 'secondary'}
+            />
           </Button>
         </Grid>
       </Grid>
@@ -220,7 +222,9 @@ const MembershipRequestReviewForm = ({
           onClick={handleConfirmRejection}
           disabled={!!coalescedRequest.reviewed}
         >
-          <PersonOff color="secondary" />
+          <PersonAddDisabled
+            color={!!coalescedRequest.reviewed ? 'disabled' : 'secondary'}
+          />
         </Button>
       </Grid>
       <Grid

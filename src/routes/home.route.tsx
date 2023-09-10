@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 
-import { useGetBookClubsForReaderQuery } from '../redux/slices/book-club/book-club.api.slice';
+import { useGetBookClubsForReaderQuery } from '../redux/api/book-club/book-club.api.slice';
 
 import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';

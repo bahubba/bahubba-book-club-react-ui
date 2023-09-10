@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 
-import { useRequestMembershipMutation } from '../../redux/slices/book-club/membership-request.api.slice';
+import { useRequestMembershipMutation } from '../../redux/api/book-club/membership-request.api.slice';
 
 // MUI emotion styles
 const styles = {
