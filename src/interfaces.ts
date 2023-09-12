@@ -81,7 +81,7 @@ export interface BookClubMembership {
   bookClub: BookClub;
   reader: Reader;
   clubRole: BookClubRole;
-  isCreator: boolean;
+  isOwner: boolean;
   joined: string;
   departed: string | null;
 }
