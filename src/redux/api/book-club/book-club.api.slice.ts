@@ -2,6 +2,7 @@ import api from '../base';
 import { BookClub } from '../../../interfaces';
 import props from '../../../properties';
 import {
+  ErrorResponse,
   PaginatedBookClubSearchPayload,
   PaginatedResponse
 } from '../../interfaces';
@@ -48,6 +49,13 @@ const bookClubAPISlice = api.injectEndpoints({
               content: [...(existing?.content || []), ...incoming.content],
               fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
             },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<BookClub>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     search: builder.query<
@@ -76,6 +84,13 @@ const bookClubAPISlice = api.injectEndpoints({
               content: [...(existing?.content || []), ...incoming.content],
               fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
             },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<BookClub>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     disbandBookClub: builder.mutation<void, string>({

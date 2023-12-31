@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
@@ -8,7 +9,8 @@ import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';
 import CreateBookClubButton from '../components/buttons/create-book-club.button';
 import BookClubSearchButton from '../components/buttons/book-club-search.button';
-import { useState } from 'react';
+import { ErrorResponse, PaginatedResponse } from '../redux/interfaces';
+import { BookClub } from '../interfaces';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -51,12 +53,17 @@ const HomeRoute = () => {
 
   // Redux API query for the user's book clubs
   // TODO - Make pagination dynamic
-  const { data, isLoading } = useGetBookClubsForReaderQuery(pageNum ?? 0, {
-    refetchOnMountOrArgChange: true
-  });
+  const { data, isLoading, error } = useGetBookClubsForReaderQuery(
+    pageNum ?? 0,
+    {
+      refetchOnMountOrArgChange: true
+    }
+  );
+
+  const errRsp = error as ErrorResponse<PaginatedResponse<BookClub>>;
 
   // Pull the book clubs from the API response's content
-  const bookClubs = _.get(data, 'content');
+  const bookClubs = _.get(data, 'content', _.get(errRsp, 'data.data.content'));
 
   // Handle scrolling the book clubs section
   const handleClubsScroll = (event: React.UIEvent<HTMLDivElement>) => {
@@ -67,7 +74,7 @@ const HomeRoute = () => {
     if (
       target.scrollHeight - Math.ceil(target.scrollTop) ===
         target.clientHeight &&
-      !data?.last
+      !(data?.last || errRsp?.data?.data?.last)
     )
       setPageNum(pageNum + 1);
   };

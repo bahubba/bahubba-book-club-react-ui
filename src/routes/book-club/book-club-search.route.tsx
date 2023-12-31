@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { useLazySearchQuery } from '../../redux/api/book-club/book-club.api.slice';
 import BookClubCard from '../../components/cards/book-club.card';
 import props from '../../properties';
+import { ErrorResponse, PaginatedResponse } from '../../redux/interfaces';
+import { BookClub } from '../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -25,10 +27,11 @@ const styles = {
 // TODO - Refactor layout so that the search bar is always visible
 const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
-  const [trigger, { data }] = useLazySearchQuery();
+  const [trigger, { data, error }] = useLazySearchQuery();
+  const errRsp = error as ErrorResponse<PaginatedResponse<BookClub>>;
 
   // Pull the book clubs from the API response's content
-  const bookClubs = _.get(data, 'content');
+  const bookClubs = _.get(data, 'content', _.get(errRsp, 'data.data.content'));
 
   // Component state
   const [searchTerm, setSearchTerm] = useState('');
@@ -62,7 +65,7 @@ const BookClubSearchRoute = () => {
     if (
       target.scrollHeight - Math.ceil(target.scrollTop) ===
         target.clientHeight &&
-      !data?.last
+      !(data?.last || errRsp?.data?.data?.last)
     ) {
       // Increment the page number
       setPageNum(pageNum + 1);

@@ -6,6 +6,8 @@ import _ from 'lodash';
 import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import BookClubManageMemberForm from '../../../components/forms/book-club-manage-member.form';
 import props from '../../../properties';
+import { ErrorResponse, PaginatedResponse } from '../../../redux/interfaces';
+import { BookClubMembership } from '../../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -33,11 +35,12 @@ const BookClubAdminMembersRoute = () => {
   const { bookClubName } = useParams();
 
   // Redux API query for members of the current book club
-  const [getMembers, { data, isLoading: membersLoading }] =
+  const [getMembers, { data, isLoading: membersLoading, error }] =
     useLazyGetMembersQuery();
+  const errRsp = error as ErrorResponse<PaginatedResponse<BookClubMembership>>;
 
   // Pull the members from the API response's content
-  const members = _.get(data, 'content');
+  const members = _.get(data, 'content', _.get(errRsp, 'data.data.content'));
 
   // Component state
   const [pageNum, setPageNum] = useState(0);
@@ -52,7 +55,7 @@ const BookClubAdminMembersRoute = () => {
       bookClubName &&
       target.scrollHeight - Math.ceil(target.scrollTop) ===
         target.clientHeight &&
-      !data?.last
+      !(data?.last || errRsp?.data?.data?.last)
     ) {
       setPageNum(pageNum + 1);
 

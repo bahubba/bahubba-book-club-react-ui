@@ -1,7 +1,11 @@
 import api from '../base';
 import { BookClubMembership, MembershipUpdate } from '../../../interfaces';
 import props from '../../../properties';
-import { PaginatedBookClubPayload, PaginatedResponse } from '../../interfaces';
+import {
+  ErrorResponse,
+  PaginatedBookClubPayload,
+  PaginatedResponse
+} from '../../interfaces';
 import _ from 'lodash';
 
 // Redux API Slice for Book Club Membership endpoints
@@ -32,6 +36,13 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
               content: [...(existing?.content || []), ...incoming.content],
               fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
             },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<BookClubMembership>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     getMembership: builder.query<BookClubMembership, string>({

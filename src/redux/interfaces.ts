@@ -44,3 +44,11 @@ export interface PaginatedResponse<T> {
   };
   fetchedPages?: number[];
 }
+
+export interface ErrorResponse<T> {
+  status: number;
+  data: {
+    message: string;
+    data?: T;
+  };
+}

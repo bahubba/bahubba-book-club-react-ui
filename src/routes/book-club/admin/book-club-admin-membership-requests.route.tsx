@@ -6,6 +6,8 @@ import _ from 'lodash';
 import { useLazyGetRequestsForBookClubQuery } from '../../../redux/api/book-club/membership-request.api.slice';
 import MembershipRequestReviewForm from '../../../components/forms/membership-request-review.form';
 import props from '../../../properties';
+import { ErrorResponse, PaginatedResponse } from '../../../redux/interfaces';
+import { MembershipRequest } from '../../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -38,11 +40,16 @@ const BookClubAdminMembershipRequestsRoute = () => {
   // Redux API query for membership requests for the current book club
   const [
     getMembershipRequests,
-    { data, isLoading: membershipRequestsLoading }
+    { data, isLoading: membershipRequestsLoading, error }
   ] = useLazyGetRequestsForBookClubQuery();
+  const errRsp = error as ErrorResponse<PaginatedResponse<MembershipRequest>>;
 
   // Pull the membership requests from the API response's content
-  const membershipRequests = _.get(data, 'content');
+  const membershipRequests = _.get(
+    data,
+    'content',
+    _.get(errRsp, 'data.data.content')
+  );
 
   // Component state
   const [pageNum, setPageNum] = useState(0);
@@ -68,7 +75,7 @@ const BookClubAdminMembershipRequestsRoute = () => {
       bookClubName &&
       target.scrollHeight - Math.ceil(target.scrollTop) ===
         target.clientHeight &&
-      !data?.last
+      !(data?.last || errRsp?.data?.data?.last)
     ) {
       setPageNum(pageNum + 1);
       getMembershipRequests({

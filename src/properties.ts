@@ -36,7 +36,7 @@ const props: Props = {
       process.env.REACT_APP_REACTIVE_API_URL || 'http://127.0.0.1:8001/api',
     NOTIFICATION: '/v1/notification'
   },
-  PAGE_SIZE: 12
+  PAGE_SIZE: 24
 };
 
 export default props;
