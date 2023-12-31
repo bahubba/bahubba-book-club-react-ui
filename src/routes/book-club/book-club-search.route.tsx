@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { useLazySearchQuery } from '../../redux/api/book-club/book-club.api.slice';
 import BookClubCard from '../../components/cards/book-club.card';
+import props from '../../properties';
 
 // MUI emotion styles
 const styles = {
@@ -25,8 +26,8 @@ const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
   const [trigger, { data }] = useLazySearchQuery();
 
-  // Pull out book clubs (if they exist) from the API query's response
-  const bookClubs = data?.content;
+  // Pull the book clubs from the API response's content
+  const bookClubs = _.get(data, 'content');
 
   // Component state
   const [searchTerm, setSearchTerm] = useState('');
@@ -44,7 +45,7 @@ const BookClubSearchRoute = () => {
   // TODO - Make pagination dynamic
   const handleSubmit = async () => {
     if (!_.isEmpty(searchTerm)) {
-      trigger({ searchTerm, pageNum: 0, pageSize: 10 });
+      trigger({ searchTerm, pageNum: 0, pageSize: props.PAGE_SIZE });
     }
   };
 

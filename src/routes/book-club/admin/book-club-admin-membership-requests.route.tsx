@@ -37,8 +37,11 @@ const BookClubAdminMembershipRequestsRoute = () => {
   // Redux API query for membership requests for the current book club
   const [
     getMembershipRequests,
-    { data: membershipRequests, isLoading: membershipRequestsLoading }
+    { data, isLoading: membershipRequestsLoading }
   ] = useLazyGetRequestsForBookClubQuery();
+
+  // Pull the membership requests from the API response's content
+  const membershipRequests = _.get(data, 'content');
 
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {

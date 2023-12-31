@@ -3,7 +3,6 @@ import { BookClub } from '../../../interfaces';
 import props from '../../../properties';
 import {
   PaginatedBookClubSearchPayload,
-  PaginatedPayload,
   PaginatedResponse
 } from '../../interfaces';
 
@@ -29,13 +28,15 @@ const bookClubAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUB_BY_NAME}/${bookClub}`
       })
     }),
-    getBookClubsForReader: builder.query<
-      PaginatedResponse<BookClub>,
-      PaginatedPayload
-    >({
-      query: paginatedPayload =>
-        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}` +
-        `?pageNum=${paginatedPayload.pageNum}&pageSize=${paginatedPayload.pageSize}`
+    getBookClubsForReader: builder.query<PaginatedResponse<BookClub>, number>({
+      query: pageNum =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}?pageNum=${pageNum}&pageSize=${props.PAGE_SIZE}`,
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (existing, incoming) => ({
+        ...incoming,
+        content: [...(existing?.content || []), ...incoming.content]
+      }),
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     search: builder.query<
       PaginatedResponse<BookClub>,
@@ -45,7 +46,14 @@ const bookClubAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
         method: 'POST',
         body: searchPayload
-      })
+      }),
+      serializeQueryArgs: ({ endpointName, queryArgs }) =>
+        `${endpointName}_${queryArgs.searchTerm}`,
+      merge: (existing, incoming) => ({
+        ...incoming,
+        content: [...(existing?.content || []), ...incoming.content]
+      }),
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     disbandBookClub: builder.mutation<void, string>({
       query: bookClubID => ({

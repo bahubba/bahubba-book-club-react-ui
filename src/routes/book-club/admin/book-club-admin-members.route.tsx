@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import BookClubManageMemberForm from '../../../components/forms/book-club-manage-member.form';
+import props from '../../../properties';
 
 // MUI emotion styles
 const styles = {
@@ -35,8 +36,8 @@ const BookClubAdminMembersRoute = () => {
   const [getMembers, { data, isLoading: membersLoading }] =
     useLazyGetMembersQuery();
 
-  // Pull out the members (if any) from the API query's response
-  const members = data?.content;
+  // Pull the members from the API response's content
+  const members = _.get(data, 'content');
 
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {
@@ -44,7 +45,7 @@ const BookClubAdminMembersRoute = () => {
       getMembers({
         bookClubName,
         pageNum: 0,
-        pageSize: 10
+        pageSize: props.PAGE_SIZE
       });
     }
   }, [bookClubName, getMembers]);

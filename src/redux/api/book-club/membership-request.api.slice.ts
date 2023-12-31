@@ -5,6 +5,7 @@ import {
   MembershipRequestPayload
 } from '../../../interfaces';
 import props from '../../../properties';
+import { PaginatedResponse } from '../../interfaces';
 
 // Redux API Slice for Membership Request endpoints
 const membershipRequestAPISlice = api.injectEndpoints({
@@ -20,9 +21,18 @@ const membershipRequestAPISlice = api.injectEndpoints({
       query: bookClubName =>
         `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}/${bookClubName}`
     }),
-    getRequestsForBookClub: builder.query<MembershipRequest[], string>({
+    getRequestsForBookClub: builder.query<
+      PaginatedResponse<MembershipRequest>,
+      string
+    >({
       query: bookClubName =>
-        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${bookClubName}`
+        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${bookClubName}`,
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (existing, incoming) => ({
+        ...incoming,
+        content: [...(existing?.content || []), ...incoming.content]
+      }),
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     reviewMembershipRequest: builder.mutation<
       MembershipRequest,

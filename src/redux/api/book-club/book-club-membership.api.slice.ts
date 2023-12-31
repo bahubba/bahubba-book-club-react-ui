@@ -12,7 +12,14 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
     >({
       query: paginatedBookClubPayload =>
         `${props.API_PATHS.MEMBERSHIPS}${props.API_PATHS.ALL_MEMBERSHIPS}/${paginatedBookClubPayload.bookClubName}` +
-        `?pageNum=${paginatedBookClubPayload.pageNum}&pageSize=${paginatedBookClubPayload.pageSize}}`
+        `?pageNum=${paginatedBookClubPayload.pageNum}&pageSize=${props.PAGE_SIZE}}`,
+      serializeQueryArgs: ({ endpointName, queryArgs }) =>
+        `${endpointName}_${queryArgs.bookClubName}`,
+      merge: (existing, incoming) => ({
+        ...incoming,
+        content: [...(existing?.content || []), ...incoming.content]
+      }),
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     getMembership: builder.query<BookClubMembership, string>({
       query: bookClubName => `${props.API_PATHS.MEMBERSHIPS}/${bookClubName}`

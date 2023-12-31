@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
@@ -8,6 +9,7 @@ import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';
 import CreateBookClubButton from '../components/buttons/create-book-club.button';
 import BookClubSearchButton from '../components/buttons/book-club-search.button';
+import { useState } from 'react';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -45,15 +47,37 @@ const styles = {
  * Home route/page displaying the user's clubs, books, and other trending information
  */
 const HomeRoute = () => {
+  // State vars
+  const [pageNum, setPageNum] = useState(0);
+
   // Redux API query for the user's book clubs
   // TODO - Make pagination dynamic
-  const { data, isLoading } = useGetBookClubsForReaderQuery(
-    { pageNum: 0, pageSize: 10 },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data, isLoading } = useGetBookClubsForReaderQuery(pageNum ?? 0, {
+    refetchOnMountOrArgChange: true
+  });
 
-  // Pull out book clubs (if they exist) from the API query's response
-  const bookClubs = data?.content;
+  // Pull the book clubs from the API response's content
+  const bookClubs = _.get(data, 'content');
+
+  // Handle scrolling the book clubs section
+  const handleClubsScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    // Pull the target element from the event and treat it as the right type
+    const target = event.target as HTMLDivElement;
+
+    // If the user has scrolled to the bottom of the container, load the next page of book clubs
+    // TODO - Stop loading when we've reached the end of the book clubs
+    if (
+      target.scrollHeight - Math.ceil(target.scrollTop) ===
+        target.clientHeight &&
+      !data?.last
+    )
+      setPageNum(pageNum + 1);
+  };
+
+  // DELETEME
+  useEffect(() => {
+    console.log('data:::', data);
+  }, [data]);
 
   return (
     <>
@@ -78,7 +102,7 @@ const HomeRoute = () => {
               <BookClubSearchButton />
               <CreateBookClubButton />
             </SectionHeader>
-            <SectionContentDiv>
+            <SectionContentDiv onScroll={handleClubsScroll}>
               {!isLoading && bookClubs && (
                 <Grid
                   container
