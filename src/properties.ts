@@ -1,6 +1,7 @@
 interface Props {
   API_PATHS: { [key: string]: string };
   REACTIVE_API_PATHS: { [key: string]: string };
+  PAGE_SIZE: number;
 }
 
 const props: Props = {
@@ -34,7 +35,8 @@ const props: Props = {
     ROOT_URL:
       process.env.REACT_APP_REACTIVE_API_URL || 'http://127.0.0.1:8001/api',
     NOTIFICATION: '/v1/notification'
-  }
+  },
+  PAGE_SIZE: 24
 };
 
 export default props;

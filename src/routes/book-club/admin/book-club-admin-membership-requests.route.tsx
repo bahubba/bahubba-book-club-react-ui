@@ -1,10 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
 import { useLazyGetRequestsForBookClubQuery } from '../../../redux/api/book-club/membership-request.api.slice';
 import MembershipRequestReviewForm from '../../../components/forms/membership-request-review.form';
+import props from '../../../properties';
+import { ErrorResponse, PaginatedResponse } from '../../../redux/interfaces';
+import { MembershipRequest } from '../../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -37,21 +40,58 @@ const BookClubAdminMembershipRequestsRoute = () => {
   // Redux API query for membership requests for the current book club
   const [
     getMembershipRequests,
-    { data: membershipRequests, isLoading: membershipRequestsLoading }
+    { data, isLoading: membershipRequestsLoading, error }
   ] = useLazyGetRequestsForBookClubQuery();
+  const errRsp = error as ErrorResponse<PaginatedResponse<MembershipRequest>>;
+
+  // Pull the membership requests from the API response's content
+  const membershipRequests = _.get(
+    data,
+    'content',
+    _.get(errRsp, 'data.data.content')
+  );
+
+  // Component state
+  const [pageNum, setPageNum] = useState(0);
 
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {
     if (bookClubName) {
-      getMembershipRequests(bookClubName);
+      getMembershipRequests({
+        bookClubName,
+        pageNum: 0,
+        pageSize: props.PAGE_SIZE
+      });
     }
   }, [bookClubName, getMembershipRequests]);
+
+  // When the user scrolls to the bottom, load more membership requests
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    // Pull the target element from the event and treat it as the right type
+    const target = event.target as HTMLDivElement;
+
+    // If the user has scrolled to the bottom of the container, load the next page of membership requests
+    if (
+      bookClubName &&
+      target.scrollHeight - Math.ceil(target.scrollTop) ===
+        target.clientHeight &&
+      !(data?.last || errRsp?.data?.data?.last)
+    ) {
+      setPageNum(pageNum + 1);
+      getMembershipRequests({
+        bookClubName,
+        pageNum: pageNum + 1,
+        pageSize: props.PAGE_SIZE
+      });
+    }
+  };
 
   return (
     <Grid
       container
       justifyContent="center"
       sx={styles.rootGrid}
+      onScroll={handleScroll}
     >
       {membershipRequestsLoading ? (
         <Grid

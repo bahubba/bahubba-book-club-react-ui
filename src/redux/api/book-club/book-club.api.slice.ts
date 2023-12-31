@@ -1,6 +1,12 @@
 import api from '../base';
 import { BookClub } from '../../../interfaces';
 import props from '../../../properties';
+import {
+  ErrorResponse,
+  PaginatedBookClubSearchPayload,
+  PaginatedResponse
+} from '../../interfaces';
+import _ from 'lodash';
 
 // Redux API Slice for Book Club endpoints
 const bookClubAPISlice = api.injectEndpoints({
@@ -24,16 +30,68 @@ const bookClubAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUB_BY_NAME}/${bookClub}`
       })
     }),
-    getBookClubsForReader: builder.query<BookClub[], void>({
-      query: () =>
-        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
+    getBookClubsForReader: builder.query<PaginatedResponse<BookClub>, number>({
+      query: pageNum =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}?pageNum=${pageNum}&pageSize=${props.PAGE_SIZE}`,
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      transformResponse: (rsp: PaginatedResponse<BookClub>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
+      }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<BookClub>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
-    search: builder.query<BookClub[], string>({
-      query: searchTerm => ({
+    search: builder.query<
+      PaginatedResponse<BookClub>,
+      PaginatedBookClubSearchPayload
+    >({
+      query: searchPayload => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
         method: 'POST',
-        body: { searchTerm, page: 0, size: 10 }
-      })
+        body: searchPayload
+      }),
+      serializeQueryArgs: ({ endpointName, queryArgs }) =>
+        `${endpointName}_${queryArgs.searchTerm}`,
+      transformResponse: (rsp: PaginatedResponse<BookClub>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
+      }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<BookClub>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     disbandBookClub: builder.mutation<void, string>({
       query: bookClubID => ({

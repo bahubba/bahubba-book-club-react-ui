@@ -4,13 +4,16 @@ import _ from 'lodash';
 
 import { useLazySearchQuery } from '../../redux/api/book-club/book-club.api.slice';
 import BookClubCard from '../../components/cards/book-club.card';
+import props from '../../properties';
+import { ErrorResponse, PaginatedResponse } from '../../redux/interfaces';
+import { BookClub } from '../../interfaces';
 
 // MUI emotion styles
 const styles = {
   rootGrid: {
     py: 1,
     maxHeight: '100%',
-    overflow: 'auto'
+    overflowY: 'scroll'
   },
   fullWidthInput: {
     width: '100%'
@@ -21,12 +24,18 @@ const styles = {
   }
 };
 
+// TODO - Refactor layout so that the search bar is always visible
 const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
-  const [trigger, { data: bookClubs }] = useLazySearchQuery();
+  const [trigger, { data, error }] = useLazySearchQuery();
+  const errRsp = error as ErrorResponse<PaginatedResponse<BookClub>>;
+
+  // Pull the book clubs from the API response's content
+  const bookClubs = _.get(data, 'content', _.get(errRsp, 'data.data.content'));
 
   // Component state
   const [searchTerm, setSearchTerm] = useState('');
+  const [pageNum, setPageNum] = useState(0);
 
   // Handle updating the search term
   const handleSearchTermInput = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -39,8 +48,34 @@ const BookClubSearchRoute = () => {
 
   // Handle submitting the search form
   const handleSubmit = async () => {
+    // Reset the page number
+    setPageNum(0);
+
     if (!_.isEmpty(searchTerm)) {
-      trigger(searchTerm);
+      trigger({ searchTerm, pageNum: 0, pageSize: props.PAGE_SIZE });
+    }
+  };
+
+  // If the user has scrolled to the bottom of the page, load more search results
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    // Pull the target element from the event and treat it as the right type
+    const target = event.target as HTMLDivElement;
+
+    // If the user has scrolled to the bottom of the container, load the next page of book clubs
+    if (
+      target.scrollHeight - Math.ceil(target.scrollTop) ===
+        target.clientHeight &&
+      !(data?.last || errRsp?.data?.data?.last)
+    ) {
+      // Increment the page number
+      setPageNum(pageNum + 1);
+
+      // Trigger the search query
+      trigger({
+        searchTerm,
+        pageNum: pageNum + 1,
+        pageSize: props.PAGE_SIZE
+      });
     }
   };
 
@@ -56,6 +91,7 @@ const BookClubSearchRoute = () => {
         container
         justifyContent="center"
         sx={styles.rootGrid}
+        onScroll={handleScroll}
       >
         <Grid
           item

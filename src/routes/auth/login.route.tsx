@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Button,
   CircularProgress,
-  Divider,
   Grid,
   TextField,
   Typography
@@ -169,9 +168,6 @@ const LoginRoute = () => {
             >
               Login
             </Button>
-          </Grid>
-          <Grid item>
-            <Divider />
           </Grid>
           <Grid
             item

@@ -5,6 +5,12 @@ import {
   MembershipRequestPayload
 } from '../../../interfaces';
 import props from '../../../properties';
+import {
+  ErrorResponse,
+  PaginatedBookClubPayload,
+  PaginatedResponse
+} from '../../interfaces';
+import _ from 'lodash';
 
 // Redux API Slice for Membership Request endpoints
 const membershipRequestAPISlice = api.injectEndpoints({
@@ -20,9 +26,37 @@ const membershipRequestAPISlice = api.injectEndpoints({
       query: bookClubName =>
         `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}/${bookClubName}`
     }),
-    getRequestsForBookClub: builder.query<MembershipRequest[], string>({
-      query: bookClubName =>
-        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${bookClubName}`
+    getRequestsForBookClub: builder.query<
+      PaginatedResponse<MembershipRequest>,
+      PaginatedBookClubPayload
+    >({
+      query: paginatedBookClubPayload =>
+        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${paginatedBookClubPayload.bookClubName}` +
+        `?pageNum=${paginatedBookClubPayload.pageNum}&pageSize=${props.PAGE_SIZE}`,
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      transformResponse: (rsp: PaginatedResponse<MembershipRequest>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
+      }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
+      transformErrorResponse: (
+        rsp: ErrorResponse<PaginatedResponse<MembershipRequest>>
+      ) => {
+        console.warn(rsp.data.message);
+        if (rsp.data.data) rsp.data.data.fetchedPages = [rsp.data.data?.number];
+        return rsp;
+      },
+      forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     reviewMembershipRequest: builder.mutation<
       MembershipRequest,
