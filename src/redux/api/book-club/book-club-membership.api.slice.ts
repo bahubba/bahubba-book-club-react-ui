@@ -1,13 +1,18 @@
 import api from '../base';
 import { BookClubMembership, MembershipUpdate } from '../../../interfaces';
 import props from '../../../properties';
+import { PaginatedBookClubPayload, PaginatedResponse } from '../../interfaces';
 
 // Redux API Slice for Book Club Membership endpoints
 const bookClubMembershipAPISlice = api.injectEndpoints({
   endpoints: builder => ({
-    getMembers: builder.query<BookClubMembership[], string>({
-      query: bookClubName =>
-        `${props.API_PATHS.MEMBERSHIPS}${props.API_PATHS.ALL_MEMBERSHIPS}/${bookClubName}`
+    getMembers: builder.query<
+      PaginatedResponse<BookClubMembership>,
+      PaginatedBookClubPayload
+    >({
+      query: paginatedBookClubPayload =>
+        `${props.API_PATHS.MEMBERSHIPS}${props.API_PATHS.ALL_MEMBERSHIPS}/${paginatedBookClubPayload.bookClubName}` +
+        `?pageNum=${paginatedBookClubPayload.pageNum}&pageSize=${paginatedBookClubPayload.pageSize}}`
     }),
     getMembership: builder.query<BookClubMembership, string>({
       query: bookClubName => `${props.API_PATHS.MEMBERSHIPS}/${bookClubName}`

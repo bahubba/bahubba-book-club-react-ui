@@ -46,10 +46,14 @@ const styles = {
  */
 const HomeRoute = () => {
   // Redux API query for the user's book clubs
-  const { data: bookClubs, isLoading } = useGetBookClubsForReaderQuery(
-    undefined,
+  // TODO - Make pagination dynamic
+  const { data, isLoading } = useGetBookClubsForReaderQuery(
+    { pageNum: 0, pageSize: 10 },
     { refetchOnMountOrArgChange: true }
   );
+
+  // Pull out book clubs (if they exist) from the API query's response
+  const bookClubs = data?.content;
 
   return (
     <>

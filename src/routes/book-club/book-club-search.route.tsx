@@ -23,7 +23,10 @@ const styles = {
 
 const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
-  const [trigger, { data: bookClubs }] = useLazySearchQuery();
+  const [trigger, { data }] = useLazySearchQuery();
+
+  // Pull out book clubs (if they exist) from the API query's response
+  const bookClubs = data?.content;
 
   // Component state
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,9 +41,10 @@ const BookClubSearchRoute = () => {
   };
 
   // Handle submitting the search form
+  // TODO - Make pagination dynamic
   const handleSubmit = async () => {
     if (!_.isEmpty(searchTerm)) {
-      trigger(searchTerm);
+      trigger({ searchTerm, pageNum: 0, pageSize: 10 });
     }
   };
 

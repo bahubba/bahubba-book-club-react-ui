@@ -32,13 +32,20 @@ const BookClubAdminMembersRoute = () => {
   const { bookClubName } = useParams();
 
   // Redux API query for members of the current book club
-  const [getMembers, { data: members, isLoading: membersLoading }] =
+  const [getMembers, { data, isLoading: membersLoading }] =
     useLazyGetMembersQuery();
+
+  // Pull out the members (if any) from the API query's response
+  const members = data?.content;
 
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {
     if (bookClubName) {
-      getMembers(bookClubName);
+      getMembers({
+        bookClubName,
+        pageNum: 0,
+        pageSize: 10
+      });
     }
   }, [bookClubName, getMembers]);
 

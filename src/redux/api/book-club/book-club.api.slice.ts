@@ -1,6 +1,11 @@
 import api from '../base';
 import { BookClub } from '../../../interfaces';
 import props from '../../../properties';
+import {
+  PaginatedBookClubSearchPayload,
+  PaginatedPayload,
+  PaginatedResponse
+} from '../../interfaces';
 
 // Redux API Slice for Book Club endpoints
 const bookClubAPISlice = api.injectEndpoints({
@@ -24,15 +29,22 @@ const bookClubAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUB_BY_NAME}/${bookClub}`
       })
     }),
-    getBookClubsForReader: builder.query<BookClub[], void>({
-      query: () =>
-        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}`
+    getBookClubsForReader: builder.query<
+      PaginatedResponse<BookClub>,
+      PaginatedPayload
+    >({
+      query: paginatedPayload =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}` +
+        `?pageNum=${paginatedPayload.pageNum}&pageSize=${paginatedPayload.pageSize}`
     }),
-    search: builder.query<BookClub[], string>({
-      query: searchTerm => ({
+    search: builder.query<
+      PaginatedResponse<BookClub>,
+      PaginatedBookClubSearchPayload
+    >({
+      query: searchPayload => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.SEARCH}`,
         method: 'POST',
-        body: { searchTerm, page: 0, size: 10 }
+        body: searchPayload
       })
     }),
     disbandBookClub: builder.mutation<void, string>({
