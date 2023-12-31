@@ -5,7 +5,8 @@ import {
   MembershipRequestPayload
 } from '../../../interfaces';
 import props from '../../../properties';
-import { PaginatedResponse } from '../../interfaces';
+import { PaginatedBookClubPayload, PaginatedResponse } from '../../interfaces';
+import _ from 'lodash';
 
 // Redux API Slice for Membership Request endpoints
 const membershipRequestAPISlice = api.injectEndpoints({
@@ -23,15 +24,27 @@ const membershipRequestAPISlice = api.injectEndpoints({
     }),
     getRequestsForBookClub: builder.query<
       PaginatedResponse<MembershipRequest>,
-      string
+      PaginatedBookClubPayload
     >({
-      query: bookClubName =>
-        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${bookClubName}`,
+      query: paginatedBookClubPayload =>
+        `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.REQUESTS_FOR_BOOK_CLUB}/${paginatedBookClubPayload.bookClubName}` +
+        `?pageNum=${paginatedBookClubPayload.pageNum}&pageSize=${props.PAGE_SIZE}`,
       serializeQueryArgs: ({ endpointName }) => endpointName,
-      merge: (existing, incoming) => ({
-        ...incoming,
-        content: [...(existing?.content || []), ...incoming.content]
+      transformResponse: (rsp: PaginatedResponse<MembershipRequest>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
       }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     reviewMembershipRequest: builder.mutation<

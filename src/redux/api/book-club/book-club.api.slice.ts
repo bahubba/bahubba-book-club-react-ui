@@ -5,6 +5,7 @@ import {
   PaginatedBookClubSearchPayload,
   PaginatedResponse
 } from '../../interfaces';
+import _ from 'lodash';
 
 // Redux API Slice for Book Club endpoints
 const bookClubAPISlice = api.injectEndpoints({
@@ -32,10 +33,21 @@ const bookClubAPISlice = api.injectEndpoints({
       query: pageNum =>
         `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}?pageNum=${pageNum}&pageSize=${props.PAGE_SIZE}`,
       serializeQueryArgs: ({ endpointName }) => endpointName,
-      merge: (existing, incoming) => ({
-        ...incoming,
-        content: [...(existing?.content || []), ...incoming.content]
+      transformResponse: (rsp: PaginatedResponse<BookClub>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
       }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     search: builder.query<
@@ -49,10 +61,21 @@ const bookClubAPISlice = api.injectEndpoints({
       }),
       serializeQueryArgs: ({ endpointName, queryArgs }) =>
         `${endpointName}_${queryArgs.searchTerm}`,
-      merge: (existing, incoming) => ({
-        ...incoming,
-        content: [...(existing?.content || []), ...incoming.content]
+      transformResponse: (rsp: PaginatedResponse<BookClub>) => ({
+        ...rsp,
+        fetchedPages: [rsp.number]
       }),
+      merge: (existing, incoming) =>
+        _.includes(
+          _.get(existing, 'fetchedPages', []),
+          _.get(incoming, 'number')
+        )
+          ? existing
+          : {
+              ...incoming,
+              content: [...(existing?.content || []), ...incoming.content],
+              fetchedPages: [...(existing?.fetchedPages || []), incoming.number]
+            },
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
     disbandBookClub: builder.mutation<void, string>({

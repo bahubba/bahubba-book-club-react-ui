@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
@@ -65,7 +64,6 @@ const HomeRoute = () => {
     const target = event.target as HTMLDivElement;
 
     // If the user has scrolled to the bottom of the container, load the next page of book clubs
-    // TODO - Stop loading when we've reached the end of the book clubs
     if (
       target.scrollHeight - Math.ceil(target.scrollTop) ===
         target.clientHeight &&
@@ -73,11 +71,6 @@ const HomeRoute = () => {
     )
       setPageNum(pageNum + 1);
   };
-
-  // DELETEME
-  useEffect(() => {
-    console.log('data:::', data);
-  }, [data]);
 
   return (
     <>

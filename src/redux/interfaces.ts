@@ -42,4 +42,5 @@ export interface PaginatedResponse<T> {
     paged: boolean;
     unpaged: boolean;
   };
+  fetchedPages?: number[];
 }

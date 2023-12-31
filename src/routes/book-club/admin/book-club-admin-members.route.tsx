@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ const styles = {
   rootGrid: {
     py: 1,
     maxHeight: '100%',
-    overflow: 'auto'
+    overflowY: 'scroll'
   },
   loadingSpinnerRow: {
     display: 'flex',
@@ -39,6 +39,31 @@ const BookClubAdminMembersRoute = () => {
   // Pull the members from the API response's content
   const members = _.get(data, 'content');
 
+  // Component state
+  const [pageNum, setPageNum] = useState(0);
+
+  // When the user scrolls to the bottom, load more members
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    // Pull the target element from the event and treat it as the right type
+    const target = event.target as HTMLDivElement;
+
+    // If the user has scrolled to the bottom of the container, load the next page of book clubs
+    if (
+      bookClubName &&
+      target.scrollHeight - Math.ceil(target.scrollTop) ===
+        target.clientHeight &&
+      !data?.last
+    ) {
+      setPageNum(pageNum + 1);
+
+      getMembers({
+        bookClubName,
+        pageNum: pageNum + 1,
+        pageSize: props.PAGE_SIZE
+      });
+    }
+  };
+
   // When we have the book club name from the route params, trigger the API query
   useEffect(() => {
     if (bookClubName) {
@@ -55,6 +80,7 @@ const BookClubAdminMembersRoute = () => {
       container
       justifyContent="center"
       sx={styles.rootGrid}
+      onScroll={handleScroll}
     >
       {membersLoading ? (
         <Grid
