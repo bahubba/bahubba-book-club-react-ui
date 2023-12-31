@@ -11,7 +11,7 @@ const styles = {
   rootGrid: {
     py: 1,
     maxHeight: '100%',
-    overflow: 'auto'
+    overflowY: 'scroll'
   },
   fullWidthInput: {
     width: '100%'
@@ -22,6 +22,7 @@ const styles = {
   }
 };
 
+// TODO - Refactor layout so that the search bar is always visible
 const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
   const [trigger, { data }] = useLazySearchQuery();
@@ -31,6 +32,7 @@ const BookClubSearchRoute = () => {
 
   // Component state
   const [searchTerm, setSearchTerm] = useState('');
+  const [pageNum, setPageNum] = useState(0);
 
   // Handle updating the search term
   const handleSearchTermInput = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -42,10 +44,35 @@ const BookClubSearchRoute = () => {
   };
 
   // Handle submitting the search form
-  // TODO - Make pagination dynamic
   const handleSubmit = async () => {
+    // Reset the page number
+    setPageNum(0);
+
     if (!_.isEmpty(searchTerm)) {
       trigger({ searchTerm, pageNum: 0, pageSize: props.PAGE_SIZE });
+    }
+  };
+
+  // If the user has scrolled to the bottom of the page, load more search results
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    // Pull the target element from the event and treat it as the right type
+    const target = event.target as HTMLDivElement;
+
+    // If the user has scrolled to the bottom of the container, load the next page of book clubs
+    if (
+      target.scrollHeight - Math.ceil(target.scrollTop) ===
+        target.clientHeight &&
+      !data?.last
+    ) {
+      // Increment the page number
+      setPageNum(pageNum + 1);
+
+      // Trigger the search query
+      trigger({
+        searchTerm,
+        pageNum: pageNum + 1,
+        pageSize: props.PAGE_SIZE
+      });
     }
   };
 
@@ -61,6 +88,7 @@ const BookClubSearchRoute = () => {
         container
         justifyContent="center"
         sx={styles.rootGrid}
+        onScroll={handleScroll}
       >
         <Grid
           item
