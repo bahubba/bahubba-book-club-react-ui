@@ -25,6 +25,9 @@ const styles = {
 };
 
 // TODO - Refactor layout so that the search bar is always visible
+/**
+ * Book club search route/page for finding book clubs by name
+ */
 const BookClubSearchRoute = () => {
   // Redux API query for searching for book clubs
   const [trigger, { data, error }] = useLazySearchQuery();

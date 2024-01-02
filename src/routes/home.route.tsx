@@ -7,10 +7,10 @@ import { useGetBookClubsForReaderQuery } from '../redux/api/book-club/book-club.
 
 import SectionHeader from '../components/layout/section-header.component';
 import BookClubCard from '../components/cards/book-club.card';
-import CreateBookClubButton from '../components/buttons/create-book-club.button';
-import BookClubSearchButton from '../components/buttons/book-club-search.button';
 import { ErrorResponse, PaginatedResponse } from '../redux/interfaces';
 import { BookClub } from '../interfaces';
+import NavButton from '../components/buttons/nav.button';
+import { Add, Search } from '@mui/icons-material';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -99,8 +99,16 @@ const HomeRoute = () => {
         >
           <SectionContainerDiv>
             <SectionHeader title="My Clubs">
-              <BookClubSearchButton />
-              <CreateBookClubButton />
+              <NavButton
+                uri="/book-club/search"
+                tooltip="Find book clubs"
+                icon={<Search />}
+              />
+              <NavButton
+                uri="/book-club/create"
+                tooltip="Create book club"
+                icon={<Add />}
+              />
             </SectionHeader>
             <SectionContentDiv onScroll={handleClubsScroll}>
               {!isLoading && bookClubs && (

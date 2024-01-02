@@ -40,6 +40,7 @@ interface BookClubDetailsFormProps {
  * Form for creating a new book club or updating an existing one
  * @prop {boolean} updateExisting - Whether or not this form is for updating an existing book club
  * @prop {xsRange} gridXS - Pass-through MUI Grid item XS size prop
+ * @prop {boolean} showTitle - Whether or not to show the form title
  */
 const BookClubDetailsForm = ({
   updateExisting = false,
