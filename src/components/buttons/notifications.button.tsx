@@ -1,12 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Avatar, Badge, Theme } from '@mui/material';
 import { NotificationsNone } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-
-import { selectIsLoggedIn } from '../../redux/slices/auth/auth.slice';
-
-import props from '../../properties';
 
 // MUI emotion styles
 const styles = {
@@ -19,38 +13,39 @@ const styles = {
 };
 
 /**
- * Button for linking to the notifications page and displaying the number of new notifications
+ * Button for linking to the notifications page with a badge for the number of new notifications
  */
 const NotificationsButton = () => {
   // Auth state from Redux
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  // const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  // State vars
-  const [numNotifications, setNumNotifications] = useState(0); // Number of notifications
+  // // Component state
+  // const [numNotifications, setNumNotifications] = useState(0); // Number of notifications
 
   // On load, establish a connection for Server-Sent Events to get notification updates
-  useEffect(() => {
-    if (isLoggedIn) {
-      const eventSource = new EventSource(
-        `${props.REACTIVE_API_PATHS.ROOT_URL}${props.REACTIVE_API_PATHS.NOTIFICATION}/count-new`,
-        { withCredentials: true }
-      );
+  // TODO - Replace with polling until WebSockets or WebFlux is implemented
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     const eventSource = new EventSource(
+  //       `${props.REACTIVE_API_PATHS.ROOT_URL}${props.REACTIVE_API_PATHS.NOTIFICATION}/count-new`,
+  //       { withCredentials: true }
+  //     );
 
-      // TODO - Add event listeners for open and error events
+  //     // TODO - Add event listeners for open and error events
 
-      eventSource.onmessage = event => {
-        setNumNotifications(Number(JSON.parse(event.data)));
-      };
+  //     eventSource.onmessage = event => {
+  //       setNumNotifications(Number(JSON.parse(event.data)));
+  //     };
 
-      eventSource.onerror = () => {
-        eventSource.close();
-      };
+  //     eventSource.onerror = () => {
+  //       eventSource.close();
+  //     };
 
-      return () => {
-        eventSource.close();
-      };
-    }
-  }, [isLoggedIn]);
+  //     return () => {
+  //       eventSource.close();
+  //     };
+  //   }
+  // }, [isLoggedIn]);
 
   return (
     <Link to="/notifications">
@@ -58,7 +53,7 @@ const NotificationsButton = () => {
         overlap="circular"
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         color="error"
-        badgeContent={numNotifications}
+        badgeContent={0 /*numNotifications*/}
       >
         <Avatar sx={styles.avatar}>
           <NotificationsNone />

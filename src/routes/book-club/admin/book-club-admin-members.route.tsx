@@ -30,6 +30,9 @@ const styles = {
   }
 };
 
+/**
+ * Book club admin sub-route managing members
+ */
 const BookClubAdminMembersRoute = () => {
   // Book club name from the route params
   const { bookClubName } = useParams();

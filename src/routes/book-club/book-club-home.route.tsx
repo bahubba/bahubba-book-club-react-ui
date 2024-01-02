@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
+import { Edit, PersonAdd } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 
 import SectionHeader from '../../components/layout/section-header.component';
-import BookClubAdminButton from '../../components/buttons/book-club-admin.button';
-import RequestMembershipButton from '../../components/buttons/request-membership.button';
 import { useLazyGetMembershipQuery } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { useLazyHasPendingRequestQuery } from '../../redux/api/book-club/membership-request.api.slice';
+import NavButton from '../../components/buttons/nav.button';
 
 // MUI styled components
 const SectionContainerDiv = styled('div')(({ theme }) => ({
@@ -103,12 +103,20 @@ const BookClubHomeRoute = () => {
       >
         <>
           {_.isEqual('ADMIN', membership?.clubRole) && (
-            <BookClubAdminButton bookClubName={bookClubName || 'Book Club'} />
+            <NavButton
+              uri={`/book-club/${bookClubName || 'Book Club'}/admin`}
+              tooltip="Manage book club"
+              icon={<Edit />}
+            />
           )}
           {!membership?.clubRole ||
             (_.isEqual('NONE', membership.clubRole) && !hasPendingRequest && (
-              <RequestMembershipButton
-                bookClubName={bookClubName || 'Book Club'}
+              <NavButton
+                uri={`/book-club/${
+                  bookClubName || 'Book Club'
+                }/request-membership`}
+                tooltip="Request membership"
+                icon={<PersonAdd />}
               />
             ))}
         </>

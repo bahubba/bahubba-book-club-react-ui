@@ -14,7 +14,9 @@ const initialState: AuthState = {
   isLoggedIn: false
 };
 
-// Slice definition
+/**
+ * Redux Slice for Auth state
+ */
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
