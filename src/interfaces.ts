@@ -98,3 +98,8 @@ export interface MembershipUpdate {
   readerID: string;
   role: BookClubRole;
 }
+
+export interface OwnershipChange {
+  bookClubName: string;
+  newOwnerID: string;
+}

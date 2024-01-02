@@ -10,16 +10,25 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
-import { ManageAccounts, PersonOff } from '@mui/icons-material';
+import {
+  AdminPanelSettings,
+  ManageAccounts,
+  PersonOff,
+  Star
+} from '@mui/icons-material';
 import { grey, red } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 import { selectCurrentUsername } from '../../redux/slices/auth/auth.slice';
-import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
+import {
+  useChangeOwnerMutation,
+  useUpdateMemberRoleMutation
+} from '../../redux/api/book-club/book-club-membership.api.slice';
 import { useRemoveMemberMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { BookClubMembership, BookClubRole } from '../../interfaces';
 import ConfirmRemoveMemberDialog from '../dialogs/confirm-remove-member.dialog';
+import ConfirmMakeOwnerDialog from '../dialogs/confirm-make-owner.dialog';
 
 // MUI emotion styles
 const styles = {
@@ -79,34 +88,59 @@ const BookClubManageMemberForm = ({
     { data: removedMember, isLoading: removeMemberLoading }
   ] = useRemoveMemberMutation();
 
+  // Redux API mutation for changing the owner of a book club
+  const [makeOwner, { data: newOwner, isLoading: makeOwnerLoading }] =
+    useChangeOwnerMutation();
+
   // Component state
   const [role, setRole] = useState(membership.clubRole);
   const [coalescedMembership, setCoalescedMembership] = useState(membership);
   const [confirmRemoveDialogOpen, setConfirmRemoveDialogOpen] = useState(false);
+  const [confirmMakeOwnerDialogOpen, setConfirmMakeOwnerDialogOpen] =
+    useState(false);
 
   // Handle role input change
   const handleRoleChange = (event: SelectChangeEvent<BookClubRole>) =>
     setRole(event.target.value as BookClubRole);
 
   // Handle clicking on the remove reader button
-  const handleRemoveReaderClick = () => {
-    setConfirmRemoveDialogOpen(true);
-  };
+  const handleRemoveReaderClick = () => setConfirmRemoveDialogOpen(true);
+
+  // Handle clicking on the make owner button
+  const handleMakeOwnerClick = () => setConfirmMakeOwnerDialogOpen(true);
 
   // Handle canceling removing the reader
   const handleCancelRemoveReader = () => setConfirmRemoveDialogOpen(false);
 
+  // Handle canceling making the reader the owner
+  const handleCancelMakeOwner = () => setConfirmMakeOwnerDialogOpen(false);
+
   // Handle submitting the role change
   const handleSubmitRoleChange = async () => {
-    if (!!membership.reader.id) {
+    if (!!coalescedMembership.reader.id) {
       await updateMemberRole({
-        bookClubName: membership.bookClub.name,
-        readerID: membership.reader.id,
+        bookClubName: coalescedMembership.bookClub.name,
+        readerID: coalescedMembership.reader.id,
         role
       });
 
       toast.success(
         `Successfully updated ${membership.reader.username}'s role to ${role}`,
+        { position: 'bottom-right' }
+      );
+    }
+  };
+
+  // Handle submitting the ownership change
+  const handleSubmitMakeOwner = async () => {
+    if (!!coalescedMembership.reader.id) {
+      await makeOwner({
+        bookClubName: membership.bookClub.name,
+        newOwnerID: coalescedMembership.reader.id
+      });
+
+      toast.success(
+        `Successfully changed the owner of ${membership.bookClub.name} to ${membership.reader.username}`,
         { position: 'bottom-right' }
       );
     }
@@ -135,7 +169,16 @@ const BookClubManageMemberForm = ({
     if (!!removedMember) setCoalescedMembership(removedMember);
   }, [removedMember]);
 
-  return updateMemberRoleLoading || removeMemberLoading ? (
+  // When the new owner is set, update the membership displayed
+  useEffect(() => {
+    if (!!newOwner)
+      setCoalescedMembership(oldMembership => ({
+        ...oldMembership,
+        isOwner: true
+      }));
+  }, [newOwner]);
+
+  return updateMemberRoleLoading || removeMemberLoading || makeOwnerLoading ? (
     <Grid
       item
       xs={12}
@@ -271,7 +314,17 @@ const BookClubManageMemberForm = ({
           ...(!!coalescedMembership.departed && styles.removedMemberCell)
         }}
       >
-        DOIT
+        {coalescedMembership.isOwner ? (
+          <Star color="secondary" />
+        ) : (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleMakeOwnerClick}
+          >
+            <AdminPanelSettings color="primary" />
+          </Button>
+        )}
       </Grid>
       <Grid
         item
@@ -291,6 +344,13 @@ const BookClubManageMemberForm = ({
         bookClubName={coalescedMembership.bookClub.name}
         onCancel={handleCancelRemoveReader}
         onConfirm={handleRemoveReader}
+      />
+      <ConfirmMakeOwnerDialog
+        open={confirmMakeOwnerDialogOpen}
+        bookClubName={coalescedMembership.bookClub.name}
+        username={coalescedMembership.reader.username}
+        onCancel={handleCancelMakeOwner}
+        onConfirm={handleSubmitMakeOwner}
       />
     </>
   );

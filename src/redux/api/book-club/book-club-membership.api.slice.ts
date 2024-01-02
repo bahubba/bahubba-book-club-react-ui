@@ -1,5 +1,9 @@
 import api from '../base';
-import { BookClubMembership, MembershipUpdate } from '../../../interfaces';
+import {
+  BookClubMembership,
+  MembershipUpdate,
+  OwnershipChange
+} from '../../../interfaces';
 import props from '../../../properties';
 import {
   ErrorResponse,
@@ -79,6 +83,15 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.MEMBERSHIPS}/${membership.bookClub.name}/${membership.reader.id}`,
         method: 'DELETE'
       })
+    }),
+
+    // Mutation for changing the owner of a book club
+    changeOwner: builder.mutation<BookClubMembership, OwnershipChange>({
+      query: ownershipChange => ({
+        url: `${props.API_PATHS.MEMBERSHIPS}/change-ownership`,
+        method: 'PATCH',
+        body: ownershipChange
+      })
     })
   })
 });
@@ -89,7 +102,8 @@ export const {
   useGetMembershipQuery,
   useLazyGetMembershipQuery,
   useUpdateMemberRoleMutation,
-  useRemoveMemberMutation
+  useRemoveMemberMutation,
+  useChangeOwnerMutation
 } = bookClubMembershipAPISlice;
 
 export default bookClubMembershipAPISlice;
