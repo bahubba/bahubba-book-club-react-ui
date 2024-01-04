@@ -13,8 +13,9 @@ import {
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import { useDisbandBookClubByNameMutation } from '../../../redux/api/book-club/book-club.api.slice';
 import ConfirmDisbandBookClubDialog from '../../../components/dialogs/confirm-disband-book-club.dialog';
+import { useLazyGetMembershipQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
+import { useDisbandBookClubByNameMutation } from '../../../redux/api/book-club/book-club.api.slice';
 
 // MUI styled components
 const BookClubNameSpan = styled('span')(({ theme }) => ({
@@ -32,6 +33,12 @@ const CenteredLoadingDiv = styled('div')({
 
 // MUI emotion styles
 const styles = {
+  loadingSpinner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
   contentGrid: {
     flexGrow: 1,
     pt: 1,
@@ -90,6 +97,9 @@ const BookClubAdminRoute = () => {
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Redux API query for getting the user's membership in the book club
+  const [getMembership, { data: admin }] = useLazyGetMembershipQuery();
+
   // Redux API query for disbanding a book club
   const [disbandBookClub, { isLoading: disbandBookClubLoading }] =
     useDisbandBookClubByNameMutation();
@@ -124,12 +134,22 @@ const BookClubAdminRoute = () => {
     }
   };
 
+  // Get the user's membership in the book club when the book club's name is loaded from the path params
+  useEffect(() => {
+    if (!!bookClubName) {
+      getMembership(bookClubName);
+    }
+  }, [bookClubName, getMembership]);
+
   // Navigate the sub-route to the selected admin option
   useEffect(() => {
-    navigate(`/book-club/${bookClubName}/admin/${selectedAdminOption}`);
+    if (!!bookClubName)
+      navigate(`/book-club/${bookClubName}/admin/${selectedAdminOption}`);
   }, [navigate, bookClubName, selectedAdminOption]);
 
-  return (
+  return !bookClubName ? (
+    <CircularProgress sx={styles.loadingSpinner} />
+  ) : (
     <>
       <Typography
         component="div"
@@ -229,12 +249,12 @@ const BookClubAdminRoute = () => {
           xs={10}
           sx={styles.outletGrid}
         >
-          {disbandBookClubLoading ? (
+          {disbandBookClubLoading || !admin ? (
             <CenteredLoadingDiv>
               <CircularProgress />
             </CenteredLoadingDiv>
           ) : (
-            <Outlet />
+            <Outlet context={{ bookClubName, admin }} />
           )}
         </Grid>
       </Grid>

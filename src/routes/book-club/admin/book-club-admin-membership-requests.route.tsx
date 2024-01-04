@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
-import { useLazyGetRequestsForBookClubQuery } from '../../../redux/api/book-club/membership-request.api.slice';
 import MembershipRequestReviewForm from '../../../components/forms/membership-request-review.form';
-import props from '../../../properties';
+import { useLazyGetRequestsForBookClubQuery } from '../../../redux/api/book-club/membership-request.api.slice';
 import { ErrorResponse, PaginatedResponse } from '../../../redux/interfaces';
-import { MembershipRequest } from '../../../interfaces';
+import { AdminOutletContext, MembershipRequest } from '../../../interfaces';
+import props from '../../../properties';
 
 // MUI emotion styles
 const styles = {
@@ -35,7 +35,7 @@ const styles = {
  */
 const BookClubAdminMembershipRequestsRoute = () => {
   // Book club name from the route params
-  const { bookClubName } = useParams();
+  const { bookClubName } = useOutletContext<AdminOutletContext>();
 
   // Redux API query for membership requests for the current book club
   const [
@@ -93,7 +93,7 @@ const BookClubAdminMembershipRequestsRoute = () => {
       sx={styles.rootGrid}
       onScroll={handleScroll}
     >
-      {membershipRequestsLoading ? (
+      {!bookClubName || membershipRequestsLoading ? (
         <Grid
           item
           sx={styles.loadingSpinnerRow}

@@ -8,7 +8,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Tooltip
 } from '@mui/material';
 import {
   AdminPanelSettings,
@@ -53,6 +54,7 @@ const styles = {
 
 // Component props
 interface BookClubManageMemberFormProps {
+  admin: BookClubMembership;
   membership: BookClubMembership;
   oddCell?: boolean;
 }
@@ -64,6 +66,7 @@ interface BookClubManageMemberFormProps {
  * TODO - Date formatting
  */
 const BookClubManageMemberForm = ({
+  admin,
   membership,
   oddCell
 }: BookClubManageMemberFormProps) => {
@@ -315,14 +318,27 @@ const BookClubManageMemberForm = ({
         }}
       >
         {coalescedMembership.isOwner ? (
-          <Star color="secondary" />
+          <Tooltip
+            title="Already an owner"
+            placement="top"
+            arrow
+          >
+            <Star color="secondary" />
+          </Tooltip>
         ) : (
           <Button
             variant="contained"
             color="secondary"
+            disabled={!!coalescedMembership.departed || !admin.isOwner}
             onClick={handleMakeOwnerClick}
           >
-            <AdminPanelSettings color="primary" />
+            <AdminPanelSettings
+              color={
+                !!coalescedMembership.departed || !admin.isOwner
+                  ? 'disabled'
+                  : 'primary'
+              }
+            />
           </Button>
         )}
       </Grid>

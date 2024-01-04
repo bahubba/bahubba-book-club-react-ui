@@ -103,3 +103,8 @@ export interface OwnershipChange {
   bookClubName: string;
   newOwnerID: string;
 }
+
+export interface AdminOutletContext {
+  bookClubName: string;
+  admin: BookClubMembership;
+}

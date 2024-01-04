@@ -73,7 +73,7 @@ const PublicityInput = ({
           ? "Your club won't appear in searches and won't be joinable without invitaiton"
           : _.isEqual(publicity, Publicity.OBSERVABLE)
           ? "Your club and its books, ratings, and discussions will be public, but users won't be able to join or participate without invitation"
-          : 'Your cub will be publicly visible and users can join as readers and post in discussions freely'}
+          : 'Your club will be publicly visible and users can join as readers and post in discussions freely'}
       </Typography>
     </>
   );
