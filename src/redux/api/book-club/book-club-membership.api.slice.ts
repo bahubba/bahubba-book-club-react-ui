@@ -85,12 +85,12 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
       })
     }),
 
-    // Mutation for changing the owner of a book club
-    changeOwner: builder.mutation<BookClubMembership, OwnershipChange>({
-      query: ownershipChange => ({
-        url: `${props.API_PATHS.MEMBERSHIPS}/change-ownership`,
+    // Mutation for making a user an owner of a book club
+    addOwner: builder.mutation<BookClubMembership, OwnershipChange>({
+      query: newBookClubOwner => ({
+        url: `${props.API_PATHS.MEMBERSHIPS}/add-owner`,
         method: 'PATCH',
-        body: ownershipChange
+        body: newBookClubOwner
       })
     })
   })
@@ -103,7 +103,7 @@ export const {
   useLazyGetMembershipQuery,
   useUpdateMemberRoleMutation,
   useRemoveMemberMutation,
-  useChangeOwnerMutation
+  useAddOwnerMutation
 } = bookClubMembershipAPISlice;
 
 export default bookClubMembershipAPISlice;

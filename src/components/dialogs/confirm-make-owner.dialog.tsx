@@ -35,7 +35,7 @@ interface ConfirmDisbandBookClubDialogProps extends DialogProps {
  * @prop {() => void} onConfirm - Callback for when the confirm button is clicked
  * @prop {...DialogProps} dialogProps - Passthrough props for the MUI Dialog
  */
-const ConfirmMakeOwnerDialog = ({
+const ConfirmAddOwnerDialog = ({
   bookClubName,
   username,
   onCancel,
@@ -77,4 +77,4 @@ const ConfirmMakeOwnerDialog = ({
   );
 };
 
-export default ConfirmMakeOwnerDialog;
+export default ConfirmAddOwnerDialog;
