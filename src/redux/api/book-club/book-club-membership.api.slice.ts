@@ -1,16 +1,18 @@
+import _ from 'lodash';
 import api from '../base';
+
 import {
   BookClubMembership,
   MembershipUpdate,
-  OwnershipChange
+  NewOwner
 } from '../../../interfaces';
-import props from '../../../properties';
 import {
   ErrorResponse,
+  MembershipCompositeID,
   PaginatedBookClubPayload,
   PaginatedResponse
 } from '../../interfaces';
-import _ from 'lodash';
+import props from '../../../properties';
 
 /**
  * Redux API Slice for Book Club Membership endpoints
@@ -86,11 +88,23 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
     }),
 
     // Mutation for making a user an owner of a book club
-    addOwner: builder.mutation<BookClubMembership, OwnershipChange>({
+    addOwner: builder.mutation<BookClubMembership, NewOwner>({
       query: newBookClubOwner => ({
         url: `${props.API_PATHS.MEMBERSHIPS}/add-owner`,
         method: 'PATCH',
         body: newBookClubOwner
+      })
+    }),
+
+    // Mutation for revoking a user's ownership of a book club
+    revokeOwnership: builder.mutation<
+      BookClubMembership,
+      MembershipCompositeID
+    >({
+      query: membershipCompositeID => ({
+        url: `${props.API_PATHS.MEMBERSHIPS}/revoke-ownership`,
+        method: 'PATCH',
+        body: membershipCompositeID
       })
     })
   })

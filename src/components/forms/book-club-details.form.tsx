@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
@@ -227,97 +221,88 @@ const BookClubDetailsForm = ({
       justifyContent="center"
       sx={styles.rootGrid}
     >
-      {!bookClubName ? (
-        <Grid
-          item
-          sx={styles.loadingSpinnerRow}
-        >
-          <CircularProgress />
-        </Grid>
-      ) : (
-        <Grid
-          item
-          container
-          direction="column"
-          xs={gridXS}
-          spacing={2}
-        >
-          {showTitle && (
-            <>
-              <Grid item>
-                <Typography variant="h4">
-                  {`${updateExisting ? 'Update' : 'Create'} Book Club`}
-                </Typography>
+      <Grid
+        item
+        container
+        direction="column"
+        xs={gridXS}
+        spacing={2}
+      >
+        {showTitle && (
+          <>
+            <Grid item>
+              <Typography variant="h4">
+                {`${updateExisting ? 'Update' : 'Create'} Book Club`}
+              </Typography>
+            </Grid>
+            {!_.isEmpty(nameErrMessage) && (
+              <Grid
+                item
+                sx={styles.errMessageContainer}
+              >
+                <Typography variant="body2">{nameErrMessage}</Typography>
               </Grid>
-              {!_.isEmpty(nameErrMessage) && (
-                <Grid
-                  item
-                  sx={styles.errMessageContainer}
-                >
-                  <Typography variant="body2">{nameErrMessage}</Typography>
-                </Grid>
-              )}
-            </>
-          )}
-          <Grid item>
-            <TextField
-              id="name"
-              variant="outlined"
-              label="Name"
-              helperText="Must be unique"
-              value={name}
-              onChange={handleNameChange}
-              onKeyDown={handleKeydownSubmit}
-              required
-              sx={styles.fullWidthInput}
-            />
-          </Grid>
-          <Grid item>
-            {/* TODO - Add image upload functionality */}
-            <TextField
-              id="image"
-              variant="outlined"
-              label="Image"
-              value={image}
-              onChange={handleImageChange}
-              onKeyDown={handleKeydownSubmit}
-              sx={styles.fullWidthInput}
-            />
-          </Grid>
-          <Grid item>
-            <TextField
-              id="description"
-              variant="outlined"
-              label="Description"
-              value={description}
-              onChange={handleDescriptionChange}
-              onKeyDown={handleKeydownSubmit}
-              required
-              sx={styles.fullWidthInput}
-            />
-          </Grid>
-          <Grid item>
-            <PublicityInput
-              publicity={publicity}
-              handlePublicityChange={handlePublicityChange}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={
-                updateExisting ? handleUpdateBookClub : handleCreateBookClub
-              }
-              disabled={
-                !canSubmit || createBookClubLoading || updateBookClubLoading
-              }
-            >
-              {`${updateExisting ? 'Update' : 'Create'} Book Club`}
-            </Button>
-          </Grid>
+            )}
+          </>
+        )}
+        <Grid item>
+          <TextField
+            id="name"
+            variant="outlined"
+            label="Name"
+            helperText="Must be unique"
+            value={name}
+            onChange={handleNameChange}
+            onKeyDown={handleKeydownSubmit}
+            required
+            sx={styles.fullWidthInput}
+          />
         </Grid>
-      )}
+        <Grid item>
+          {/* TODO - Add image upload functionality */}
+          <TextField
+            id="image"
+            variant="outlined"
+            label="Image"
+            value={image}
+            onChange={handleImageChange}
+            onKeyDown={handleKeydownSubmit}
+            sx={styles.fullWidthInput}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            id="description"
+            variant="outlined"
+            label="Description"
+            value={description}
+            onChange={handleDescriptionChange}
+            onKeyDown={handleKeydownSubmit}
+            required
+            sx={styles.fullWidthInput}
+          />
+        </Grid>
+        <Grid item>
+          <PublicityInput
+            publicity={publicity}
+            handlePublicityChange={handlePublicityChange}
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={
+              updateExisting ? handleUpdateBookClub : handleCreateBookClub
+            }
+            disabled={
+              !canSubmit || createBookClubLoading || updateBookClubLoading
+            }
+          >
+            {`${updateExisting ? 'Update' : 'Create'} Book Club`}
+          </Button>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

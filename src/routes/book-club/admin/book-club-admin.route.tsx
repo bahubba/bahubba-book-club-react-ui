@@ -13,9 +13,10 @@ import {
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import ConfirmDisbandBookClubDialog from '../../../components/dialogs/confirm-disband-book-club.dialog';
+import ConfirmActionDialog from '../../../components/dialogs/confirm-action.dialog';
 import { useLazyGetMembershipQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import { useDisbandBookClubByNameMutation } from '../../../redux/api/book-club/book-club.api.slice';
+import { Delete } from '@mui/icons-material';
 
 // MUI styled components
 const BookClubNameSpan = styled('span')(({ theme }) => ({
@@ -259,12 +260,16 @@ const BookClubAdminRoute = () => {
         </Grid>
       </Grid>
       {!!bookClubName && (
-        <ConfirmDisbandBookClubDialog
-          bookClubName={bookClubName}
-          open={disbandDialogOpen}
+        <ConfirmActionDialog
+          titleIcon={<Delete color="error" />}
+          action={`Confirm Disband ${bookClubName}`}
           onCancel={handleCloseDisbandDialog}
           onConfirm={handleConfirmDisbandBookClub}
-        />
+          open={disbandDialogOpen}
+        >
+          Confirm that you want to disband <b>{bookClubName}</b>... This action
+          is permanent; it cannot be reversed.
+        </ConfirmActionDialog>
       )}
     </>
   );
