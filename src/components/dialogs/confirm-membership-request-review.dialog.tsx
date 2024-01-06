@@ -14,17 +14,6 @@ import _ from 'lodash';
 
 import { BookClubRole } from '../../interfaces';
 
-// MUI styled components
-const HighlightedSpan = styled('span')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  fontWeight: 'bold'
-}));
-
-const RedHighlightedSpan = styled(HighlightedSpan)(({ theme }) => ({
-  color: theme.palette.error.main,
-  fontWeight: 'bold'
-}));
-
 const MessageDiv = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(1),
   width: '100%'
@@ -74,30 +63,23 @@ const ConfirmMembershipRequestReviewDialog = ({
   return (
     <Dialog {...dialogProps}>
       <DialogTitle>
-        <span>Confirm </span>
-        {_.isEqual('APPROVE', action) ? (
-          <HighlightedSpan>APPROVE</HighlightedSpan>
-        ) : (
-          <RedHighlightedSpan>REJECT</RedHighlightedSpan>
-        )}
-        <span> Membership Request</span>
+        <span>
+          Confirm{' '}
+          {_.isEqual('APPROVE', action) ? <b>APPROVE</b> : <b>REJECT</b>}{' '}
+          Membership Request
+        </span>
       </DialogTitle>
       <DialogContent>
-        <span>Comfirm that you want to </span>
-        {_.isEqual('APPROVE', action) ? (
-          <HighlightedSpan>APPROVE</HighlightedSpan>
-        ) : (
-          <RedHighlightedSpan>REJECT</RedHighlightedSpan>
-        )}
-        <span> the request for </span>
-        <HighlightedSpan>{username}</HighlightedSpan>
-        <span> to join </span>
-        <HighlightedSpan>{`${bookClubName} `}</HighlightedSpan>
-        {_.isEqual('APPROVE', action) && (
-          <span>
-            with the role <HighlightedSpan>{role}</HighlightedSpan>
-          </span>
-        )}
+        <span>
+          Comfirm that you want to{' '}
+          {_.isEqual('APPROVE', action) ? <b>APPROVE</b> : <b>REJECT</b>} the
+          request for <b>{username}</b> to join <b>{`${bookClubName} `}</b>
+          {_.isEqual('APPROVE', action) && (
+            <span>
+              with the role <b>{role}</b>
+            </span>
+          )}
+        </span>
         <Divider />
         <MessageDiv>
           <TextField

@@ -6,30 +6,26 @@ import {
   DialogProps,
   DialogTitle
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-// MUI styled components
-const HighlightedSpan = styled('span')(({ theme }) => ({
-  color: theme.palette.secondary.main,
-  fontWeight: 'bold'
-}));
 
 // Component props
 interface ConfirmDisbandBookClubDialogProps extends DialogProps {
   bookClubName: string;
+  username: string;
   onCancel: () => void;
   onConfirm: () => void;
 }
 
 /**
- * MUI Dialog for confirming a book club disbandment
+ * MUI Dialog for confirming changing the owner of a book club
  * @prop {string} bookClubName - The name of the book club to disband
+ * @prop {string} username - The username of the new owner
  * @prop {() => void} onCancel - Callback for when the cancel button is clicked
  * @prop {() => void} onConfirm - Callback for when the confirm button is clicked
  * @prop {...DialogProps} dialogProps - Passthrough props for the MUI Dialog
  */
-const ConfirmDisbandBookClubDialog = ({
+const ConfirmAddOwnerDialog = ({
   bookClubName,
+  username,
   onCancel,
   onConfirm,
   ...dialogProps
@@ -37,13 +33,15 @@ const ConfirmDisbandBookClubDialog = ({
   return (
     <Dialog {...dialogProps}>
       <DialogTitle>
-        <span>Confirm Disband </span>
-        <HighlightedSpan>{bookClubName}</HighlightedSpan>
+        <span>
+          Confirm Revoke <b>{bookClubName}</b> Ownership
+        </span>
       </DialogTitle>
       <DialogContent>
-        <span>Confirm that you want to disband </span>
-        <HighlightedSpan>{bookClubName}</HighlightedSpan>
-        <span>... This action is permanent; it cannot be reversed.</span>
+        <span>
+          Confirm that you want to revoke ownership of <b>{bookClubName}</b>{' '}
+          from <b>{username}</b>.
+        </span>
       </DialogContent>
       <DialogActions>
         <Button
@@ -58,11 +56,11 @@ const ConfirmDisbandBookClubDialog = ({
           color="success"
           onClick={onConfirm}
         >
-          Disband
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default ConfirmDisbandBookClubDialog;
+export default ConfirmAddOwnerDialog;

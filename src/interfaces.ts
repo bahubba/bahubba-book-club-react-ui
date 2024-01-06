@@ -98,3 +98,13 @@ export interface MembershipUpdate {
   readerID: string;
   role: BookClubRole;
 }
+
+export interface NewOwner {
+  bookClubName: string;
+  newOwnerID: string;
+}
+
+export interface AdminOutletContext {
+  bookClubName: string;
+  admin: BookClubMembership;
+}

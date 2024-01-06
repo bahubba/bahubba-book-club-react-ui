@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import _ from 'lodash';
 
-import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import BookClubManageMemberForm from '../../../components/forms/book-club-manage-member.form';
-import props from '../../../properties';
+import { useLazyGetMembersQuery } from '../../../redux/api/book-club/book-club-membership.api.slice';
 import { ErrorResponse, PaginatedResponse } from '../../../redux/interfaces';
-import { BookClubMembership } from '../../../interfaces';
+import { AdminOutletContext, BookClubMembership } from '../../../interfaces';
+import props from '../../../properties';
 
 // MUI emotion styles
 const styles = {
@@ -34,8 +34,8 @@ const styles = {
  * Book club admin sub-route managing members
  */
 const BookClubAdminMembersRoute = () => {
-  // Book club name from the route params
-  const { bookClubName } = useParams();
+  // Pull the book club name and admin membership from the context (rooot admin route)
+  const { bookClubName, admin } = useOutletContext<AdminOutletContext>();
 
   // Redux API query for members of the current book club
   const [getMembers, { data, isLoading: membersLoading, error }] =
@@ -135,6 +135,7 @@ const BookClubAdminMembersRoute = () => {
           {_.map(members || [], (member, idx) => (
             <BookClubManageMemberForm
               key={member.reader.id}
+              admin={admin}
               membership={member}
               oddCell={idx % 2 === 0}
             />

@@ -10,12 +10,12 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
+import { PersonAdd, PersonAddDisabled } from '@mui/icons-material';
 import { green, grey, red } from '@mui/material/colors';
 
+import ConfirmMembershipRequestReviewDialog from '../dialogs/confirm-membership-request-review.dialog';
 import { useReviewMembershipRequestMutation } from '../../redux/api/book-club/membership-request.api.slice';
 import { BookClubRole, MembershipRequest } from '../../interfaces';
-import { PersonAdd, PersonAddDisabled } from '@mui/icons-material';
-import ConfirmMembershipRequestReviewDialog from '../dialogs/confirm-membership-request-review.dialog';
 
 // MUI emotion styles
 const styles = {

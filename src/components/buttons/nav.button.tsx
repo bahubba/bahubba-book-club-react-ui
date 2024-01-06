@@ -32,6 +32,7 @@ const NavButton = ({ uri, tooltip, icon }: NavButtonProps) => {
       <Tooltip
         title={tooltip}
         placement="top"
+        arrow
       >
         <IconButton
           sx={styles.button}

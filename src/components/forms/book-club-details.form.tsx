@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
@@ -10,7 +10,7 @@ import {
   useUpdateBookClubMutation
 } from '../../redux/api/book-club/book-club.api.slice';
 import PublicityInput from '../../components/inputs/publicity.input';
-import { BookClub, Publicity } from '../../interfaces';
+import { AdminOutletContext, BookClub, Publicity } from '../../interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -18,6 +18,11 @@ const styles = {
     py: 1,
     height: '100%',
     overflow: 'auto'
+  },
+  loadingSpinnerRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   fullWidthInput: {
     width: '100%'
@@ -49,8 +54,11 @@ const BookClubDetailsForm = ({
 }: BookClubDetailsFormProps) => {
   /* HOOKS */
 
-  // Book club name from the route params
-  const { bookClubName } = useParams();
+  // Pull the book club name from the outlet context
+  const bookClubName = _.get(
+    useOutletContext<AdminOutletContext>(),
+    'bookClubName'
+  );
 
   // Navigation from react-router-dom
   const navigate = useNavigate();

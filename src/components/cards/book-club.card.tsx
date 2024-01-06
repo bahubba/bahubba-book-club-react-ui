@@ -48,8 +48,8 @@ const BookClubCard = ({ bookClub }: BookClubCardProps) => {
   return (
     <Tooltip
       title={bookClub.description}
-      arrow
       placement="top"
+      arrow
     >
       <Card
         sx={styles.card}

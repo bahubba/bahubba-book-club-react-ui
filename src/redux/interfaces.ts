@@ -52,3 +52,8 @@ export interface ErrorResponse<T> {
     data?: T;
   };
 }
+
+export interface MembershipCompositeID {
+  bookClubID: string;
+  userID: string;
+}
