@@ -99,7 +99,7 @@ const BookClubAdminMembersRoute = () => {
         <>
           <Grid
             item
-            xs={4}
+            xs={admin.isOwner ? 4 : 5}
             sx={styles.paddedCell}
           >
             <Typography variant="h6">Member</Typography>
@@ -118,13 +118,15 @@ const BookClubAdminMembersRoute = () => {
           >
             <Typography variant="h6">Remove</Typography>
           </Grid>
-          <Grid
-            item
-            xs={1}
-            sx={{ ...styles.paddedCell, ...styles.centeredHeader }}
-          >
-            <Typography variant="h6">Make Owner</Typography>
-          </Grid>
+          {admin.isOwner && (
+            <Grid
+              item
+              xs={1}
+              sx={{ ...styles.paddedCell, ...styles.centeredHeader }}
+            >
+              <Typography variant="h6">Ownership</Typography>
+            </Grid>
+          )}
           <Grid
             item
             xs={2}

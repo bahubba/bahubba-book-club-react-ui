@@ -7,14 +7,16 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Tooltip
 } from '@mui/material';
-import { ManageAccounts } from '@mui/icons-material';
+import { ManageAccounts, Star } from '@mui/icons-material';
 import { grey, red } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 import RemoveMemberButton from '../buttons/remove-reader.button';
+import RevokeOwnershipButton from '../buttons/revoke-ownership.button';
 import MakeOwnerButton from '../buttons/make-owner.button';
 import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
 import { BookClubMembership, BookClubRole } from '../../interfaces';
@@ -113,7 +115,7 @@ const BookClubManageMemberForm = ({
       <Grid
         item
         alignContent="center"
-        xs={4}
+        xs={admin.isOwner ? 4 : 5}
         sx={{
           ...styleClasses,
           ...(!!coalescedMembership.departed && styles.removedMemberCell)
@@ -160,7 +162,8 @@ const BookClubManageMemberForm = ({
                 _.isEqual(
                   admin.reader.username,
                   coalescedMembership.reader.username
-                )
+                ) ||
+                coalescedMembership.isOwner
               }
             >
               <MenuItem value="ADMIN">Admin</MenuItem>
@@ -219,20 +222,37 @@ const BookClubManageMemberForm = ({
           setMembership={setCoalescedMembership}
         />
       </Grid>
-      <Grid
-        item
-        justifyContent="center"
-        xs={1}
-        sx={{
-          ...styleClasses,
-          ...(!!coalescedMembership.departed && styles.removedMemberCell)
-        }}
-      >
-        <MakeOwnerButton
-          membership={coalescedMembership}
-          setMembership={setCoalescedMembership}
-        />
-      </Grid>
+      {admin.isOwner && (
+        <Grid
+          item
+          justifyContent="center"
+          xs={1}
+          sx={{
+            ...styleClasses,
+            ...(!!coalescedMembership.departed && styles.removedMemberCell)
+          }}
+        >
+          {_.isEqual(admin.reader.id, coalescedMembership.reader.id) ? (
+            <Tooltip
+              title="Self"
+              placement="top"
+              arrow
+            >
+              <Star color="secondary" />
+            </Tooltip>
+          ) : coalescedMembership.isOwner ? (
+            <RevokeOwnershipButton
+              membership={coalescedMembership}
+              setMembership={setCoalescedMembership}
+            />
+          ) : (
+            <MakeOwnerButton
+              membership={coalescedMembership}
+              setMembership={setCoalescedMembership}
+            />
+          )}
+        </Grid>
+      )}
       <Grid
         item
         alignItems="center"
