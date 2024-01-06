@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Tooltip } from '@mui/material';
-import { AdminPanelSettings, Star } from '@mui/icons-material';
+import { AddModerator } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 import ConfirmActionDialog from '../dialogs/confirm-action.dialog';
@@ -61,28 +61,26 @@ const MakeOwnerButton = ({
       setMembership(oldMembership => ({ ...oldMembership, isOwner: true }));
   }, [newOwner, setMembership]);
 
-  return membership.isOwner ? (
-    <Tooltip
-      title="Already an owner"
-      placement="top"
-      arrow
-    >
-      <Star color="secondary" />
-    </Tooltip>
-  ) : (
+  return (
     <>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={handleClick}
-        disabled={!!membership.departed}
+      <Tooltip
+        title="Make Owner"
+        placement="top"
+        arrow
       >
-        <AdminPanelSettings
-          color={!!membership.departed ? 'disabled' : 'secondary'}
-        />
-      </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleClick}
+          disabled={!!membership.departed}
+        >
+          <AddModerator
+            color={!!membership.departed ? 'disabled' : 'secondary'}
+          />
+        </Button>
+      </Tooltip>
       <ConfirmActionDialog
-        titleIcon={<AdminPanelSettings color="primary" />}
+        titleIcon={<AddModerator color="primary" />}
         action="Add Owner"
         onCancel={handleCancel}
         onConfirm={handleConfirm}

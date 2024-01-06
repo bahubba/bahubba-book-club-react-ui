@@ -117,7 +117,8 @@ export const {
   useLazyGetMembershipQuery,
   useUpdateMemberRoleMutation,
   useRemoveMemberMutation,
-  useAddOwnerMutation
+  useAddOwnerMutation,
+  useRevokeOwnershipMutation
 } = bookClubMembershipAPISlice;
 
 export default bookClubMembershipAPISlice;
