@@ -15,7 +15,7 @@ import { grey, red } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import RemoveMemberButton from '../buttons/remove-reader.button';
+import RemoveMemberButton from '../buttons/remove-member.button';
 import RevokeOwnershipButton from '../buttons/revoke-ownership.button';
 import MakeOwnerButton from '../buttons/make-owner.button';
 import { useUpdateMemberRoleMutation } from '../../redux/api/book-club/book-club-membership.api.slice';
@@ -83,15 +83,15 @@ const BookClubManageMemberForm = ({
 
   // Handle submitting the role change
   const handleSubmitRoleChange = async () => {
-    if (!!coalescedMembership.reader.id) {
+    if (!!coalescedMembership.user.id) {
       await updateMemberRole({
         bookClubName: coalescedMembership.bookClub.name,
-        readerID: coalescedMembership.reader.id,
+        userID: coalescedMembership.user.id,
         role
       });
 
       toast.success(
-        `Successfully updated ${membership.reader.username}'s role to ${role}`,
+        `Successfully updated ${membership.user.username}'s role to ${role}`,
         { position: 'bottom-right' }
       );
     }
@@ -121,15 +121,15 @@ const BookClubManageMemberForm = ({
           ...(!!coalescedMembership.departed && styles.removedMemberCell)
         }}
       >
-        <span>{coalescedMembership.reader.username}</span>
-        {((!!coalescedMembership.reader.givenName &&
-          !_.isEmpty(coalescedMembership.reader.givenName)) ||
-          (!!coalescedMembership.reader.surname &&
-            !_.isEmpty(coalescedMembership.reader.surname))) && (
+        <span>{coalescedMembership.user.username}</span>
+        {((!!coalescedMembership.user.givenName &&
+          !_.isEmpty(coalescedMembership.user.givenName)) ||
+          (!!coalescedMembership.user.surname &&
+            !_.isEmpty(coalescedMembership.user.surname))) && (
           <span>
             &nbsp;
             {_.trim(
-              `(${coalescedMembership.reader.givenName} ${coalescedMembership.reader.surname})`
+              `(${coalescedMembership.user.givenName} ${coalescedMembership.user.surname})`
             )}
           </span>
         )}
@@ -160,8 +160,8 @@ const BookClubManageMemberForm = ({
               disabled={
                 !!coalescedMembership.departed ||
                 _.isEqual(
-                  admin.reader.username,
-                  coalescedMembership.reader.username
+                  admin.user.username,
+                  coalescedMembership.user.username
                 ) ||
                 coalescedMembership.isOwner
               }
@@ -187,8 +187,8 @@ const BookClubManageMemberForm = ({
             disabled={
               !!coalescedMembership.departed ||
               _.isEqual(
-                admin.reader.username,
-                coalescedMembership.reader.username
+                admin.user.username,
+                coalescedMembership.user.username
               ) ||
               _.isEqual(role, coalescedMembership.clubRole)
             }
@@ -197,8 +197,8 @@ const BookClubManageMemberForm = ({
               color={
                 !!coalescedMembership.departed ||
                 _.isEqual(
-                  admin.reader.username,
-                  coalescedMembership.reader.username
+                  admin.user.username,
+                  coalescedMembership.user.username
                 ) ||
                 _.isEqual(role, coalescedMembership.clubRole)
                   ? 'disabled'
@@ -232,7 +232,7 @@ const BookClubManageMemberForm = ({
             ...(!!coalescedMembership.departed && styles.removedMemberCell)
           }}
         >
-          {_.isEqual(admin.reader.id, coalescedMembership.reader.id) ? (
+          {_.isEqual(admin.user.id, coalescedMembership.user.id) ? (
             <Tooltip
               title="Self"
               placement="top"

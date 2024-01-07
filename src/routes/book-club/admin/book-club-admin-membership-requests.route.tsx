@@ -107,7 +107,7 @@ const BookClubAdminMembershipRequestsRoute = () => {
             xs={3}
             sx={styles.paddedCell}
           >
-            <Typography variant="h6">Reader</Typography>
+            <Typography variant="h6">Member</Typography>
           </Grid>
           <Grid
             item

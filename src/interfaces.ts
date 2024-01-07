@@ -27,7 +27,7 @@ export interface Credentials {
   password: string;
 }
 
-export interface Reader {
+export interface User {
   id?: string;
   username: string;
   email: string;
@@ -41,7 +41,7 @@ export interface Reader {
   systemRole?: string;
 }
 
-export interface BookClubMember extends Reader {
+export interface BookClubMember extends User {
   joinedClub: Date;
   departedClub: Date | null;
   clubRole: string;
@@ -65,13 +65,13 @@ export interface MembershipRequestPayload {
 
 export interface MembershipRequest {
   id?: string;
-  reader: Reader;
+  user: User;
   bookClub: BookClub;
   message?: string;
   status: 'OPEN' | 'APPROVED' | 'REJECTED';
   role: BookClubRole;
   viewed: boolean;
-  reviewer?: Reader;
+  reviewer?: User;
   reviewMessage?: string;
   requested: string;
   reviewed?: string;
@@ -79,7 +79,7 @@ export interface MembershipRequest {
 
 export interface BookClubMembership {
   bookClub: BookClub;
-  reader: Reader;
+  user: User;
   clubRole: BookClubRole;
   isOwner: boolean;
   joined: string;
@@ -95,7 +95,7 @@ export interface MembershipRequestAction {
 
 export interface MembershipUpdate {
   bookClubName: string;
-  readerID: string;
+  userID: string;
   role: BookClubRole;
 }
 

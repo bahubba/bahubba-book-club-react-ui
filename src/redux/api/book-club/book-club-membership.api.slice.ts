@@ -65,7 +65,7 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
       forceRefetch: ({ currentArg, previousArg }) => currentArg !== previousArg
     }),
 
-    // Query for getting the reader's membership in a book club
+    // Query for getting the user's membership in a book club
     getMembership: builder.query<BookClubMembership, string>({
       query: bookClubName => `${props.API_PATHS.MEMBERSHIPS}/${bookClubName}`
     }),
@@ -82,7 +82,7 @@ const bookClubMembershipAPISlice = api.injectEndpoints({
     // Mutation for removing a member from a book club
     removeMember: builder.mutation<BookClubMembership, BookClubMembership>({
       query: membership => ({
-        url: `${props.API_PATHS.MEMBERSHIPS}/${membership.bookClub.name}/${membership.reader.id}`,
+        url: `${props.API_PATHS.MEMBERSHIPS}/${membership.bookClub.name}/${membership.user.id}`,
         method: 'DELETE'
       })
     }),

@@ -26,7 +26,7 @@ const membershipRequestAPISlice = api.injectEndpoints({
       })
     }),
 
-    // Query for checking if a reader has a pending membership request for a book club
+    // Query for checking if a user has a pending membership request for a book club
     hasPendingRequest: builder.query<boolean, string>({
       query: bookClubName =>
         `${props.API_PATHS.MEMBERSHIP_REQUESTS}${props.API_PATHS.HAS_PENDING_REQUEST}/${bookClubName}`

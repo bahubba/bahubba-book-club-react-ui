@@ -48,7 +48,7 @@ const styles = {
 };
 
 /**
- * Home route/page for a given book club, displaying the club's readers, books, and discussions
+ * Home route/page for a given book club, displaying the club's users, books, and discussions
  */
 const BookClubHomeRoute = () => {
   // Navigation from react-router-dom
@@ -137,11 +137,11 @@ const BookClubHomeRoute = () => {
                 component="div"
                 variant="h5"
               >
-                Readers
+                Members
               </Typography>
             </SectionHeaderDiv>
             <SectionContentDiv>
-              <Typography variant="h6">The club's readers go here</Typography>
+              <Typography variant="h6">The club's members go here</Typography>
             </SectionContentDiv>
           </SectionContainerDiv>
         </Grid>

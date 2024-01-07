@@ -144,7 +144,7 @@ const MembershipRequestReviewForm = ({
         }}
       >
         <Typography variant="body1">
-          {coalescedRequest.reader.username}
+          {coalescedRequest.user.username}
         </Typography>
       </Grid>
       <Grid
@@ -241,7 +241,7 @@ const MembershipRequestReviewForm = ({
       <ConfirmMembershipRequestReviewDialog
         open={confirmDialogOpen}
         action={confirmAction}
-        username={membershipRequest.reader.username}
+        username={membershipRequest.user.username}
         role={role}
         bookClubName={membershipRequest.bookClub.name}
         onCancel={closeConfirmDialog}
