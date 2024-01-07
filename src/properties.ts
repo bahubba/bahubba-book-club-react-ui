@@ -17,7 +17,7 @@ const props: Props = {
     BOOK_CLUBS: '/v1/book-clubs',
     CREATE: '/create',
     UPDATE: '/update',
-    BOOK_CLUBS_FOR_READER: '/all-for-reader',
+    BOOK_CLUBS_FOR_USER: '/all-for-user',
     BOOK_CLUB_BY_NAME: '/by-name',
     SEARCH: '/search',
     DISBAND: '/disband',

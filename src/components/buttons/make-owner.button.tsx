@@ -37,19 +37,19 @@ const MakeOwnerButton = ({
   // Handle confirming in the dialog
   const handleConfirm = async () => {
     setConfirmDialogOpen(false);
-    if (!!membership.reader.id) {
+    if (!!membership.user.id) {
       await addOwner({
         bookClubName: membership.bookClub.name,
-        newOwnerID: membership.reader.id
+        newOwnerID: membership.user.id
       });
 
       toast.success(
-        `Successfully changed the owner of ${membership.bookClub.name} to ${membership.reader.username}`,
+        `Successfully changed the owner of ${membership.bookClub.name} to ${membership.user.username}`,
         { position: 'bottom-right' }
       );
     } else {
       toast.error(
-        `Something went wrong trying to make ${membership.reader.username} an owner of ${membership.bookClub.name}`,
+        `Something went wrong trying to make ${membership.user.username} an owner of ${membership.bookClub.name}`,
         { position: 'bottom-right' }
       );
     }
@@ -86,7 +86,7 @@ const MakeOwnerButton = ({
         onConfirm={handleConfirm}
         open={confirmDialogOpen}
       >
-        Confirm that you want to add <b>{membership.reader.username}</b> as an
+        Confirm that you want to add <b>{membership.user.username}</b> as an
         owner of <b>{membership.bookClub.name}</b>
       </ConfirmActionDialog>
     </>

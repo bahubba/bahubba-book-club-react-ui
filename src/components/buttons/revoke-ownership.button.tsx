@@ -37,19 +37,19 @@ const RevokeOwnershipButton = ({
   // Handle confirming in the dialog
   const handleConfirm = async () => {
     setConfirmDialogOpen(false);
-    if (!!membership.reader.id) {
+    if (!!membership.user.id) {
       await revokeOwnership({
         bookClubID: membership.bookClub.id ?? '',
-        userID: membership.reader.id
+        userID: membership.user.id
       });
 
       toast.success(
-        `Successfully revoked ${membership.reader.username}'s ownership of ${membership.bookClub.name}`,
+        `Successfully revoked ${membership.user.username}'s ownership of ${membership.bookClub.name}`,
         { position: 'bottom-right' }
       );
     } else {
       toast.error(
-        `Something went wrong trying to revoke ${membership.reader.username}'s ownership of ${membership.bookClub.name}`,
+        `Something went wrong trying to revoke ${membership.user.username}'s ownership of ${membership.bookClub.name}`,
         { position: 'bottom-right' }
       );
     }
@@ -89,7 +89,7 @@ const RevokeOwnershipButton = ({
         onConfirm={handleConfirm}
         open={confirmDialogOpen}
       >
-        Confirm revoking ownership of <b>{membership.reader.username}</b> from{' '}
+        Confirm revoking ownership of <b>{membership.user.username}</b> from{' '}
         <b>{membership.bookClub.name}</b>
       </ConfirmActionDialog>
     </>

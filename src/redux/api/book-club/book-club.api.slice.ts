@@ -38,12 +38,12 @@ const bookClubAPISlice = api.injectEndpoints({
       })
     }),
 
-    // Paginated query for all book clubs a reader is a member of
-    getBookClubsForReader: builder.query<PaginatedResponse<BookClub>, number>({
+    // Paginated query for all book clubs a user is a member of
+    getBookClubsForUser: builder.query<PaginatedResponse<BookClub>, number>({
       query: pageNum =>
-        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_READER}?pageNum=${pageNum}&pageSize=${props.PAGE_SIZE}`,
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.BOOK_CLUBS_FOR_USER}?pageNum=${pageNum}&pageSize=${props.PAGE_SIZE}`,
 
-      // Cache key for this query; unique per reader
+      // Cache key for this query; unique per user
       serializeQueryArgs: ({ endpointName }) => endpointName,
 
       // Add the page number to a prop used to track which pages have been fetched
@@ -148,8 +148,8 @@ export const {
   useUpdateBookClubMutation,
   useGetBookClubByNameQuery,
   useLazyGetBookClubByNameQuery,
-  useGetBookClubsForReaderQuery,
-  useLazyGetBookClubsForReaderQuery,
+  useGetBookClubsForUserQuery,
+  useLazyGetBookClubsForUserQuery,
   useSearchQuery,
   useLazySearchQuery,
   useDisbandBookClubMutation,

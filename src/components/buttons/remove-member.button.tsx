@@ -37,16 +37,16 @@ const RemoveMemberButton = ({
   // Handle confirming in the dialog
   const handleConfirm = async () => {
     setConfirmDialogOpen(false);
-    if (!!membership.reader.id) {
+    if (!!membership.user.id) {
       await removeMember(membership);
 
       toast.success(
-        `Successfully removed ${membership.reader.username} from ${membership.bookClub.name}`,
+        `Successfully removed ${membership.user.username} from ${membership.bookClub.name}`,
         { position: 'bottom-right' }
       );
     } else {
       toast.error(
-        `Something went wrong trying to remove ${membership.reader.username} from ${membership.bookClub.name}`,
+        `Something went wrong trying to remove ${membership.user.username} from ${membership.bookClub.name}`,
         { position: 'bottom-right' }
       );
     }
@@ -89,12 +89,12 @@ const RemoveMemberButton = ({
       </Tooltip>
       <ConfirmActionDialog
         titleIcon={<PersonOff color="error" />}
-        action={`Remove ${membership.reader.username} from ${membership.bookClub.name}`}
+        action={`Remove ${membership.user.username} from ${membership.bookClub.name}`}
         onCancel={handleCancel}
         onConfirm={handleConfirm}
         open={confirmDialogOpen}
       >
-        Confirm that you want to remove <b>{membership.reader.username}</b> from{' '}
+        Confirm that you want to remove <b>{membership.user.username}</b> from{' '}
         <b>{membership.bookClub.name}</b>
       </ConfirmActionDialog>
     </>

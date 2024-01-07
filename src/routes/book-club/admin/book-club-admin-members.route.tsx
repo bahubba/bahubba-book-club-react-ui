@@ -136,7 +136,7 @@ const BookClubAdminMembersRoute = () => {
           </Grid>
           {_.map(members || [], (member, idx) => (
             <BookClubManageMemberForm
-              key={member.reader.id}
+              key={member.user.id}
               admin={admin}
               membership={member}
               oddCell={idx % 2 === 0}

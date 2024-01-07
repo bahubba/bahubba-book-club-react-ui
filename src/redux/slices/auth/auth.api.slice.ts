@@ -8,7 +8,7 @@ import { Credentials, Registration } from '../../../interfaces';
  */
 const authAPISlice = api.injectEndpoints({
   endpoints: builder => ({
-    // Mutation for authenticating a reader/logging in
+    // Mutation for authenticating a user/logging in
     login: builder.mutation({
       query: (credentials: Credentials) => ({
         url: `${props.API_PATHS.AUTH}${props.API_PATHS.AUTHENTICATE}`,
@@ -18,7 +18,7 @@ const authAPISlice = api.injectEndpoints({
       })
     }),
 
-    // Mutation for registering a new reader
+    // Mutation for registering a new user
     register: builder.mutation({
       query: (registration: Registration) => ({
         url: `${props.API_PATHS.AUTH}${props.API_PATHS.REGISTER}`,
