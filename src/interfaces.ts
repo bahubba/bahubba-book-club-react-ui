@@ -47,10 +47,15 @@ export interface BookClubMember extends User {
   clubRole: string;
 }
 
+export interface Image {
+  fileName: string;
+  url: string;
+}
+
 export interface BookClub {
   id?: string;
   name: string;
-  imageURL: string;
+  image: Image;
   description: string;
   publicity: Publicity;
   created?: Date;

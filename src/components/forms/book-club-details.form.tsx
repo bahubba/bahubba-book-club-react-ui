@@ -4,13 +4,17 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
+import BookClubCard from '../cards/book-club.card';
+import ImageSelectorDialog from '../dialogs/image-selector.dialog';
+import PublicityInput from '../../components/inputs/publicity.input';
 import {
   useCreateBookClubMutation,
+  useGetStockImagesQuery,
   useLazyGetBookClubByNameQuery,
   useUpdateBookClubMutation
 } from '../../redux/api/book-club/book-club.api.slice';
-import PublicityInput from '../../components/inputs/publicity.input';
-import { AdminOutletContext, BookClub, Publicity } from '../../interfaces';
+import { AdminOutletContext, Image, Publicity } from '../../interfaces';
+import { BookClubPayload } from '../../redux/interfaces';
 
 // MUI emotion styles
 const styles = {
@@ -63,8 +67,11 @@ const BookClubDetailsForm = ({
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
+  // Redux API query for getting stock book club images
+  const { data: stockBookClubImages } = useGetStockImagesQuery();
+
   // Redux API query for an existing book club
-  const [trigger, { data: bookClub }] = useLazyGetBookClubByNameQuery();
+  const [getBookClub, { data: bookClub }] = useLazyGetBookClubByNameQuery();
 
   // Create book club API hook from redux-toolkit
   // TODO - Use isLoading to show a spinner
@@ -78,9 +85,10 @@ const BookClubDetailsForm = ({
 
   // State vars
   const [name, setName] = useState('');
-  const [image, setImage] = useState(''); // TODO: Change to File type
+  const [image, setImage] = useState<Image>({ fileName: '', url: '' });
   const [description, setDescription] = useState('');
   const [publicity, setPublicity] = useState<Publicity>(Publicity.PRIVATE);
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [canSubmit, setCanSubmit] = useState(false);
   const [nameErrMessage, setNameErrMessage] = useState('');
 
@@ -90,8 +98,9 @@ const BookClubDetailsForm = ({
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.target.value);
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setImage(event.target.value);
+  const handleDemoCardClick = () => setImagePickerOpen(true);
+
+  const handleCloseImagePicker = () => setImagePickerOpen(false);
 
   const handleDescriptionChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -115,14 +124,14 @@ const BookClubDetailsForm = ({
     try {
       const newBookClub = await createBookClub({
         name: _.trim(name),
-        imageURL: image,
+        imageFileName: image?.fileName,
         description: _.trim(description),
         publicity
-      } as BookClub).unwrap();
+      } as BookClubPayload).unwrap();
 
       // Clear the form
       setName('');
-      setImage('');
+      setImage({ fileName: '', url: '' });
       setDescription('');
 
       // Notify the user that the book club creation was successful
@@ -147,10 +156,10 @@ const BookClubDetailsForm = ({
       const updatedBookClub = await updateBookClub({
         id: bookClub?.id,
         name: _.trim(name),
-        imageURL: image,
+        imageFileName: image?.fileName,
         description: _.trim(description),
         publicity
-      } as BookClub).unwrap();
+      } as BookClubPayload).unwrap();
 
       // Notify the user that the book club update was successful
       toast.success(`Book club ${updatedBookClub.name} updated!`, {
@@ -170,32 +179,38 @@ const BookClubDetailsForm = ({
   // When we have a book club name, fetch a book club with that name
   useEffect(() => {
     if (bookClubName && !_.isEmpty(_.trim(bookClubName))) {
-      trigger(_.trim(bookClubName));
+      getBookClub(_.trim(bookClubName));
     }
-  }, [trigger, bookClubName]);
+  }, [getBookClub, bookClubName]);
 
   // When the book club query result changes, update the form
   useEffect(() => {
     if (bookClub) {
       setName(bookClub.name);
-      setImage(bookClub.imageURL);
       setDescription(bookClub.description);
       setPublicity(bookClub.publicity);
     }
   }, [bookClub]);
+
+  // When we get stock images, set the initial image
+  useEffect(() => {
+    if (_.size(stockBookClubImages) > 0) {
+      setImage(_.first(stockBookClubImages) ?? { fileName: '', url: '' });
+    }
+  }, [stockBookClubImages]);
 
   // On required input change, check if the form can be submitted
   useEffect(() => {
     if (
       !_.isEmpty(_.trim(name)) &&
       !_.isEmpty(_.trim(description)) &&
-      !_.isEqual('create', _.trim(_.toLower(name)))
+      !_.includes(['create', 'default'], _.trim(_.toLower(name)))
     ) {
       if (bookClub) {
         setCanSubmit(
           !_.isEqual(_.trim(name), bookClub.name) ||
             !_.isEqual(_.trim(description), bookClub.description) ||
-            !_.isEqual(_.trim(image), bookClub.imageURL) ||
+            !_.isEqual(_.trim(image?.fileName), bookClub.image.fileName) ||
             !_.isEqual(publicity, bookClub.publicity)
         );
       } else {
@@ -216,94 +231,103 @@ const BookClubDetailsForm = ({
   }, [name]);
 
   return (
-    <Grid
-      container
-      justifyContent="center"
-      sx={styles.rootGrid}
-    >
+    <>
       <Grid
-        item
         container
-        direction="column"
-        xs={gridXS}
-        spacing={2}
+        justifyContent="center"
+        sx={styles.rootGrid}
       >
-        {showTitle && (
-          <>
-            <Grid item>
-              <Typography variant="h4">
-                {`${updateExisting ? 'Update' : 'Create'} Book Club`}
-              </Typography>
-            </Grid>
-            {!_.isEmpty(nameErrMessage) && (
-              <Grid
-                item
-                sx={styles.errMessageContainer}
-              >
-                <Typography variant="body2">{nameErrMessage}</Typography>
+        <Grid
+          item
+          container
+          direction="column"
+          xs={gridXS}
+          spacing={2}
+        >
+          {showTitle && (
+            <>
+              <Grid item>
+                <Typography variant="h4">
+                  {`${updateExisting ? 'Update' : 'Create'} Book Club`}
+                </Typography>
               </Grid>
-            )}
-          </>
-        )}
-        <Grid item>
-          <TextField
-            id="name"
-            variant="outlined"
-            label="Name"
-            helperText="Must be unique"
-            value={name}
-            onChange={handleNameChange}
-            onKeyDown={handleKeydownSubmit}
-            required
-            sx={styles.fullWidthInput}
-          />
-        </Grid>
-        <Grid item>
-          {/* TODO - Add image upload functionality */}
-          <TextField
-            id="image"
-            variant="outlined"
-            label="Image"
-            value={image}
-            onChange={handleImageChange}
-            onKeyDown={handleKeydownSubmit}
-            sx={styles.fullWidthInput}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="description"
-            variant="outlined"
-            label="Description"
-            value={description}
-            onChange={handleDescriptionChange}
-            onKeyDown={handleKeydownSubmit}
-            required
-            sx={styles.fullWidthInput}
-          />
-        </Grid>
-        <Grid item>
-          <PublicityInput
-            publicity={publicity}
-            handlePublicityChange={handlePublicityChange}
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={
-              updateExisting ? handleUpdateBookClub : handleCreateBookClub
-            }
-            disabled={
-              !canSubmit || createBookClubLoading || updateBookClubLoading
-            }
-          >
-            {`${updateExisting ? 'Update' : 'Create'} Book Club`}
-          </Button>
+              {!_.isEmpty(nameErrMessage) && (
+                <Grid
+                  item
+                  sx={styles.errMessageContainer}
+                >
+                  <Typography variant="body2">{nameErrMessage}</Typography>
+                </Grid>
+              )}
+            </>
+          )}
+          <Grid item>
+            <TextField
+              id="name"
+              variant="outlined"
+              label="Name"
+              helperText="Must be unique"
+              value={name}
+              onChange={handleNameChange}
+              onKeyDown={handleKeydownSubmit}
+              required
+              sx={styles.fullWidthInput}
+            />
+          </Grid>
+          <Grid item>
+            <BookClubCard
+              bookClub={{
+                name: _.trim(name) || 'Book Club',
+                image: image ?? { fileName: '', url: '' },
+                description: 'Change your book club image',
+                publicity: publicity
+              }}
+              demoCard
+              handleDemoCardClick={handleDemoCardClick}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="description"
+              variant="outlined"
+              label="Description"
+              value={description}
+              onChange={handleDescriptionChange}
+              onKeyDown={handleKeydownSubmit}
+              required
+              sx={styles.fullWidthInput}
+            />
+          </Grid>
+          <Grid item>
+            <PublicityInput
+              publicity={publicity}
+              handlePublicityChange={handlePublicityChange}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={
+                updateExisting ? handleUpdateBookClub : handleCreateBookClub
+              }
+              disabled={
+                !canSubmit || createBookClubLoading || updateBookClubLoading
+              }
+            >
+              {`${updateExisting ? 'Update' : 'Create'} Book Club`}
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+      <ImageSelectorDialog
+        images={stockBookClubImages ?? []}
+        selectedImage={image ?? { fileName: '', url: '' }}
+        setSelectedImage={setImage}
+        handleClose={handleCloseImagePicker}
+        open={imagePickerOpen}
+      />
+    </>
   );
 };
 

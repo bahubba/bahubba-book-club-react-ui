@@ -1,7 +1,8 @@
 import api from '../base';
-import { BookClub } from '../../../interfaces';
+import { BookClub, Image } from '../../../interfaces';
 import props from '../../../properties';
 import {
+  BookClubPayload,
   ErrorResponse,
   PaginatedBookClubSearchPayload,
   PaginatedResponse
@@ -14,7 +15,7 @@ import _ from 'lodash';
 const bookClubAPISlice = api.injectEndpoints({
   endpoints: builder => ({
     // Mutation for creating a new book club
-    createBookClub: builder.mutation<BookClub, BookClub>({
+    createBookClub: builder.mutation<BookClub, BookClubPayload>({
       query: bookClub => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.CREATE}`,
         method: 'POST',
@@ -23,7 +24,7 @@ const bookClubAPISlice = api.injectEndpoints({
     }),
 
     // Mutation for updating a book club's info
-    updateBookClub: builder.mutation<BookClub, BookClub>({
+    updateBookClub: builder.mutation<BookClub, BookClubPayload>({
       query: bookClub => ({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.UPDATE}`,
         method: 'PATCH',
@@ -139,6 +140,12 @@ const bookClubAPISlice = api.injectEndpoints({
         url: `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.DISBAND_BY_NAME}/${bookClubName}`,
         method: 'DELETE'
       })
+    }),
+
+    // Query for getting stack imagges for book clubs
+    getStockImages: builder.query<Image[], void>({
+      query: () =>
+        `${props.API_PATHS.BOOK_CLUBS}${props.API_PATHS.STOCK_IMAGES}`
     })
   })
 });
@@ -153,7 +160,8 @@ export const {
   useSearchQuery,
   useLazySearchQuery,
   useDisbandBookClubMutation,
-  useDisbandBookClubByNameMutation
+  useDisbandBookClubByNameMutation,
+  useGetStockImagesQuery
 } = bookClubAPISlice;
 
 export default bookClubAPISlice;

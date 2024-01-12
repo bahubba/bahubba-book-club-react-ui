@@ -7,6 +7,7 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import _ from 'lodash';
 
 import { BookClub } from '../../interfaces';
 
@@ -31,19 +32,31 @@ const styles = {
 // Component props
 interface BookClubCardProps {
   bookClub: BookClub;
+  demoCard?: boolean;
+  handleDemoCardClick?: () => void;
 }
 
 /**
  * Card component for displaying a book club with a name, description, and image
  * @prop {BookClub} bookClub Book club metadata
- * TODO - Update default image URL after S3 bucket is setup
+ * @prop {boolean} demoCard Whether or not this card is a demo card, if it is, clicking on it will open an image picker
+ * @prop {() => void} handleDemoCardClick Callback for when the card is clicked
+ * TODO - Change the default media to a loading spinner while waiting for the image
  */
-const BookClubCard = ({ bookClub }: BookClubCardProps) => {
+const BookClubCard = ({
+  bookClub,
+  demoCard = false,
+  handleDemoCardClick
+}: BookClubCardProps) => {
   // Navigation from react-router-dom
   const navigate = useNavigate();
 
   // Navigate to the book club's home page on click
-  const handleClick = () => navigate(`/book-club/${bookClub.name}`);
+  const handleClick = () => {
+    demoCard && !!handleDemoCardClick
+      ? handleDemoCardClick()
+      : navigate(`/book-club/${bookClub.name}`);
+  };
 
   return (
     <Tooltip
@@ -55,13 +68,12 @@ const BookClubCard = ({ bookClub }: BookClubCardProps) => {
         sx={styles.card}
         onClick={handleClick}
       >
-        <CardMedia
-          image={
-            bookClub.imageURL ||
-            'https://wordsrated.com/wp-content/uploads/2022/02/Number-of-Books-Published-Per-Year.jpg'
-          }
-          sx={styles.cardImage}
-        />
+        {!_.isEmpty(bookClub.image.url) && (
+          <CardMedia
+            image={bookClub.image.url}
+            sx={styles.cardImage}
+          />
+        )}
         <GutterlessCardContent>
           <Typography
             gutterBottom
