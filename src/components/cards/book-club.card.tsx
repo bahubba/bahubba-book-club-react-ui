@@ -7,6 +7,7 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import _ from 'lodash';
 
 import { BookClub } from '../../interfaces';
 
@@ -67,10 +68,12 @@ const BookClubCard = ({
         sx={styles.card}
         onClick={handleClick}
       >
-        <CardMedia
-          image={bookClub.image.url}
-          sx={styles.cardImage}
-        />
+        {!_.isEmpty(bookClub.image.url) && (
+          <CardMedia
+            image={bookClub.image.url}
+            sx={styles.cardImage}
+          />
+        )}
         <GutterlessCardContent>
           <Typography
             gutterBottom

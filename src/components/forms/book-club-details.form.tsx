@@ -1,22 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  ImageList,
-  ImageListItem,
-  TextField,
-  Typography,
-  styled
-} from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 import BookClubCard from '../cards/book-club.card';
+import ImageSelectorDialog from '../dialogs/image-selector.dialog';
 import PublicityInput from '../../components/inputs/publicity.input';
 import {
   useCreateBookClubMutation,
@@ -26,23 +15,6 @@ import {
 } from '../../redux/api/book-club/book-club.api.slice';
 import { AdminOutletContext, Image, Publicity } from '../../interfaces';
 import { BookClubPayload } from '../../redux/interfaces';
-
-// MUI styled components
-interface SelectableImageListItemProps {
-  selected: boolean;
-}
-
-const SelectableImageListItem = styled(ImageListItem, {
-  shouldForwardProp: prop => !_.isEqual(prop, 'selected')
-})<SelectableImageListItemProps>(({ theme, selected }) =>
-  selected
-    ? {
-        padding: theme.spacing(0.25),
-        border: `${theme.spacing(1)} solid ${theme.palette.primary.light}`,
-        borderRadius: theme.spacing(1)
-      }
-    : { cursor: 'pointer' }
-);
 
 // MUI emotion styles
 const styles = {
@@ -113,7 +85,7 @@ const BookClubDetailsForm = ({
 
   // State vars
   const [name, setName] = useState('');
-  const [image, setImage] = useState<Image | null>(null);
+  const [image, setImage] = useState<Image>({ fileName: '', url: '' });
   const [description, setDescription] = useState('');
   const [publicity, setPublicity] = useState<Publicity>(Publicity.PRIVATE);
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
@@ -159,7 +131,7 @@ const BookClubDetailsForm = ({
 
       // Clear the form
       setName('');
-      setImage(null);
+      setImage({ fileName: '', url: '' });
       setDescription('');
 
       // Notify the user that the book club creation was successful
@@ -223,7 +195,7 @@ const BookClubDetailsForm = ({
   // When we get stock images, set the initial image
   useEffect(() => {
     if (_.size(stockBookClubImages) > 0) {
-      setImage(_.first(stockBookClubImages) ?? null);
+      setImage(_.first(stockBookClubImages) ?? { fileName: '', url: '' });
     }
   }, [stockBookClubImages]);
 
@@ -348,38 +320,13 @@ const BookClubDetailsForm = ({
           </Grid>
         </Grid>
       </Grid>
-      <Dialog open={imagePickerOpen}>
-        <DialogTitle>Select an Image</DialogTitle>
-        <DialogContent>
-          <ImageList
-            variant="masonry"
-            cols={3}
-            gap={12}
-          >
-            {_.map(stockBookClubImages, (stockImage, index) => (
-              <SelectableImageListItem
-                key={index}
-                selected={_.isEqual(stockImage.fileName, image?.fileName)}
-              >
-                <img
-                  src={stockImage.url}
-                  alt={stockImage.fileName}
-                  onClick={() => setImage(stockImage)}
-                />
-              </SelectableImageListItem>
-            ))}
-          </ImageList>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleCloseImagePicker}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ImageSelectorDialog
+        images={stockBookClubImages ?? []}
+        selectedImage={image ?? { fileName: '', url: '' }}
+        setSelectedImage={setImage}
+        handleClose={handleCloseImagePicker}
+        open={imagePickerOpen}
+      />
     </>
   );
 };
