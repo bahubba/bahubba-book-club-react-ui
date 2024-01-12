@@ -41,7 +41,7 @@ interface BookClubCardProps {
  * @prop {BookClub} bookClub Book club metadata
  * @prop {boolean} demoCard Whether or not this card is a demo card, if it is, clicking on it will open an image picker
  * @prop {() => void} handleDemoCardClick Callback for when the card is clicked
- * TODO - Update default image URL after S3 bucket is setup
+ * TODO - Change the default media to a loading spinner while waiting for the image
  */
 const BookClubCard = ({
   bookClub,
