@@ -22,6 +22,7 @@ const props: Props = {
     SEARCH: '/search',
     DISBAND: '/disband',
     DISBAND_BY_NAME: '/disband-by-name',
+    STOCK_IMAGES: '/stock-images',
     MEMBERSHIPS: '/v1/memberships',
     ALL_MEMBERSHIPS: '/all',
     ROLE: '/role',

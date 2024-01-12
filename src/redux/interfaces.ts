@@ -2,6 +2,14 @@ export interface AuthPayload {
   username: string | null;
 }
 
+export interface BookClubPayload {
+  id?: string;
+  name: string;
+  imageFileName: string;
+  description: string;
+  publicity: string;
+}
+
 export interface PaginatedPayload {
   pageNum: number;
   pageSize: number;
