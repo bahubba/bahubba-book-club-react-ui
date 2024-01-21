@@ -5,11 +5,11 @@ import { persistor, store } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import RootRoute from './routes/root.route';
 import ErrorRoute from './routes/error.route';
 import LoginRoute from './routes/auth/login.route';
-import RegisterRoute from './routes/auth/register.route';
 import HomeRoute from './routes/home.route';
 import RequireAuthRoute from './routes/auth/require-auth.route';
 import BookClubHomeRoute from './routes/book-club/book-club-home.route';
@@ -64,10 +64,6 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginRoute />
-      },
-      {
-        path: 'register',
-        element: <RegisterRoute />
       },
 
       /* MISC ROUTES */
@@ -170,7 +166,11 @@ root.render(
           loading={null}
           persistor={persistor}
         >
-          <RouterProvider router={router} />
+          <GoogleOAuthProvider
+            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID ?? ''}
+          >
+            <RouterProvider router={router} />
+          </GoogleOAuthProvider>
         </PersistGate>
       </Provider>
     </ThemeProvider>

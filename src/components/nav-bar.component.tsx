@@ -3,8 +3,11 @@ import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useLogoutMutation } from '../redux/slices/auth/auth.api.slice';
-import { clearCredentials, selectAuth } from '../redux/slices/auth/auth.slice';
+import { useLogoutMutation } from '../redux/api/auth/auth.api.slice';
+import {
+  clearCredentials,
+  selectAuth
+} from '../redux/slices/auth/oauth2.slice';
 import NotificationsButton from './buttons/notifications.button';
 
 // MUI Styled Components
@@ -123,7 +126,7 @@ const NavBar = () => {
             <Typography
               variant="h6"
               sx={styles.welcomeText}
-            >{`Welcome, ${auth.username}`}</Typography>
+            >{`Welcome, ${auth.givenName}`}</Typography>
             <NotificationsButton />
           </>
         )}

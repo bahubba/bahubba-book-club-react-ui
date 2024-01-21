@@ -1,17 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Grid, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { GoogleLogin, GoogleCredentialResponse } from '@react-oauth/google';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 import _ from 'lodash';
 
-import { setCredentials } from '../../redux/slices/auth/auth.slice';
-import { useLoginMutation } from '../../redux/slices/auth/auth.api.slice';
+import { setCredentials } from '../../redux/slices/auth/oauth2.slice';
 
 // MUI emotion styles
 const styles = {
@@ -52,64 +47,29 @@ const LoginRoute = () => {
   // Redux dispatcher
   const dispatch = useDispatch();
 
-  // Login API call from redux-toolkit
-  const [login, { isLoading }] = useLoginMutation();
-
-  // Refs
-  const userRef = useRef<HTMLInputElement>(null);
-
-  // State vars
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errMessage, setErrMessage] = useState('');
-
-  // Input change handlers
-  const handleUsernameInput = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setUsernameOrEmail(event.target.value);
-
-  const handlePasswordInput = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setPassword(event.target.value);
-
-  // Handle submitting the form on enter keypress
-  const handleKeydownSubmit = (event: React.KeyboardEvent) => {
-    if (_.isEqual('Enter', event.key)) handleSubmit();
-  };
-
-  // Handle submitting the login form
-  const handleSubmit = async () => {
-    try {
-      // Send the request to the API, and on success, set credentials, clear the form, and redirect
-      const userData = await login({ usernameOrEmail, password }).unwrap();
-      dispatch(setCredentials({ ...userData, username: usernameOrEmail }));
-      setUsernameOrEmail('');
-      setPassword('');
+  // Handle successful Google login
+  const handleGoogleLoginSuccess = (rsp: GoogleCredentialResponse) => {
+    if (!!rsp.credential && !_.isEmpty(rsp.credential)) {
+      const decodedCredentials = jwtDecode(rsp.credential);
+      dispatch(
+        setCredentials({
+          email: _.get(decodedCredentials, 'email', null),
+          givenName: _.get(decodedCredentials, 'given_name', null),
+          surname: _.get(decodedCredentials, 'family_name', null),
+          imageUrl: _.get(decodedCredentials, 'picture', null),
+          provider: 'GOOGLE'
+        })
+      );
       navigate('/home');
-    } catch (err) {
-      if (!_.has(err, 'status')) {
-        setErrMessage('No Server Response');
-      } else if (_.isEqual(400, _.get(err, 'status'))) {
-        setErrMessage('Missing username or password');
-      } else if (_.isEqual(401, _.get(err, 'status'))) {
-        setErrMessage('Unauthorized');
-      } else {
-        setErrMessage('Login failed');
-      }
     }
   };
 
-  // On component load, focus on the username field
-  useEffect(() => {
-    userRef.current?.focus();
-  }, []);
+  // Handle failed Google login
+  const handleGoogleLoginFailure = () => {
+    toast.error('Google login failed');
+  };
 
-  // Hide error message when input changes
-  useEffect(() => {
-    setErrMessage('');
-  }, [usernameOrEmail, password]);
-
-  return isLoading ? (
-    <CircularProgress sx={styles.loadingSpinner} />
-  ) : (
+  return (
     <Grid
       container
       justifyContent="center"
@@ -126,56 +86,11 @@ const LoginRoute = () => {
           spacing={1}
           sx={styles.formContainer}
         >
-          {!_.isEmpty(errMessage) && (
-            <Grid
-              item
-              sx={styles.errMessageContainer}
-            >
-              <Typography variant="body2">{errMessage}</Typography>
-            </Grid>
-          )}
           <Grid item>
-            <TextField
-              inputRef={userRef}
-              required
-              id="username"
-              variant="filled"
-              label="Username"
-              value={usernameOrEmail}
-              onChange={handleUsernameInput}
-              onKeyDown={handleKeydownSubmit}
-              sx={styles.fullWidthInput}
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginFailure}
             />
-          </Grid>
-          <Grid item>
-            <TextField
-              type="password"
-              required
-              id="password"
-              variant="filled"
-              label="Password"
-              value={password}
-              onChange={handlePasswordInput}
-              onKeyDown={handleKeydownSubmit}
-              sx={styles.fullWidthInput}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleSubmit}
-            >
-              Login
-            </Button>
-          </Grid>
-          <Grid
-            item
-            sx={styles.registerMessage}
-          >
-            <span>
-              Need an account? Register <Link to="../register">here</Link>
-            </span>
           </Grid>
         </Grid>
       </Grid>

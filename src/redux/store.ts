@@ -3,13 +3,13 @@ import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage/session';
 
-import authReducer from './slices/auth/auth.slice';
-import authAPISlice from './slices/auth/auth.api.slice';
+import oAuth2Reducer from './slices/auth/oauth2.slice';
+import authAPISlice from './api/auth/auth.api.slice';
 import _ from 'lodash';
 
 // Combine reducers
 const rootReducer = combineReducers({
-  auth: authReducer,
+  oAuth2: oAuth2Reducer,
   [authAPISlice.reducerPath]: authAPISlice.reducer
 });
 
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth']
+  whitelist: ['oAuth2']
 };
 
 // Set up the persisted reducer

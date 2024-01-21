@@ -1,5 +1,9 @@
-export interface AuthPayload {
-  username: string | null;
+export interface OAuth2Credentials {
+  email: string | null;
+  givenName: string | null;
+  surname: string | null;
+  imageUrl: string | null;
+  provider: 'FACEBOOK' | 'GITHUB' | 'GOOGLE' | null;
 }
 
 export interface BookClubPayload {
